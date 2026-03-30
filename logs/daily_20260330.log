@@ -1,0 +1,108 @@
+[11:29:10] ── [Tixcraft 拓元] 開始掃描...
+[11:29:11]   → 找到 0 個活動
+[11:31:05] ── [Tixcraft 拓元] 開始掃描...
+[11:31:06]   → 找到 34 個活動
+[11:31:17] ── [UDN 售票網] 開始掃描...
+[11:31:17]   UDN product links: 0, dates found on listing: 30
+[11:31:17]   → 找到 0 個活動（fallback 模式）
+[11:31:17] ── [年代售票 ERAticket] 開始掃描...
+[11:31:17]   找到 21 個 Product ID
+[11:31:44]   → 找到 15 個活動
+[11:32:59] ── [年代售票 ERAticket] 開始掃描...
+[11:33:00]   找到 22 個 Product ID
+[11:33:26]   → 找到 15 個活動
+[11:35:43] ── [Tixcraft 拓元] 開始掃描...
+[11:35:44]   → 找到 34 個活動
+[11:35:44] ── [年代售票 ERAticket] 開始掃描...
+[11:35:44]   找到 22 個 Product ID
+[11:36:11]   → 找到 15 個活動
+[11:42:54] ============================================================
+[11:42:54] Taiwan Concert Daily Scraper — 2026-03-30
+[11:42:54] ============================================================
+[11:42:54] ── [Tixcraft 拓元] 開始掃描...
+[11:42:54]   → 找到 34 個活動
+[11:42:54] ── [UDN 售票網] 開始掃描...
+[11:42:56]   UDN product links found: 0
+[11:42:56]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[11:42:56] ── [年代售票 ERAticket] 開始掃描...
+[11:42:56]   找到 22 個 Product ID
+[11:43:24]   → 找到 15 個活動
+[11:43:24] ── [kpopn.com] 開始掃描...
+[11:43:39]   → 找到 0 篇台灣演唱會文章
+[11:43:39] ── [livenation.com.tw] 開始掃描...
+[11:43:45]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[11:43:45]   ✗ livenation 無法取得，嘗試備用網址...
+[11:43:50]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[11:43:50] ── [DuckDuckGo] 開始搜尋...
+[11:43:57] ============================================================
+[11:43:57] Taiwan Concert Daily Scraper — 2026-03-30
+[11:43:57] ============================================================
+[11:43:57] ── [Tixcraft 拓元] 開始掃描...
+[11:43:58]   → 找到 34 個活動
+[11:43:58] ── [UDN 售票網] 開始掃描...
+[11:43:59]   UDN product links found: 0
+[11:43:59]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[11:43:59] ── [年代售票 ERAticket] 開始掃描...
+[11:43:59]   找到 23 個 Product ID
+[11:44:02]   → 收集到 2 個候選連結
+[11:44:09]   → 解析出 2 個活動
+[11:44:09] 
+共收集 51 筆原始資料（含重複）
+[11:44:09] 去重後剩 51 筆
+[11:44:09] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260330.json
+[11:44:09] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260330.sql
+[11:44:09] 
+自動寫入 Supabase (51 筆)...
+[11:44:09]   ✗ Supabase upsert 失敗 (400): {"code":"PGRST102","details":null,"hint":null,"message":"All object keys must match"}
+[11:44:09] ============================================================
+[11:44:09] 完成！
+[11:44:25]   → 找到 15 個活動
+[11:44:25] ── [kpopn.com] 開始掃描...
+[11:44:30]   → 找到 0 篇台灣演唱會文章
+[11:44:30] ── [livenation.com.tw] 開始掃描...
+[11:44:34]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[11:44:34]   ✗ livenation 無法取得，嘗試備用網址...
+[11:44:38]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[11:44:38] ── [DuckDuckGo] 開始搜尋...
+[11:44:48]   → 收集到 2 個候選連結
+[11:44:52]   → 解析出 2 個活動
+[11:44:52] 
+共收集 51 筆原始資料（含重複）
+[11:44:52] 去重後剩 51 筆
+[11:44:52] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260330.json
+[11:44:52] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260330.sql
+[11:44:52] 
+自動寫入 Supabase (51 筆)...
+[11:44:52]   ✗ Supabase upsert 失敗 (400): {"code":"PGRST102","details":null,"hint":null,"message":"All object keys must match"}
+[11:44:52] ============================================================
+[11:44:52] 完成！
+[11:45:25] ============================================================
+[11:45:25] Taiwan Concert Daily Scraper — 2026-03-30
+[11:45:25] ============================================================
+[11:45:25] ── [Tixcraft 拓元] 開始掃描...
+[11:45:26]   → 找到 34 個活動
+[11:45:26] ── [UDN 售票網] 開始掃描...
+[11:45:26]   UDN product links found: 0
+[11:45:26]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[11:45:26] ── [年代售票 ERAticket] 開始掃描...
+[11:45:27]   找到 22 個 Product ID
+[11:45:53]   → 找到 15 個活動
+[11:45:53] ── [kpopn.com] 開始掃描...
+[11:45:58]   → 找到 0 篇台灣演唱會文章
+[11:45:58] ── [livenation.com.tw] 開始掃描...
+[11:46:04]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[11:46:04]   ✗ livenation 無法取得，嘗試備用網址...
+[11:46:09]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[11:46:09] ── [DuckDuckGo] 開始搜尋...
+[11:46:21]   → 收集到 2 個候選連結
+[11:46:27]   → 解析出 2 個活動
+[11:46:27] 
+共收集 51 筆原始資料（含重複）
+[11:46:27] 去重後剩 51 筆
+[11:46:27] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260330.json
+[11:46:27] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260330.sql
+[11:46:27] 
+自動寫入 Supabase (51 筆)...
+[11:46:28]   ✓ Supabase upsert OK (201) — 51 筆
+[11:46:28] ============================================================
+[11:46:28] 完成！

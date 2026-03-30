@@ -1,0 +1,539 @@
+export type InboxRegion = 'western' | 'kpop' | 'jpop' | 'indie' | 'taiwan_festival'
+
+export interface ArtistInboxBatch {
+  createdAt: string
+  regions: Array<{
+    region: InboxRegion
+    title: string
+    raw: string
+  }>
+}
+
+const HANDLE_PATTERN = /@[^\s]+/g
+
+export function normalizeHandle(handle: string): string {
+  return handle.trim().replace(/[，,;；。]+$/g, '').toLowerCase()
+}
+
+export function extractHandles(raw: string): string[] {
+  const matches = raw.match(HANDLE_PATTERN) ?? []
+  const seen = new Set<string>()
+  const result: string[] = []
+
+  for (const match of matches) {
+    const normalized = normalizeHandle(match)
+    if (!seen.has(normalized)) {
+      seen.add(normalized)
+      result.push(normalized)
+    }
+  }
+
+  return result
+}
+
+export const latestArtistInboxBatch: ArtistInboxBatch = {
+  createdAt: '2026-03-27',
+  regions: [
+    {
+      region: 'western',
+      title: '歐美流行與搖滾 (Pop & Rock)',
+      raw: `@sabrinacarpenter
+@the1975
+@chappellroan
+@billieeilish
+@taylorswift
+@oliviarodigo
+@dualipa
+@harrystyles
+@arianagrande
+@tatemcrae
+@gracieabrams
+@conangray
+@troyesivan
+@theweeknd
+@lanadelrey
+@lordemusic
+@madisonbeer
+@renee_rapp
+@clairo
+@beabadoobee
+@muna
+@phoebebridgers
+@boygenius
+@paramore
+@hayleywilliams
+@coldplay
+@imaginedragons
+@arcticmonkeys
+@tameimpala
+@glassanimals
+@thekillers
+@maroon5
+@onerepublic
+@twentyonepilots
+@panicatthedisco
+@falloutboy
+@mychemicalromance
+@maneskinofficial
+@fontainesdc
+@idlesband
+@wolfaliceband
+@wetlegband
+@thelastdinnerparty
+@fujiikaze
+@mitskileaks
+@japanesebreakfast
+@st_vincent
+@fka_twigs
+@rosalia.vt
+@charli_xcx
+@carolineplz
+@shygirl
+@pinkpantheress
+@icespice
+@dojacat
+@theestallion
+@sza
+@kaliuchis
+@hermusicofficial
+@summerwalker
+@kehlani
+@victoria_monet
+@tinashenow
+@normani
+@chloebailey
+@hallebailey
+@theestallion
+@iamcardib
+@nickiminaj
+@bts.bighitofficial
+@lizzobeeating
+@postmalone
+@jackharlow
+@kendricklamar
+@champagnepapi
+@travisscott
+@tylerthecreator
+@asaprocky
+@frankocean
+@steve.lacy
+@brentfaiyaz
+@giveon
+@danielcaesar
+@leonbridgesofficial
+@khruangbin
+@haimtheband
+@alvvaysband
+@themarías
+@menitrust
+@fleshandbone
+@tvgirl
+@cigsaftersex
+@beachhouse
+@slowdiveofficial
+@radiohead
+@gorillaz
+@daftpunk
+@thestrokes
+@phoenixbasement
+@mgmt
+@fosterthepeople
+@vampireweekend`
+    },
+    {
+      region: 'kpop',
+      title: 'K-POP (團體與個人)',
+      raw: `@blackpinkofficial
+@jennierubyjane
+@lalalalisa_m
+@sooyaaa__
+@roses_are_rosie
+@bts.bighitofficial
+@rkive
+@agustd
+@uarmyhope
+@jin
+@thv
+@j.m
+@jungkook_bighitentertainment
+@twicetagram
+@momo
+@m.by__sana
+@mina_sr_my
+@nayeonyny
+@jeongyeon__ae
+@zyozyo
+@dahyunn_ee
+@chaeyo.0
+@thinkaboutzu
+@newjeans_official
+@minji_newjeans
+@hanni_newjeans
+@danielle_newjeans
+@haerin_newjeans
+@hyein_newjeans
+@ive_twt
+@for_everyoung10
+@_yujin_an
+@leserrafim
+@zhaizhai_official
+@kazuha_nl
+@jenaissante
+@aespa_official
+@imnotningning
+@katarinabluu
+@aerichandesu
+@imwinter
+@itzy.all.in.us
+@itzy_ryujin
+@itzy_yeji
+@nmixx_official
+@redvelvet.smtown
+@hi_sseulgi
+@_imyour_joy
+@renebaebae
+@yerimiese
+@todayis_wendy
+@g_i_dle
+@noodle.zip
+@minn_nie
+@stayc_highup
+@babymonster_ygofficial
+@official_illit
+@kiss_of_life_official
+@txt_bighit
+@straykids_official
+@minn_ee
+@yong.lixx
+@nct
+@nct127
+@nct_dream
+@wayvofficial
+@tenlee_1001
+@onyourm__ark
+@jeongjaehyun
+@seventeen_17
+@woozi_universefactory
+@min9yu_k
+@ho5hi_kwon
+@dk_is_dokyeom
+@enhypen
+@ateez_official
+@theboyz_official
+@riize_official
+@boynextdoor_official
+@tws_pledis
+@zerobaseone_official
+@vixx_stargram
+@exo.onearewe
+@layzhang
+@baekhyunee_exo
+@zkdlin
+@shinee
+@dlstmxkakwldrl
+@choiminho_1209
+@keyk0r
+@taemin_718
+@mamamoo_official
+@mar_chellaaa
+@mo_onbyul
+@solarkeem
+@_mariahwasa
+@iu_leejieun
+@akmu_suhyun
+@leemujin_official
+@heizeheize
+@crush9244
+@woozico0914
+@longlivesmdc
+@jparkitrighthere
+@jessicah_o
+@chaelincl
+@daraxxi
+@_zyozyo
+@leehi_hi
+@bol4_official
+@somin_jeon0822
+@official_kard`
+    },
+    {
+      region: 'jpop',
+      title: 'J-POP 與日本樂團',
+      raw: `@yoasobi_staff_
+@asayoru_10
+@ayase_0404
+@aimyon36
+@aimer_0907_official
+@ado1024official
+@zutomayo
+@fujiikaze
+@yuuri_official
+@vaundy_engawa
+@milet_music
+@imase1109
+@taniyuuki_staff
+@officialhigedandism
+@kinggnu.jp
+@daiki.tsuneta
+@satoru_iguchi
+@mrsgreenapple
+@motoki_ohmori_mga
+@radwimps_jp
+@yoji_noda
+@oneokrockofficial
+@10969taka
+@toru_10969
+@ryota_0809
+@tomoya_10969
+@spyair_official
+@back_number_official
+@spitz__official
+@mr.children_official
+@glay_official
+@larcenciel.official
+@hyde_official
+@yoshikiofficial
+@miyawaki.sakura._
+@_yustagram12
+@im_hina
+@gen_hoshino
+@masaharu_fukuyama_official
+@kenshiyonezu_08
+@lisa_olive
+@aimer_0907_official
+@eve_harapeco
+@mafumafu_ig
+@soraru_official
+@kanaboon_official
+@alexandros_official
+@manwithamission
+@babymetal_official
+@perfume_um
+@kyarypappa
+@wednesday_campbell
+@utada_hikaru
+@hikari_mitsushima
+@sheena_ringo
+@tokyojihen_official
+@ataraashiigakko
+@suzuka_gakko
+@凛として時雨
+@tk_snsfakes
+@chai_official
+@hitsujibungaku
+@tempalay_jp
+@neveryoungbeach
+@dygl_official
+@yogeenewwaves
+@fishmans_jp
+@corneliusofficial
+@sakanaction_jp
+@ichioka_rei
+@nulbarich_official
+@sirup_insta
+@luckykilimanjaro
+@chillibeansmusic
+@imase1109
+@natori_staff
+@p_h_i_l_i_p_s
+@yama_official08
+@reol_official
+@polkadot_stingray
+@shishamo_official
+@scandal_band_official
+@band_maid
+@the_oral_cigarettes
+@blueencount_official
+@04limitedsazabys`
+    },
+    {
+      region: 'indie',
+      title: '獨立、電子與其他 (Indie/Alternative)',
+      raw: `@mitskileaks
+@beabadoobee
+@lauvsongs
+@lany
+@jeremyzucker
+@keshifans
+@fiji_blue
+@sashaalexsloane
+@aleksiah_
+@griff
+@pinkpantheress
+@fkatwigs
+@bjork
+@rosalia.vt
+@c.tangana
+@stromae
+@peggygou_
+@disclosure
+@kaytranada
+@fredagainagainagainagainagain
+@fourtetkieran
+@skrillex
+@calvinharris
+@thechainsmokers
+@marshmello
+@martingarrix
+@zedd
+@tiesto
+@peggygou_
+@honeydijon
+@theblessedmadonna
+@ninakraviz
+@amelie_lens
+@charlottedewittemusic
+@justice
+@daftpunk
+@arca1000000
+@sophie_msmsms
+@charli_xcx
+@carolineplz
+@shygirl
+@arca1000000
+@ethanpflynn
+@kingkrule
+@cosmopyke
+@bakarrrr
+@remiwolf
+@dominicfike
+@omar.apollo
+@the_marias
+@cuco
+@boypablo
+@phumviphurit
+@hyukoh2000
+@se_so_neon
+@hwangsoyoon
+@peggygou_
+@yuna
+@gentle_bones
+@9m88
+@leoyunwen
+@sunset_rollercoaster
+@deca_joins
+@hyukoh_official
+@balmingtiger
+@omega_sapien
+@mili_official
+@yoasobi_staff_
+@zutomayo
+@eve_harapeco
+@syudou_official
+@pinocchiop_official
+@deco27_official
+@kairiki_bear
+@biz_official
+@vaundy_engawa
+@yama_official08
+@taniyuuki_official
+@imase1109
+@official_shishamo
+@moshimo_official
+@lucie_too
+@chai_official
+@otobokebeaver
+@gezan_official
+@chai_official
+@ataraashiigakko
+@st_vincent
+@mitskileaks
+@japanesebreakfast
+@thelastdinnerparty
+@wetlegband
+@wolfaliceband
+@drycleaningband
+@fontainesdc
+@idlesband
+@shamebanduk
+@viagra_boys
+@blackmidit9e
+@blackcountrynewroad
+@squidbanduk
+@thesmiletheband
+@radiohead
+@thom_yorke
+@jonnygreenwood
+@ed_obrien
+@philipselway
+@colingreenwood
+@thesmiletheband
+@gorillaz
+@damonalbarn
+@jamie_hewlett
+@daftpunk
+@justice
+@gesaffelstein
+@kavinsky
+@modeselektor_berlin
+@apparat_official
+@jonhopkinsmusic
+@nicolasjaar
+@fkatwigs
+@arca1000000
+@bloodorange
+@devhynes
+@solangeknowles
+@beyonce
+@jayz
+@nas
+@kendricklamar
+@steve.lacy
+@thundercatmusic
+@flyinglotus
+@kamasiwashington
+@robertglasper
+@badbadnotgood
+@khruangbin
+@the_marias
+@menitrust
+@fleshandbone
+@alvvaysband
+@hatchie
+@soccer_mommy
+@snailmail
+@clairo
+@beabadoobee
+@girlinred
+@muna
+@boygenius
+@phoebebridgers
+@julienrbaker
+@lucydacus
+@the1975
+@mattyhealy
+@george_daniel
+@adamhann1975
+@ross_macdonald`
+    },
+    {
+      region: 'taiwan_festival',
+      title: '台灣指標性音樂祭',
+      raw: `@megaportfest
+@lucyfest_tw
+@springwaveofficial
+@fireball_fest
+@vagabondfest.tw
+@taiwaneastcoastlandartfestival
+@worldmusicfestivaltaiwan
+@e_and_n_tw
+@simplelife_ontheway
+@organik_festival
+@smoke_machine_taipei
+@islander_fest
+@neon_oasis_fest
+@takao_rock
+@so_wonderful_festival`
+    }
+  ]
+}
+
+export const latestArtistInboxHandlesByRegion = latestArtistInboxBatch.regions.map((regionBatch) => ({
+  region: regionBatch.region,
+  title: regionBatch.title,
+  handles: extractHandles(regionBatch.raw)
+}))
+
+export const latestArtistInboxHandles = Array.from(
+  new Set(latestArtistInboxHandlesByRegion.flatMap((regionBatch) => regionBatch.handles))
+)
