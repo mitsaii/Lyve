@@ -59,7 +59,7 @@ export default function SavedPage() {
     <div className="px-4 py-2">
       <SectionLabel
         icon={<IconHeart filled className="w-4 h-4" />}
-        label={t('我的收藏', 'My Saved')}
+        text={t('我的收藏', 'My Saved')}
       />
 
       {loading ? (

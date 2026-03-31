@@ -23,7 +23,7 @@ export default function ConcertDetailClient({ concert }: Props) {
   const { alertIds, toggleAlert } = useAlert()
 
   const saved = isSaved(concert.id)
-  const alerted = alertIds.includes(concert.id)
+  const alerted = alertIds.has(concert.id)
 
   const ticketSaleTime =
     concert.status === 'selling'

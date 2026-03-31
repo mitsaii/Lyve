@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { createClient as createServerClient } from '@/lib/supabase/server'
+import { createServerClient } from '@/lib/supabase/server'
 
 const ADMIN_EMAIL = 'mitsai0701@gmail.com'
 
