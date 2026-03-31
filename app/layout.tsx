@@ -10,6 +10,7 @@ import { Header } from '@/components/layout/Header'
 import { TabBar } from '@/components/layout/TabBar'
 import { Footer } from '@/components/layout/Footer'
 import { ServiceWorkerRegistration } from '@/components/layout/ServiceWorkerRegistration'
+import { Analytics } from '@vercel/analytics/react'
 
 const notoSerifTC = Noto_Serif_TC({
   weight: ['400', '700'],
@@ -23,13 +24,47 @@ const spaceMono = Space_Mono({
   variable: '--font-space-mono',
 })
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://lyve-alpha.vercel.app'
+
 export const metadata: Metadata = {
-  title: 'Lyve',
-  description: '台灣演唱會資訊平台 - 即時掌握最新演出訊息',
+  title: {
+    default: 'Lyve',
+    template: '%s | Lyve',
+  },
+  description: '台灣演唱會資訊平台 — 即時掌握演唱會開賣時間、場地票價與搶票提醒',
+  keywords: ['演唱會', '台灣', '演唱會資訊', '搶票', '購票', 'concert', 'Taiwan', 'live music'],
+  authors: [{ name: 'Lyve' }],
+  metadataBase: new URL(siteUrl),
+  openGraph: {
+    title: 'Lyve — 台灣演唱會資訊平台',
+    description: '即時掌握演唱會開賣時間、場地票價與搶票提醒',
+    url: siteUrl,
+    siteName: 'Lyve',
+    locale: 'zh_TW',
+    type: 'website',
+    images: [
+      {
+        url: `${siteUrl}/og-default.png`,
+        width: 1200,
+        height: 630,
+        alt: 'Lyve — 台灣演唱會資訊平台',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Lyve — 台灣演唱會資訊平台',
+    description: '即時掌握演唱會開賣時間、場地票價與搶票提醒',
+    images: [`${siteUrl}/og-default.png`],
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
     title: 'Lyve',
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 }
 
@@ -47,6 +82,7 @@ export default function RootLayout({
     <html lang="zh-TW">
       <body className={`${notoSerifTC.variable} ${spaceMono.variable}`} style={{ fontFamily: '"Microsoft JhengHei", "微軟正黑體", sans-serif' }}>
         <ServiceWorkerRegistration />
+        <Analytics />
         <ThemeProvider>
           <LangProvider>
             <AuthProvider>

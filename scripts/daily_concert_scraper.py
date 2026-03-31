@@ -1168,7 +1168,7 @@ def supabase_upsert(concerts: list[dict], supabase_url: str, api_key: str) -> bo
     呼叫 Supabase REST API 直接寫入 concerts 表。
     需要 service_role key 或具有 INSERT 權限的 key。
     """
-    endpoint = supabase_url.rstrip("/") + "/rest/v1/concerts"
+    endpoint = supabase_url.rstrip("/") + "/rest/v1/concerts?on_conflict=artist,date_str,city_zh,venue_zh,tour_zh"
     payload = []
     for c in concerts:
         row: dict[str, Any] = {
