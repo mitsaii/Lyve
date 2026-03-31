@@ -33,12 +33,14 @@ export function ConcertCard({ concert, onClick }: ConcertCardProps) {
         borderLeft: `4px solid ${tagColor(concert.status)}`,
       }}
     >
-      <div className="flex items-start justify-between mb-2">
-        <div className="flex items-center gap-2">
+      <div className="flex items-start justify-between gap-2 mb-2">
+        <div className="flex items-center gap-2 min-w-0 flex-1">
           <ConcertAvatar genre={concert.genre} size="sm" />
-          <h3 className="font-bold text-lg">{concert.artist}</h3>
+          <h3 className="font-bold text-lg truncate">{concert.artist}</h3>
         </div>
-        <StatusTag status={concert.status} label={statusLabel(concert.status, lang)} />
+        <div className="flex-shrink-0">
+          <StatusTag status={concert.status} label={statusLabel(concert.status, lang)} />
+        </div>
       </div>
 
       <p className="text-sm mb-3" style={{ color: 'var(--muted)' }}>
