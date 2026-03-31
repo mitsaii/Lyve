@@ -39,13 +39,15 @@ export function Header() {
   }, [lastScrollY])
 
   return (
-    <header 
-      className="fixed top-0 left-0 right-0 z-50 px-4 py-3 flex items-center justify-between backdrop-blur-md transition-transform duration-300"
-      style={{ 
+    <header
+      className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md transition-transform duration-300"
+      style={{
         background: 'var(--header-bg)',
         transform: isVisible ? 'translateY(0)' : 'translateY(-100%)'
       }}
     >
+      {/* 內容限制在 480px 欄位內，logo 置左 */}
+      <div className="max-w-[480px] mx-auto px-4 py-3 flex items-center justify-between">
       <div className="flex items-center gap-3">
         {!isHomePage && (
           <button
@@ -57,13 +59,13 @@ export function Header() {
           </button>
         )}
         <button onClick={() => router.push('/')} className="flex items-center">
-          <Image 
+          <Image
             src={theme === 'dark' ? '/lyve-logo-dark.png' : '/lyve-logo.png'}
-            alt="Lyve" 
-            width={200} 
-            height={80}
+            alt="Lyve"
+            width={120}
+            height={48}
             className="object-contain cursor-pointer hover:opacity-80 transition-opacity"
-            style={{ 
+            style={{
               mixBlendMode: theme === 'dark' ? 'normal' : 'multiply'
             }}
             priority
@@ -107,6 +109,7 @@ export function Header() {
             </>
           )}
         </button>
+      </div>
       </div>
     </header>
   )

@@ -31,12 +31,37 @@ export function ConcertModal({ concert, onClose }: ConcertModalProps) {
   if (!concert) return null
 
   const saved = isSaved(concert.id)
-  const ticketSaleTime =
-    concert.status === 'selling'
-      ? t('已開賣', 'On Sale Now')
-      : concert.status === 'pending'
-        ? t('待公布', 'TBA')
-        : t('已截止', 'Closed')
+
+  // 搶票時間顯示
+  const formatSaleTime = () => {
+    if (concert.status === 'selling') return t('🟢 已開賣', '🟢 On Sale Now')
+    if (concert.status === 'sold_out') return t('🔴 已截止', '🔴 Closed')
+    if (concert.sale_start_at) {
+      const d = new Date(concert.sale_start_at)
+      const now = new Date()
+      const diff = d.getTime() - now.getTime()
+      const dateStr = d.toLocaleDateString('zh-TW', {
+        timeZone: 'Asia/Taipei',
+        year: 'numeric', month: '2-digit', day: '2-digit',
+      })
+      const timeStr = d.toLocaleTimeString('zh-TW', {
+        timeZone: 'Asia/Taipei',
+        hour: '2-digit', minute: '2-digit',
+      })
+      if (diff > 0) {
+        const days = Math.floor(diff / 86400000)
+        const hours = Math.floor((diff % 86400000) / 3600000)
+        const countdown = days > 0
+          ? t(`⏳ 還有 ${days} 天 ${hours} 小時`, `⏳ In ${days}d ${hours}h`)
+          : t(`⏳ 還有 ${hours} 小時`, `⏳ In ${hours}h`)
+        return `${dateStr} ${timeStr}　${countdown}`
+      }
+      return `${dateStr} ${timeStr}`
+    }
+    return t('⏳ 待公布', '⏳ TBA')
+  }
+
+  const ticketSaleTime = formatSaleTime()
 
   const handleSave = async (e: React.MouseEvent) => {
     e.stopPropagation()
