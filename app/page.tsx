@@ -11,7 +11,7 @@ import { FeaturedCard } from '@/components/concerts/FeaturedCard'
 import { ConcertCard } from '@/components/concerts/ConcertCard'
 import { ConcertModal } from '@/components/concerts/ConcertModal'
 import { SectionLabel } from '@/components/ui/SectionLabel'
-import { IconSparkle, IconMusic } from '@/components/ui/Icons'
+import { IconSparkle, IconMusic, IconClock } from '@/components/ui/Icons'
 import { createClient } from '@/lib/supabase/client'
 import { getVisiblePageItems } from '@/lib/utils'
 
@@ -98,7 +98,7 @@ export default function HomePage() {
         {/* 倒數計時 */}
         {nextConcert && (
           <div className="px-4 mb-8">
-            <SectionLabel icon="⏰" text={t('距離最近場次', 'Next Show')} />
+            <SectionLabel icon={<IconClock className="w-4 h-4" />} text={t('距離最近場次', 'Next Show')} />
             <Countdown targetDate={nextConcert.date_str} />
             
             {/* 演唱會橫幅圖 */}
@@ -130,7 +130,6 @@ export default function HomePage() {
               
               {/* 內容 */}
               <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-6">
-                <div className="text-5xl mb-2">{nextConcert.emoji}</div>
                 <div className="text-2xl font-bold mb-1 drop-shadow-lg">{nextConcert.artist}</div>
                 <div className="text-sm opacity-90 drop-shadow">
                   {nextConcert.tour_zh || nextConcert.tour_en}

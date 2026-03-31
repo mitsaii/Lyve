@@ -26,6 +26,7 @@ export interface Concert {
   is_hot: boolean
   grad_css: string | null
   image_url?: string | null
+  sale_start_at?: string | null   // ISO 8601, e.g. "2026-04-01T10:00:00+08:00"
   created_at?: string
 }
 

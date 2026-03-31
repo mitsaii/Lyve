@@ -6,6 +6,7 @@ import { useSaved } from '@/contexts/SavedContext'
 import { StatusTag } from '../ui/StatusTag'
 import { statusLabel, tagColor } from '@/lib/utils'
 import { IconPin, IconCalendar, IconTag, IconHeart } from '../ui/Icons'
+import { ConcertAvatar } from './ConcertAvatar'
 
 interface ConcertCardProps {
   concert: Concert
@@ -34,7 +35,7 @@ export function ConcertCard({ concert, onClick }: ConcertCardProps) {
     >
       <div className="flex items-start justify-between mb-2">
         <div className="flex items-center gap-2">
-          <span className="text-2xl">{concert.emoji}</span>
+          <ConcertAvatar genre={concert.genre} size="sm" />
           <h3 className="font-bold text-lg">{concert.artist}</h3>
         </div>
         <StatusTag status={concert.status} label={statusLabel(concert.status, lang)} />

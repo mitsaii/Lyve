@@ -22,34 +22,42 @@ const AlertContext = createContext<AlertContextType>({
 export function AlertProvider({ children }: { children: ReactNode }) {
   const [alertIds, setAlertIds] = useState<Set<ConcertId>>(new Set())
 
-  const parseSaleDateTime = (concert: Concert) => {
-    const firstDatePart = concert.date_str.split('–')[0].split('-')[0].trim()
-    const saleDate = new Date(firstDatePart.replace(/\//g, '-'))
-    if (Number.isNaN(saleDate.getTime())) return null
-
-    const timeMatch = concert.date_str.match(/(\d{1,2}):(\d{2})/)
-    if (timeMatch) {
-      const hours = Number.parseInt(timeMatch[1], 10)
-      const minutes = Number.parseInt(timeMatch[2], 10)
-      if (!Number.isNaN(hours) && !Number.isNaN(minutes)) {
-        saleDate.setHours(hours, minutes, 0, 0)
-      }
-    } else {
-      saleDate.setHours(0, 0, 0, 0)
-    }
-
-    return saleDate
+  // 只使用 sale_start_at 欄位；date_str 是演出日期，不能拿來當開賣時間
+  const parseSaleDateTime = (concert: Concert): Date | null => {
+    if (!concert.sale_start_at) return null
+    const d = new Date(concert.sale_start_at)
+    return Number.isNaN(d.getTime()) ? null : d
   }
 
-  const triggerReminder = (concert: Concert) => {
+  const triggerReminder = async (concert: Concert) => {
     const message = `「${concert.artist}」即將開搶，請於 10 分鐘內準備搶票！`
 
-    if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
-      new Notification('搶票提醒', { body: message })
+    if (typeof Notification === 'undefined' || Notification.permission !== 'granted') {
+      // 無法發原生通知，頁面在前景才用 alert 避免打擾
+      if (typeof document !== 'undefined' && document.visibilityState === 'visible') {
+        window.alert(`🔔 搶票提醒\n${message}`)
+      }
       return
     }
 
-    window.alert(`🔔 搶票提醒\n${message}`)
+    // 優先走 Service Worker showNotification（背景也能顯示）
+    if ('serviceWorker' in navigator) {
+      try {
+        const reg = await navigator.serviceWorker.ready
+        await reg.showNotification('🎤 搶票提醒', {
+          body: message,
+          icon: '/lyve-logo.png',
+          badge: '/lyve-logo.png',
+          tag: `alert-${concert.id}`,
+          data: { url: '/alerts' },
+        })
+        return
+      } catch {
+        // SW 還沒就緒，fallback 到直接 API
+      }
+    }
+
+    new Notification('🎤 搶票提醒', { body: message, icon: '/lyve-logo.png' })
   }
 
   useEffect(() => {
@@ -124,7 +132,7 @@ export function AlertProvider({ children }: { children: ReactNode }) {
         const reminderAtMs = saleAtMs - REMINDER_OFFSET_MS
 
         if (now >= reminderAtMs && now <= saleAtMs + 5 * 60 * 1000) {
-          triggerReminder(concert)
+          await triggerReminder(concert)
           remindedIds.add(concert.id)
           changed = true
         }

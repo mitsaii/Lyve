@@ -9,6 +9,7 @@ import { AlertProvider } from '@/contexts/AlertContext'
 import { Header } from '@/components/layout/Header'
 import { TabBar } from '@/components/layout/TabBar'
 import { Footer } from '@/components/layout/Footer'
+import { ServiceWorkerRegistration } from '@/components/layout/ServiceWorkerRegistration'
 
 const notoSerifTC = Noto_Serif_TC({
   weight: ['400', '700'],
@@ -25,10 +26,16 @@ const spaceMono = Space_Mono({
 export const metadata: Metadata = {
   title: 'Lyve',
   description: '台灣演唱會資訊平台 - 即時掌握最新演出訊息',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Lyve',
+  },
 }
 
 export const viewport: Viewport = {
   viewportFit: 'cover',
+  themeColor: '#0a0a0a',
 }
 
 export default function RootLayout({
@@ -39,6 +46,7 @@ export default function RootLayout({
   return (
     <html lang="zh-TW">
       <body className={`${notoSerifTC.variable} ${spaceMono.variable}`} style={{ fontFamily: '"Microsoft JhengHei", "微軟正黑體", sans-serif' }}>
+        <ServiceWorkerRegistration />
         <ThemeProvider>
           <LangProvider>
             <AuthProvider>

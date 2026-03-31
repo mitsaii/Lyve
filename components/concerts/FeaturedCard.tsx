@@ -55,14 +55,11 @@ export function FeaturedCard({ concert, onClick }: FeaturedCardProps) {
 
       {/* 內容 */}
       <div className="relative h-full p-6 flex flex-col">
-        <div className="flex items-center gap-3 mb-3">
-          <span className="text-4xl drop-shadow-lg">{concert.emoji}</span>
-          <div>
-            <h3 className="font-bold text-xl text-white drop-shadow-md">{concert.artist}</h3>
-            <p className="text-sm opacity-90 text-white drop-shadow">
-              {lang === 'zh' ? concert.city_zh : concert.city_en}
-            </p>
-          </div>
+        <div className="mb-3">
+          <h3 className="font-bold text-xl text-white drop-shadow-md">{concert.artist}</h3>
+          <p className="text-sm opacity-90 text-white drop-shadow">
+            {lang === 'zh' ? concert.city_zh : concert.city_en}
+          </p>
         </div>
 
         <p className="text-white opacity-90 mb-3 line-clamp-2 drop-shadow flex-1">
