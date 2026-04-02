@@ -91,26 +91,55 @@ export default function ConcertDetailClient({ concert }: Props) {
         ← {t('返回', 'Back')}
       </button>
 
-      {/* 封面漸層 */}
+      {/* 封面 */}
       <div
-        className="rounded-3xl p-8 mb-6 text-center relative overflow-hidden"
-        style={{
-          background: concert.grad_css ?? 'linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%)',
-          minHeight: 220,
-        }}
+        className="rounded-3xl mb-6 relative overflow-hidden"
+        style={{ minHeight: 240 }}
       >
-        {/* 背景圖 */}
-        {concert.image_url && (
+        {/* 背景：有圖片就全滿顯示，否則用漸層 */}
+        {concert.image_url ? (
+          <>
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `url(${concert.image_url})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              }}
+            />
+            {/* 深色遮罩（保證文字可讀） */}
+            <div className="absolute inset-0 bg-black/50" />
+            {/* 漸層色調疊加 */}
+            {concert.grad_css && (
+              <div
+                className="absolute inset-0"
+                style={{ background: concert.grad_css, opacity: 0.4, mixBlendMode: 'multiply' }}
+              />
+            )}
+          </>
+        ) : (
           <div
-            className="absolute inset-0 opacity-20 bg-cover bg-center"
-            style={{ backgroundImage: `url(${concert.image_url})` }}
+            className="absolute inset-0"
+            style={{
+              background: concert.grad_css ?? 'linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%)',
+            }}
           />
         )}
-        <div className="relative z-10">
-          <div className="text-6xl mb-4">{concert.emoji}</div>
-          <h1 className="text-3xl font-bold text-white mb-2">{concert.artist}</h1>
-          <p className="text-white/80 text-lg">
+
+        {/* 文字內容 */}
+        <div
+          className="relative z-10 p-8 flex flex-col items-center justify-center text-center"
+          style={{ minHeight: 240 }}
+        >
+          {!concert.image_url && (
+            <div className="text-6xl mb-4">{concert.emoji}</div>
+          )}
+          <h1 className="text-3xl font-bold text-white mb-2 drop-shadow-lg">{concert.artist}</h1>
+          <p className="text-white/85 text-base drop-shadow">
             {lang === 'zh' ? concert.tour_zh : concert.tour_en}
+          </p>
+          <p className="text-white/65 text-sm mt-1 drop-shadow">
+            {concert.date_str} · {lang === 'zh' ? concert.city_zh : concert.city_en}
           </p>
         </div>
       </div>

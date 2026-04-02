@@ -1,0 +1,75 @@
+[00:19:01] ============================================================
+[00:19:01] Taiwan Concert Daily Scraper — 2026-04-02
+[00:19:01] ============================================================
+[00:19:01] ── [Tixcraft 拓元] 開始掃描...
+[00:19:02]   → 找到 36 個活動
+[00:19:02] ── [UDN 售票網] 開始掃描...
+[00:19:03]   UDN product links found: 0
+[00:19:03]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[00:19:03] ── [年代售票 ERAticket] 開始掃描...
+[00:19:03]   找到 22 個 Product ID
+[00:19:33]   → 找到 15 個活動
+[00:19:33] ── [kpopn.com] 開始掃描...
+[00:30:46]   → 找到 0 篇台灣演唱會文章
+[00:30:46] ── [livenation.com.tw] 開始掃描...
+[00:36:59]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[00:36:59]   ✗ livenation 無法取得，嘗試備用網址...
+[00:37:05]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[00:37:05] ── [DuckDuckGo] 開始搜尋...
+[00:40:45]   → 收集到 2 個候選連結
+[00:40:52]   → 解析出 1 個活動
+[00:40:52] ── [Bandsintown] 開始掃描台北場次...
+[00:40:56]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[00:40:56]   ✗ Bandsintown 無法取得
+[00:40:56] ── [LIVE王 FB] 開始掃描...
+[00:40:57]   → 取得 327428 字元
+[00:40:57]   → 解析出 0 個活動，其中 0 個取得圖片
+[00:40:57] 
+共收集 52 筆原始資料（含重複）
+[00:40:57] 去重後剩 52 筆
+[00:40:57] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260402.json
+[00:40:57] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260402.sql
+[00:40:57] 
+自動寫入 Supabase (52 筆)...
+[00:40:58]   ✓ Supabase upsert OK (201) — 52 筆
+[00:40:58] ============================================================
+[00:40:58] 完成！
+[12:05:56] ============================================================
+[12:05:56] Taiwan Concert Daily Scraper — 2026-04-02
+[12:05:56] ============================================================
+[12:05:56] ── [Tixcraft 拓元] 開始掃描...
+[12:05:59]   ✗ fetch failed: https://tixcraft.com/activity/list — <urlopen error Tunnel connection failed: 403 Forbidden>
+[12:05:59]   ✗ tixcraft 無法取得
+[12:05:59] ── [UDN 售票網] 開始掃描...
+[12:06:02]   ✗ fetch failed: https://tickets.udnfunlife.com/application/UTK01/UTK0101_03.aspx?Category=231 — <urlopen error Tunnel connection failed: 403 Forbidden>
+[12:06:02]   ✗ UDN 無法取得
+[12:06:02] ── [年代售票 ERAticket] 開始掃描...
+[12:06:05]   ✗ fetch failed: https://ticket.com.tw/ — <urlopen error Tunnel connection failed: 403 Forbidden>
+[12:06:05]   ✗ 年代售票 無法取得
+[12:06:05] ── [kpopn.com] 開始掃描...
+[12:06:08]   ✗ fetch failed: https://www.kpopn.com/category/news/ — <urlopen error Tunnel connection failed: 403 Forbidden>
+[12:06:08]   → 找到 0 篇台灣演唱會文章
+[12:06:08] ── [livenation.com.tw] 開始掃描...
+[12:06:11]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — <urlopen error Tunnel connection failed: 403 Forbidden>
+[12:06:11]   ✗ livenation 無法取得，嘗試備用網址...
+[12:06:14]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — <urlopen error Tunnel connection failed: 403 Forbidden>
+[12:06:14] ── [DuckDuckGo] 開始搜尋...
+[12:06:17]   ✗ fetch failed: https://html.duckduckgo.com/html/?q=%E5%8F%B0%E7%81%A3%20%E6%BC%94%E5%94%B1%E6%9 — <urlopen error Tunnel connection failed: 403 Forbidden>
+[12:06:20]   ✗ fetch failed: https://html.duckduckgo.com/html/?q=Taiwan%20concert%202026%20ticket&kl=tw-tzh — <urlopen error Tunnel connection failed: 403 Forbidden>
+[12:06:23]   ✗ fetch failed: https://html.duckduckgo.com/html/?q=%E5%8F%B0%E5%8C%97%20%E6%BC%94%E5%94%B1%E6%9 — <urlopen error Tunnel connection failed: 403 Forbidden>
+[12:06:26]   ✗ fetch failed: https://html.duckduckgo.com/html/?q=%E5%8F%B0%E7%81%A3%20%E9%96%8B%E5%94%B1%2020 — <urlopen error Tunnel connection failed: 403 Forbidden>
+[12:06:26]   → 收集到 0 個候選連結
+[12:06:26]   → 解析出 0 個活動
+[12:06:26] ── [Bandsintown] 開始掃描台北場次...
+[12:06:29]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — <urlopen error Tunnel connection failed: 403 Forbidden>
+[12:06:29]   ✗ Bandsintown 無法取得
+[12:06:29] ── [LIVE王 FB] 開始掃描...
+[12:06:32]   ✗ fetch failed: https://mbasic.facebook.com/LIVEKINGisLife/posts/pfbid0rqzJZwF1N5QHbw2SoKbPGn8cs — <urlopen error Tunnel connection failed: 403 Forbidden>
+[12:06:35]   ✗ fetch failed: https://mbasic.facebook.com/LIVEKINGisLife/ — <urlopen error Tunnel connection failed: 403 Forbidden>
+[12:06:35]   ✗ LIVE王 FB 無法取得（可能需要登入）
+[12:06:35] 
+共收集 0 筆原始資料（含重複）
+[12:06:35] 去重後剩 0 筆
+[12:06:35] ✓ JSON 已寫入: /sessions/eloquent-amazing-fermat/mnt/taiwan-concerts/data/daily_20260402.json
+[12:06:35] ✓ SQL 已寫入: /sessions/eloquent-amazing-fermat/mnt/taiwan-concerts/data/daily_20260402.sql
+[12:06:35] 今日無新發現，結束。

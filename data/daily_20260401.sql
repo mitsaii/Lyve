@@ -1,4 +1,4 @@
--- 自動爬取：2026-03-31 每日演唱會更新
+-- 自動爬取：2026-04-01 每日演唱會更新
 -- 來源: tixcraft, eraticket
 -- 請在 Supabase Dashboard → SQL Editor 執行此檔案
 

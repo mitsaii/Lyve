@@ -7,6 +7,7 @@ import { useSaved } from '@/contexts/SavedContext'
 import { StatusTag } from '../ui/StatusTag'
 import { statusLabel, genreLabel } from '@/lib/utils'
 import { IconPin, IconCalendar, IconTag, IconVenue, IconTicket, IconClock, IconHeart } from '../ui/Icons'
+import { ConcertAvatar } from './ConcertAvatar'
 
 interface ConcertModalProps {
   concert: Concert | null
@@ -103,7 +104,9 @@ export function ConcertModal({ concert, onClose }: ConcertModalProps) {
 
           {/* 標題 */}
           <div className="text-center mb-6">
-            <div className="text-5xl mb-3">{concert.emoji}</div>
+            <div className="flex justify-center mb-3">
+              <ConcertAvatar genre={concert.genre} size="lg" />
+            </div>
             <h2 className="text-2xl font-bold mb-2">{concert.artist}</h2>
             <p className="text-lg" style={{ color: 'var(--muted)' }}>
               {lang === 'zh' ? concert.tour_zh : concert.tour_en}

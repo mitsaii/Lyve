@@ -267,14 +267,17 @@ function AlertCard({
 
       {/* 搶票時間橫幅 */}
       <div
-        className="mt-3 px-3 py-2 rounded-xl text-xs font-medium"
+        className="mt-3 px-3 py-2 rounded-xl text-xs font-medium flex items-center justify-between gap-2"
         style={{
           background: alerted ? 'var(--accent)22' : 'var(--faint)',
           color: alerted ? 'var(--accent)' : 'var(--muted)',
-          borderLeft: alerted ? '3px solid var(--accent)' : '3px solid var(--faint)',
+          borderLeft: alerted ? '3px solid var(--accent)' : '3px solid transparent',
         }}
       >
-        {saleTimeDisplay}
+        <span className="font-semibold opacity-70 flex-shrink-0">
+          {lang === 'zh' ? '搶票時間' : 'Sale Time'}
+        </span>
+        <span className="text-right">{saleTimeDisplay}</span>
       </div>
     </div>
   )

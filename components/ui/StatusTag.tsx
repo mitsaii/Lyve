@@ -11,7 +11,7 @@ interface StatusTagProps {
 export function StatusTag({ status, label }: StatusTagProps) {
   return (
     <span
-      className="px-3 py-1 rounded-full text-xs font-medium"
+      className="px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap inline-block"
       style={{
         backgroundColor: tagColor(status) + '22',
         color: tagColor(status),
