@@ -21,7 +21,7 @@ insert into concerts (artist, emoji, date_str, city_zh, city_en, venue_zh, venue
 
 ('茄子蛋', '🥚', '2026/06/14', '台中', 'Taichung', '台中圓滿戶外劇場', 'Taichung Fulfillment Amphitheater', '浪流連 演唱會', 'Vagrancy Concert', 'NT$ 1,200-3,200', 'NT$ 1,200-3,200', 'KKTIX', 'https://kktix.com', 'bands', 'pending', false, 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', null),
 
-('告五人', '🌟', '2026/07/19-20', '台北', 'Taipei', '台北流行音樂中心', 'Taipei Music Center', '帶你飛 演唱會', 'Take You Flying Concert', 'NT$ 1,500-3,500', 'NT$ 1,500-3,500', 'ibon', 'https://ibon.com.tw', 'cpop', 'pending', false, 'linear-gradient(135deg, #30cfd0 0%, #330867 100%)', null),
+('告五人', '🌟', '2026/07/19-20', '台北', 'Taipei', '台北流行音樂中心', 'Taipei Music Center', '帶你飛 演唱會', 'Take You Flying Concert', 'NT$ 1,500-3,500', 'NT$ 1,500-3,500', 'ibon', 'https://ibon.com.tw', 'bands', 'pending', false, 'linear-gradient(135deg, #30cfd0 0%, #330867 100%)', null),
 
 ('五月天', '🎸', '2026/08/08-10', '台北', 'Taipei', '台北大巨蛋', 'Taipei Dome', '好好好想見到你 巡演', 'MAYDAY 2026', 'NT$ 2,200-6,600', 'NT$ 2,200-6,600', 'KKTIX', 'https://kktix.com', 'bands', 'pending', true, 'linear-gradient(135deg, #3498db 0%, #2ecc71 100%)', 'https://s.yimg.com/ny/api/res/1.2/qhgRRVysbv7QXIlh.Et2vg--/YXBwaWQ9aGlnaGxhbmRlcjt3PTY0MDtoPTQzNQ--/https://media.zenfs.com/zh-tw/__647/2f134a1e2835d69416d7032df1940c02'),
 
