@@ -222,10 +222,11 @@ export default function AdminPage() {
                     onChange={e => setEditing(prev => ({ ...prev, genre: e.target.value as Genre }))}
                   >
                     <option value="cpop">華語</option>
-                    <option value="rock">搖滾</option>
+                    <option value="bands">樂團</option>
+                    <option value="hiphop">Hip-Hop</option>
                     <option value="kpop">K-POP</option>
                     <option value="jpop">J-POP</option>
-                    <option value="western">歐美</option>
+                    <option value="western">西洋</option>
                     <option value="festival">音樂祭</option>
                   </select>
                 </div>

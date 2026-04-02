@@ -17,10 +17,10 @@ ssl.create_default_https_context = ssl._create_unverified_context
 ARTISTS = [
     # Western
     {"name": "Sabrina Carpenter", "ig": "@sabrinacarpenter", "region": "western", "genre": "pop"},
-    {"name": "The 1975", "ig": "@the1975", "region": "western", "genre": "rock"},
+    {"name": "The 1975", "ig": "@the1975", "region": "western", "genre": "bands"},
     {"name": "Chappell Roan", "ig": "@chappellroan", "region": "western", "genre": "pop"},
-    {"name": "Maneskin", "ig": "@maneskinofficial", "region": "western", "genre": "rock"},
-    {"name": "Arctic Monkeys", "ig": "@arcticmonkeys", "region": "western", "genre": "rock"},
+    {"name": "Maneskin", "ig": "@maneskinofficial", "region": "western", "genre": "bands"},
+    {"name": "Arctic Monkeys", "ig": "@arcticmonkeys", "region": "western", "genre": "bands"},
     
     # KPOP
     {"name": "KISS OF LIFE", "ig": "@kissoflife_s2", "region": "kpop", "genre": "kpop"},
@@ -35,9 +35,9 @@ ARTISTS = [
     {"name": "Chilli Beans.", "ig": "@chillibeansmusic", "region": "jpop", "genre": "jpop"},
     
     # Taiwan
-    {"name": "傻子與白痴", "ig": "@foolandidiot_official", "region": "taiwan", "genre": "rock"},
-    {"name": "拍謝少年", "ig": "@sorry_youth_band", "region": "taiwan", "genre": "rock"},
-    {"name": "大象體操", "ig": "@elephant_gym_official", "region": "taiwan", "genre": "rock"},
+    {"name": "傻子與白痴", "ig": "@foolandidiot_official", "region": "taiwan", "genre": "bands"},
+    {"name": "拍謝少年", "ig": "@sorry_youth_band", "region": "taiwan", "genre": "bands"},
+    {"name": "大象體操", "ig": "@elephant_gym_official", "region": "taiwan", "genre": "bands"},
     {"name": "海豚刑警", "ig": "@illu_police", "region": "taiwan", "genre": "pop"},
 ]
 

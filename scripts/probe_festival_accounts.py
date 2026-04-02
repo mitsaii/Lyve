@@ -24,21 +24,21 @@ SSL_CTX.check_hostname = False
 SSL_CTX.verify_mode = ssl.CERT_NONE
 
 FESTIVALS = [
-    ("megaportfest",                    "大港開唱",                 "高雄", "Kaohsiung", "rock"),
-    ("lucyfest_tw",                     "貴人散步音樂節",            "台北", "Taipei",    "rock"),
-    ("springwaveofficial",              "春浪音樂節",                "台北", "Taipei",    "pop"),
-    ("fireball_fest",                   "火球祭",                   "台北", "Taipei",    "rock"),
-    ("vagabondfest.tw",                 "浪人祭",                   "台北", "Taipei",    "rock"),
-    ("taiwaneastcoastlandartfestival",  "月光·海音樂會",             "台東", "Taitung",   "pop"),
-    ("worldmusicfestivaltaiwan",        "世界音樂節@臺灣",            "台北", "Taipei",    "pop"),
-    ("e_and_n_tw",                      "覺醒音樂節",                "台北", "Taipei",    "rock"),
-    ("simplelife_ontheway",             "簡單生活節",                "台北", "Taipei",    "pop"),
-    ("organik_festival",                "有機體音樂節",              "台北", "Taipei",    "rock"),
-    ("smoke_machine_taipei",            "Smoke Machine Taipei",    "台北", "Taipei",    "rock"),
-    ("islander_fest",                   "島嶼音樂節",                "台北", "Taipei",    "pop"),
-    ("neon_oasis_fest",                 "霓虹綠洲音樂祭",            "台北", "Taipei",    "pop"),
-    ("takao_rock",                      "打狗祭",                   "高雄", "Kaohsiung", "rock"),
-    ("so_wonderful_festival",           "So Wonderful Festival",   "台北", "Taipei",    "pop"),
+    ("megaportfest",                    "大港開唱",                 "高雄", "Kaohsiung", "festival"),
+    ("lucyfest_tw",                     "貴人散步音樂節",            "台北", "Taipei",    "festival"),
+    ("springwaveofficial",              "春浪音樂節",                "台北", "Taipei",    "festival"),
+    ("fireball_fest",                   "火球祭",                   "台北", "Taipei",    "festival"),
+    ("vagabondfest.tw",                 "浪人祭",                   "台北", "Taipei",    "festival"),
+    ("taiwaneastcoastlandartfestival",  "月光·海音樂會",             "台東", "Taitung",   "festival"),
+    ("worldmusicfestivaltaiwan",        "世界音樂節@臺灣",            "台北", "Taipei",    "festival"),
+    ("e_and_n_tw",                      "覺醒音樂節",                "台北", "Taipei",    "festival"),
+    ("simplelife_ontheway",             "簡單生活節",                "台北", "Taipei",    "festival"),
+    ("organik_festival",                "有機體音樂節",              "台北", "Taipei",    "festival"),
+    ("smoke_machine_taipei",            "Smoke Machine Taipei",    "台北", "Taipei",    "festival"),
+    ("islander_fest",                   "島嶼音樂節",                "台北", "Taipei",    "festival"),
+    ("neon_oasis_fest",                 "霓虹綠洲音樂祭",            "台北", "Taipei",    "festival"),
+    ("takao_rock",                      "打狗祭",                   "高雄", "Kaohsiung", "festival"),
+    ("so_wonderful_festival",           "So Wonderful Festival",   "台北", "Taipei",    "festival"),
 ]
 
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"

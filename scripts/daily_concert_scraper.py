@@ -147,7 +147,7 @@ _GRADS: dict[str, list[str]] = {
         "linear-gradient(135deg, #30cfd0 0%, #330867 100%)",
         "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
     ],
-    "rock":    [
+    "bands":   [
         "linear-gradient(135deg, #1a1a1a 0%, #b91d1d 100%)",
         "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
         "linear-gradient(135deg, #373b44 0%, #4286f4 100%)",
@@ -169,7 +169,7 @@ _GRADS: dict[str, list[str]] = {
     ],
 }
 _EMOJIS = {
-    "kpop": "✨", "cpop": "🎤", "rock": "🎸",
+    "kpop": "✨", "cpop": "🎤", "bands": "🎸", "hiphop": "🎧",
     "jpop": "🎶", "western": "🌙", "festival": "🎪",
 }
 

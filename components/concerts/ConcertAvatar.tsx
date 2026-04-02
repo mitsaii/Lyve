@@ -11,7 +11,8 @@ interface ConcertAvatarProps {
 const GENRE_STYLES: Record<string, { gradient: string; label: string }> = {
   kpop:    { gradient: 'linear-gradient(135deg, #f472b6, #8b5cf6)', label: 'K-Pop' },
   cpop:    { gradient: 'linear-gradient(135deg, #38bdf8, #6366f1)', label: 'C-Pop' },
-  rock:    { gradient: 'linear-gradient(135deg, #f97316, #dc2626)', label: 'Rock'  },
+  bands:   { gradient: 'linear-gradient(135deg, #f97316, #dc2626)', label: 'Bands' },
+  hiphop:  { gradient: 'linear-gradient(135deg, #fbbf24, #a855f7)', label: 'Hip-Hop' },
   jpop:    { gradient: 'linear-gradient(135deg, #fb7185, #e879f9)', label: 'J-Pop' },
   western: { gradient: 'linear-gradient(135deg, #fbbf24, #f97316)', label: 'Western' },
   festival:{ gradient: 'linear-gradient(135deg, #34d399, #0891b2)', label: 'Festival' },
@@ -55,11 +56,22 @@ function GenreIcon({ genre }: { genre: string }) {
         </svg>
       )
 
-    // Lightning bolt ⚡
-    case 'rock':
+    // Guitar 🎸
+    case 'bands':
       return (
-        <svg {...shared} fill="white" stroke="none">
-          <path d="M10 1.5L4.5 9.5H8L6 14.5L12 7.5H8.5L10 1.5Z" />
+        <svg {...shared} stroke="white" strokeWidth="1.6" fill="none">
+          <path d="M10.5 2L14 5.5L9.5 10C10.2 11 10.2 12.3 9.3 13.2C8.2 14.3 6.4 14.3 5.3 13.2C4.2 12.1 4.2 10.3 5.3 9.2C6.2 8.3 7.5 8.1 8.6 8.7L10.5 6.8L9.5 5.5L11 4L10 3L11.5 2L10.5 2Z" />
+          <circle cx="6.8" cy="11.5" r="0.7" fill="white" stroke="none" />
+        </svg>
+      )
+
+    // Headphones 🎧
+    case 'hiphop':
+      return (
+        <svg {...shared} stroke="white" strokeWidth="1.7" fill="none">
+          <path d="M3.5 9.5V8A4.5 4.5 0 0 1 12.5 8V9.5" />
+          <rect x="2" y="9.5" width="2.5" height="4" rx="1" fill="white" stroke="none" />
+          <rect x="11.5" y="9.5" width="2.5" height="4" rx="1" fill="white" stroke="none" />
         </svg>
       )
 

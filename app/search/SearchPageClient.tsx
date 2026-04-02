@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Concert } from '@/types/concert'
 import { useLang } from '@/contexts/LangContext'
 import { ConcertCard } from '@/components/concerts/ConcertCard'

@@ -128,7 +128,7 @@ def map_region_to_genre(region: str) -> str:
         return "jpop"
     if region == "western":
         return "pop"
-    return "rock"
+    return "bands"
 
 
 def read_artist_mapping() -> dict[str, tuple[str, str]]:
@@ -274,7 +274,7 @@ def to_sql_rows(candidates: list[Candidate]) -> str:
         artist = sql_escape(c.artist)
         tour_zh = sql_escape(f"IG 線索：可能台灣場 ({c.handle})")
         tour_en = sql_escape(f"IG signal: possible Taiwan show ({c.handle})")
-        genre = c.genre if c.genre in {"pop", "rock", "kpop", "jpop"} else "pop"
+        genre = c.genre if c.genre in {"pop", "bands", "hiphop", "kpop", "jpop"} else "pop"
         row = (
             f"('{artist}', '{pick_emoji(c.region)}', '日期待公布', '台北', 'Taipei', "
             f"'場地待公布', 'Venue TBA', '{tour_zh}', '{tour_en}', "

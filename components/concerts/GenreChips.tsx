@@ -11,7 +11,7 @@ interface GenreChipsProps {
 
 export function GenreChips({ selected, onSelect }: GenreChipsProps) {
   const { lang } = useLang()
-  const genres: Genre[] = ['all', 'cpop', 'rock', 'kpop', 'jpop', 'western', 'festival']
+  const genres: Genre[] = ['all', 'cpop', 'bands', 'hiphop', 'kpop', 'jpop', 'western', 'festival']
 
   return (
     <div className="flex items-center gap-2 overflow-x-auto pb-2">

@@ -22,10 +22,11 @@ export function genreLabel(genre: Genre, lang: Lang): string {
   const labels = {
     all: { zh: '全部', en: 'All' },
     cpop: { zh: '華語', en: 'C-Pop' },
-    rock: { zh: '搖滾', en: 'Rock' },
+    bands: { zh: '樂團', en: 'Bands' },
+    hiphop: { zh: 'Hip-Hop', en: 'Hip-Hop' },
     kpop: { zh: 'K-POP', en: 'K-POP' },
     jpop: { zh: 'J-POP', en: 'J-POP' },
-    western: { zh: '歐美', en: 'Western' },
+    western: { zh: '西洋', en: 'Western' },
     festival: { zh: '音樂祭', en: 'Festival' },
   }
   return labels[genre][lang]

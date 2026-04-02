@@ -13,17 +13,17 @@ end $$;
 insert into concerts (artist, emoji, date_str, city_zh, city_en, venue_zh, venue_en, tour_zh, tour_en, price_zh, price_en, platform, platform_url, genre, status, is_hot, grad_css, image_url) values
 
 -- 近期熱門演出
-('ONE OK ROCK', '🎸', '2026/04/25–26', '台北', 'Taipei', '台北大巨蛋', 'Taipei Dome', 'LUXURY DISEASE 亞洲巡演', 'LUXURY DISEASE Asia Tour', 'NT$ 1,880-6,280', 'NT$ 1,880-6,280', 'KKTIX', 'https://kktix.com', 'rock', 'selling', true, 'linear-gradient(135deg, #1a1a1a 0%, #b91d1d 100%)', 'https://www.mtv.com.tw/uploads/files/30827/conversions/ONEOKROCK-sl.jpg?v=1715668134'),
+('ONE OK ROCK', '🎸', '2026/04/25–26', '台北', 'Taipei', '台北大巨蛋', 'Taipei Dome', 'LUXURY DISEASE 亞洲巡演', 'LUXURY DISEASE Asia Tour', 'NT$ 1,880-6,280', 'NT$ 1,880-6,280', 'KKTIX', 'https://kktix.com', 'bands', 'selling', true, 'linear-gradient(135deg, #1a1a1a 0%, #b91d1d 100%)', 'https://www.mtv.com.tw/uploads/files/30827/conversions/ONEOKROCK-sl.jpg?v=1715668134'),
 
 ('TWICE', '✨', '2026/03/20-22', '台北', 'Taipei', '台北小巨蛋', 'Taipei Arena', 'READY TO BE 世界巡演', 'READY TO BE World Tour', 'NT$ 1,800-8,800 (含VIP)', 'NT$ 1,800-8,800 (w/ VIP)', 'ibon', 'https://ibon.com.tw', 'kpop', 'sold_out', true, 'linear-gradient(135deg, #ff6b9d 0%, #feca57 100%)', 'https://dynamicmedia.livenationinternational.com/p/l/m/7edc73df-70ef-49b8-93ac-7f8bff7e8e5a.jpg'),
 
 ('林俊傑', '🎤', '2026/05/09-11', '高雄', 'Kaohsiung', '高雄巨蛋', 'Kaohsiung Arena', 'JJ20 世界巡迴演唱會', 'JJ20 World Tour', 'NT$ 2,000-8,000', 'NT$ 2,000-8,000', 'KKTIX', 'https://kktix.com', 'cpop', 'selling', true, 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 'https://i.kfs.io/artist/global/8280,0v23/fit/500x500.jpg'),
 
-('茄子蛋', '🥚', '2026/06/14', '台中', 'Taichung', '台中圓滿戶外劇場', 'Taichung Fulfillment Amphitheater', '浪流連 演唱會', 'Vagrancy Concert', 'NT$ 1,200-3,200', 'NT$ 1,200-3,200', 'KKTIX', 'https://kktix.com', 'rock', 'pending', false, 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', null),
+('茄子蛋', '🥚', '2026/06/14', '台中', 'Taichung', '台中圓滿戶外劇場', 'Taichung Fulfillment Amphitheater', '浪流連 演唱會', 'Vagrancy Concert', 'NT$ 1,200-3,200', 'NT$ 1,200-3,200', 'KKTIX', 'https://kktix.com', 'bands', 'pending', false, 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', null),
 
 ('告五人', '🌟', '2026/07/19-20', '台北', 'Taipei', '台北流行音樂中心', 'Taipei Music Center', '帶你飛 演唱會', 'Take You Flying Concert', 'NT$ 1,500-3,500', 'NT$ 1,500-3,500', 'ibon', 'https://ibon.com.tw', 'cpop', 'pending', false, 'linear-gradient(135deg, #30cfd0 0%, #330867 100%)', null),
 
-('五月天', '🎸', '2026/08/08-10', '台北', 'Taipei', '台北大巨蛋', 'Taipei Dome', '好好好想見到你 巡演', 'MAYDAY 2026', 'NT$ 2,200-6,600', 'NT$ 2,200-6,600', 'KKTIX', 'https://kktix.com', 'rock', 'pending', true, 'linear-gradient(135deg, #3498db 0%, #2ecc71 100%)', 'https://s.yimg.com/ny/api/res/1.2/qhgRRVysbv7QXIlh.Et2vg--/YXBwaWQ9aGlnaGxhbmRlcjt3PTY0MDtoPTQzNQ--/https://media.zenfs.com/zh-tw/__647/2f134a1e2835d69416d7032df1940c02'),
+('五月天', '🎸', '2026/08/08-10', '台北', 'Taipei', '台北大巨蛋', 'Taipei Dome', '好好好想見到你 巡演', 'MAYDAY 2026', 'NT$ 2,200-6,600', 'NT$ 2,200-6,600', 'KKTIX', 'https://kktix.com', 'bands', 'pending', true, 'linear-gradient(135deg, #3498db 0%, #2ecc71 100%)', 'https://s.yimg.com/ny/api/res/1.2/qhgRRVysbv7QXIlh.Et2vg--/YXBwaWQ9aGlnaGxhbmRlcjt3PTY0MDtoPTQzNQ--/https://media.zenfs.com/zh-tw/__647/2f134a1e2835d69416d7032df1940c02'),
 
 ('張惠妹', '👑', '2026/09/25-27', '高雄', 'Kaohsiung', '高雄世運主場館', 'National Stadium', 'asMEI 巡迴演唱會', 'asMEI Tour', 'NT$ 2,500-8,000', 'NT$ 2,500-8,000', 'KKTIX', 'https://kktix.com', 'cpop', 'pending', false, 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', null),
 
