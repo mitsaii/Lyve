@@ -72,6 +72,30 @@ export function calcCountdown(targetDate: string) {
   return { days, hours, minutes, seconds }
 }
 
+/**
+ * 解析 date_str 的第一天（處理範圍格式如 '2026/04/25–26' 或 '2026/04/25-26'）
+ */
+export function parseFirstDate(dateStr: string): Date {
+  const firstPart = dateStr.split('–')[0].split('-')[0].trim()
+  return new Date(firstPart.replace(/\//g, '-'))
+}
+
+/**
+ * 解析 date_str 的最後一天（用於判斷演唱會是否已結束）
+ */
+export function parseLastDate(dateStr: string): Date {
+  const parts = dateStr.split(/[–-]/)
+  let lastStr: string
+  if (parts.length === 2) {
+    const prefix = parts[0].trim() // e.g. "2026/04/25"
+    const day = parts[1].trim().padStart(2, '0')
+    lastStr = `${prefix.substring(0, 7)}/${day}` // "2026/04/26"
+  } else {
+    lastStr = parts[0].trim()
+  }
+  return new Date(lastStr.replace(/\//g, '-'))
+}
+
 export function getVisiblePageItems(currentPage: number, totalPages: number, maxVisiblePages = 5) {
   if (totalPages <= maxVisiblePages) {
     return Array.from({ length: totalPages }, (_, index) => index + 1)

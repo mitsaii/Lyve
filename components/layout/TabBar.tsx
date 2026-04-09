@@ -56,7 +56,7 @@ export function TabBar() {
 
   const tabs = [
     { key: 'home', path: '/', label: t('首頁', 'Home'), Icon: IconHome },
-    { key: 'weekend', path: '/search', label: t('周邊', 'Nearby'), Icon: IconNearby },
+    { key: 'weekend', path: '/weekend', label: t('周邊', 'Nearby'), Icon: IconNearby },
     { key: 'calendar', path: '/calendar', label: t('月曆', 'Calendar'), Icon: IconCalendar },
     { key: 'alerts', path: '/alerts', label: t('提醒', 'Alerts'), Icon: IconBell },
     { key: 'profile', path: '/profile', label: t('個人', 'Profile'), Icon: IconPerson },

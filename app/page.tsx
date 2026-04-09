@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { Concert, Genre } from '@/types/concert'
 import { useLang } from '@/contexts/LangContext'
 import { HeroSection } from '@/components/home/HeroSection'
@@ -13,13 +13,12 @@ import { ConcertModal } from '@/components/concerts/ConcertModal'
 import { SectionLabel } from '@/components/ui/SectionLabel'
 import { IconSparkle, IconMusic, IconClock } from '@/components/ui/Icons'
 import { createClient } from '@/lib/supabase/client'
-import { getVisiblePageItems } from '@/lib/utils'
+import { getVisiblePageItems, parseFirstDate, parseLastDate } from '@/lib/utils'
 
 export default function HomePage() {
   const { t } = useLang()
   const concertsPerPage = 10
   const [concerts, setConcerts] = useState<Concert[]>([])
-  const [filteredConcerts, setFilteredConcerts] = useState<Concert[]>([])
   const [selectedGenre, setSelectedGenre] = useState<Genre>('all')
   const [selectedConcert, setSelectedConcert] = useState<Concert | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
@@ -30,31 +29,6 @@ export default function HomePage() {
   useEffect(() => {
     fetchConcerts()
   }, [])
-
-  useEffect(() => {
-    // 按搶票時間排序：有 sale_start_at 且未來的放最前，沒有的依演出日期排
-    const sortBySaleTime = (list: Concert[]) => {
-      const nowMs = Date.now()
-      return [...list].sort((a, b) => {
-        const aMs = a.sale_start_at ? new Date(a.sale_start_at).getTime() : Infinity
-        const bMs = b.sale_start_at ? new Date(b.sale_start_at).getTime() : Infinity
-        // 未來的 sale_start_at 越近越前
-        const aFuture = aMs > nowMs ? aMs : Infinity
-        const bFuture = bMs > nowMs ? bMs : Infinity
-        if (aFuture !== bFuture) return aFuture - bFuture
-        // 都沒有或都已過，按演出日期
-        return parseFirstDate(a.date_str).getTime() - parseFirstDate(b.date_str).getTime()
-      })
-    }
-
-    const base = selectedGenre === 'all'
-      ? visibleConcerts
-      : visibleConcerts.filter((c) => c.genre === selectedGenre)
-
-    setFilteredConcerts(sortBySaleTime(base))
-    setCurrentPage(1)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedGenre, concerts])
 
   useEffect(() => {
     if (!hasMountedPaginationRef.current) {
@@ -77,46 +51,56 @@ export default function HomePage() {
     setLoading(false)
   }
 
-  // 解析日期字串末日（處理範圍格式如 '2026/04/25–26'）
-  const parseLastDate = (dateStr: string): Date => {
-    const parts = dateStr.split(/[–-]/)
-    let lastStr: string
-    if (parts.length === 2) {
-      const prefix = parts[0].trim() // e.g. "2026/04/25"
-      const day = parts[1].trim().padStart(2, '0')
-      lastStr = `${prefix.substring(0, 7)}/${day}` // "2026/04/26"
-    } else {
-      lastStr = parts[0].trim()
-    }
-    return new Date(lastStr.replace(/\//g, '-'))
-  }
-
-  const parseFirstDate = (dateStr: string): Date => {
-    const firstDate = dateStr.split('–')[0].split('-')[0].trim()
-    return new Date(firstDate.replace(/\//g, '-'))
-  }
-
-  const now = new Date()
   // 七天截止：隱藏已結束超過7天的活動
-  const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-  const visibleConcerts = concerts.filter(c => parseLastDate(c.date_str) >= sevenDaysAgo)
+  const visibleConcerts = useMemo(() => {
+    const now = new Date()
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+    return concerts.filter(c => parseLastDate(c.date_str) >= sevenDaysAgo)
+  }, [concerts])
 
-  const futureConcerts = visibleConcerts
-    .filter((c) => parseFirstDate(c.date_str) >= now)
-    .sort((a, b) => parseFirstDate(a.date_str).getTime() - parseFirstDate(b.date_str).getTime())
+  const futureConcerts = useMemo(() => {
+    const now = new Date()
+    return visibleConcerts
+      .filter((c) => parseFirstDate(c.date_str) >= now)
+      .sort((a, b) => parseFirstDate(a.date_str).getTime() - parseFirstDate(b.date_str).getTime())
+  }, [visibleConcerts])
 
-  const hotFuture = futureConcerts.filter((c) => c.is_hot)
-  const hotConcerts =
-    hotFuture.length >= 3
+  const hotConcerts = useMemo(() => {
+    const hotFuture = futureConcerts.filter((c) => c.is_hot)
+    return hotFuture.length >= 3
       ? hotFuture
       : [...hotFuture, ...futureConcerts.filter((c) => !c.is_hot)].slice(0, 5)
+  }, [futureConcerts])
+
+  // 按搶票時間排序：有 sale_start_at 且未來的放最前，沒有的依演出日期排
+  const filteredConcerts = useMemo(() => {
+    const nowMs = Date.now()
+    const base = selectedGenre === 'all'
+      ? visibleConcerts
+      : visibleConcerts.filter((c) => c.genre === selectedGenre)
+
+    return [...base].sort((a, b) => {
+      const aMs = a.sale_start_at ? new Date(a.sale_start_at).getTime() : Infinity
+      const bMs = b.sale_start_at ? new Date(b.sale_start_at).getTime() : Infinity
+      const aFuture = aMs > nowMs ? aMs : Infinity
+      const bFuture = bMs > nowMs ? bMs : Infinity
+      if (aFuture !== bFuture) return aFuture - bFuture
+      return parseFirstDate(a.date_str).getTime() - parseFirstDate(b.date_str).getTime()
+    })
+  }, [selectedGenre, visibleConcerts])
+
+  // 切換篩選時重置頁碼
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [selectedGenre])
+
   const totalPages = Math.ceil(filteredConcerts.length / concertsPerPage)
   const visiblePageItems = getVisiblePageItems(currentPage, totalPages)
   const paginatedConcerts = filteredConcerts.slice(
     (currentPage - 1) * concertsPerPage,
     currentPage * concertsPerPage
   )
-  
+
   // 找到最近的未來演唱會
   const nextConcert = futureConcerts[0] ?? null
 

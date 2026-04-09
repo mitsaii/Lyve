@@ -239,7 +239,7 @@ function AlertCard({
 
         {/* 資訊 */}
         <div className="flex-1 min-w-0 cursor-pointer" onClick={onClick}>
-          <p className="font-bold truncate" style={{ color: 'var(--foreground)' }}>
+          <p className="font-bold truncate" style={{ color: 'var(--text)' }}>
             {concert.artist}
           </p>
           <p className="text-xs truncate" style={{ color: 'var(--muted)' }}>

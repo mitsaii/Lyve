@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { createServerClient } from '@/lib/supabase/server'
 
-const ADMIN_EMAIL = 'mitsai0701@gmail.com'
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? ''
 
 function serviceRole() {
   return createClient(

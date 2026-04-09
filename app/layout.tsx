@@ -80,7 +80,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-TW">
-      <body className={`${notoSerifTC.variable} ${spaceMono.variable}`} style={{ fontFamily: '"Microsoft JhengHei", "微軟正黑體", sans-serif' }}>
+      <body className={`${notoSerifTC.variable} ${spaceMono.variable}`}>
         <ServiceWorkerRegistration />
         <Analytics />
         <ThemeProvider>

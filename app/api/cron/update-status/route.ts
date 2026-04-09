@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { parseLastDate } from '@/lib/utils'
 
 /**
  * 自動更新演唱會狀態
@@ -55,22 +56,8 @@ export async function GET(req: NextRequest) {
 
     for (const c of allActive ?? []) {
       try {
-        const raw = c.date_str as string
-        // 取最後一天：處理 "2026/04/25–26" 或 "2026/04/25-26" 或單日
-        const parts = raw.split(/[–-]/)
-        let lastDateStr: string
-
-        if (parts.length === 2) {
-          const prefix = parts[0].substring(0, 7) // "2026/04"
-          const day = parts[1].trim().padStart(2, '0')
-          lastDateStr = `${prefix}/${day}`
-        } else {
-          lastDateStr = parts[0].trim()
-        }
-
-        const concertDate = new Date(lastDateStr.replace(/\//g, '-'))
+        const concertDate = parseLastDate(c.date_str as string)
         concertDate.setHours(23, 59, 59, 999)
-
         if (concertDate < today) {
           expiredIds.push(c.id)
         }

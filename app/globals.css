@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -39,7 +37,7 @@
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Noto Serif TC', serif;
+  font-family: var(--font-noto-serif), 'Noto Serif TC', 'Microsoft JhengHei', serif;
   transition: var(--transition);
   padding-bottom: env(safe-area-inset-bottom);
 }
