@@ -1,4 +1,21 @@
-import type { Status, Genre, Lang } from '@/types/concert'
+import type { Status, Genre, Lang, Concert } from '@/types/concert'
+
+/**
+ * Deduplicate concerts by artist + date_str.
+ * Different scrapers may produce the same concert with slightly different tour_zh,
+ * bypassing the DB unique constraint. Prefer the record with sale_start_at set.
+ */
+export function deduplicateConcerts(concerts: Concert[]): Concert[] {
+  const seen = new Map<string, Concert>()
+  for (const c of concerts) {
+    const key = `${c.artist}|${c.date_str}`
+    const existing = seen.get(key)
+    if (!existing || (!existing.sale_start_at && c.sale_start_at)) {
+      seen.set(key, c)
+    }
+  }
+  return [...seen.values()]
+}
 
 export function statusLabel(status: Status, lang: Lang): string {
   const labels = {

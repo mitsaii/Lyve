@@ -13,7 +13,7 @@ import { ConcertModal } from '@/components/concerts/ConcertModal'
 import { SectionLabel } from '@/components/ui/SectionLabel'
 import { IconSparkle, IconMusic, IconClock } from '@/components/ui/Icons'
 import { createClient } from '@/lib/supabase/client'
-import { getVisiblePageItems, parseFirstDate, parseLastDate } from '@/lib/utils'
+import { getVisiblePageItems, parseFirstDate, parseLastDate, deduplicateConcerts } from '@/lib/utils'
 
 export default function HomePage() {
   const { t } = useLang()
@@ -46,7 +46,7 @@ export default function HomePage() {
       .select('*')
 
     if (!error && data) {
-      setConcerts(data as Concert[])
+      setConcerts(deduplicateConcerts(data as Concert[]))
     }
     setLoading(false)
   }

@@ -7,11 +7,15 @@ import type { WeekendSpot } from '@/types/weekendSpot'
 import { SpotAvatar } from './SpotAvatar'
 import { IconCalendar } from '@/components/ui/Icons'
 
+const INITIAL_VISIBLE = 6
+
 export function WeekendSpotsSection() {
   const { lang, t } = useLang()
   const [selectedSpot, setSelectedSpot] = useState<WeekendSpot | null>(null)
+  const [showAll, setShowAll] = useState(false)
 
   const closeDetail = () => setSelectedSpot(null)
+  const visibleSpots = showAll ? weekendSpots : weekendSpots.slice(0, INITIAL_VISIBLE)
 
   return (
     <>
@@ -32,7 +36,7 @@ export function WeekendSpotsSection() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {weekendSpots.map((spot) => (
+            {visibleSpots.map((spot) => (
               <article
                 key={spot.id}
                 className="rounded-xl p-4 border"
@@ -84,6 +88,19 @@ export function WeekendSpotsSection() {
               </article>
             ))}
           </div>
+
+          {weekendSpots.length > INITIAL_VISIBLE && (
+            <button
+              type="button"
+              onClick={() => setShowAll((v) => !v)}
+              className="mt-4 w-full py-2.5 rounded-xl text-sm font-medium transition-all hover:opacity-80"
+              style={{ background: 'var(--faint)', color: 'var(--muted)' }}
+            >
+              {showAll
+                ? t('收起', 'Show Less')
+                : t(`展開更多 (${weekendSpots.length - INITIAL_VISIBLE} 間)`, `Show More (${weekendSpots.length - INITIAL_VISIBLE} more)`)}
+            </button>
+          )}
         </div>
       </div>
 

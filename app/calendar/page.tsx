@@ -8,6 +8,7 @@ import { ConcertModal } from '@/components/concerts/ConcertModal'
 import { SectionLabel } from '@/components/ui/SectionLabel'
 import { IconCalendar } from '@/components/ui/Icons'
 import { createClient } from '@/lib/supabase/client'
+import { deduplicateConcerts } from '@/lib/utils'
 
 export default function CalendarPage() {
   const { t } = useLang()
@@ -27,7 +28,7 @@ export default function CalendarPage() {
       .order('date_str', { ascending: true })
 
     if (!error && data) {
-      setConcerts(data as Concert[])
+      setConcerts(deduplicateConcerts(data as Concert[]))
     }
   }
 

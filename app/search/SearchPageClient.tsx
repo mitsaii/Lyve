@@ -7,6 +7,7 @@ import { useLang } from '@/contexts/LangContext'
 import { ConcertCard } from '@/components/concerts/ConcertCard'
 import { ConcertModal } from '@/components/concerts/ConcertModal'
 import { createClient } from '@/lib/supabase/client'
+import { deduplicateConcerts } from '@/lib/utils'
 
 interface Props {
   initialQuery: string
@@ -36,7 +37,7 @@ export default function SearchPageClient({ initialQuery }: Props) {
     const fetchConcerts = async () => {
       const supabase = createClient()
       const { data, error } = await supabase.from('concerts').select('*')
-      if (!error && data) setConcerts(data as Concert[])
+      if (!error && data) setConcerts(deduplicateConcerts(data as Concert[]))
     }
     fetchConcerts()
   }, [])

@@ -8,6 +8,7 @@ import { SectionLabel } from '@/components/ui/SectionLabel'
 import { ConcertModal } from '@/components/concerts/ConcertModal'
 import { IconBell, IconCalendar } from '@/components/ui/Icons'
 import { createClient } from '@/lib/supabase/client'
+import { deduplicateConcerts } from '@/lib/utils'
 
 const PAGE_SIZE = 10
 
@@ -79,7 +80,7 @@ export default function AlertsPage() {
       .order('date_str', { ascending: true })
 
     if (!error && data) {
-      setConcerts(data as Concert[])
+      setConcerts(deduplicateConcerts(data as Concert[]))
     }
     setLoading(false)
   }
