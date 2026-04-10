@@ -73,6 +73,27 @@ export function ConcertModal({ concert, onClose }: ConcertModalProps) {
     window.open(concert.platform_url, '_blank', 'noopener,noreferrer')
   }
 
+  const buildShareText = () => [
+    `🎤 ${concert.artist}`,
+    lang === 'zh' ? concert.tour_zh : concert.tour_en,
+    `📍 ${lang === 'zh' ? concert.venue_zh : concert.venue_en} · ${lang === 'zh' ? concert.city_zh : concert.city_en}`,
+    `📅 ${concert.date_str}`,
+  ].join('\n')
+
+  const shareUrl = typeof window !== 'undefined'
+    ? `${window.location.origin}/concert/${concert.id}`
+    : `/concert/${concert.id}`
+
+  const handleShareLine = () => {
+    const text = `${buildShareText()}\n\n${shareUrl}`
+    window.open(`https://line.me/R/msg/text/?${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer')
+  }
+
+  const handleShareThreads = () => {
+    const text = `${buildShareText()}\n\n${shareUrl}`
+    window.open(`https://www.threads.com/intent/post?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer')
+  }
+
   return (
     <>
       <div
@@ -181,8 +202,8 @@ export function ConcertModal({ concert, onClose }: ConcertModalProps) {
             ))}
           </div>
 
-          {/* 按鈕 */}
-          <div className="flex gap-3">
+          {/* 主要按鈕 */}
+          <div className="flex gap-3 mb-3">
             <button
               onClick={handleBuyTicket}
               className="flex-1 py-4 rounded-xl font-bold text-white transition-transform hover:scale-[1.02]"
@@ -196,6 +217,35 @@ export function ConcertModal({ concert, onClose }: ConcertModalProps) {
               style={{ background: 'var(--faint)', color: saved ? 'var(--accent)' : 'var(--muted)' }}
             >
               <IconHeart filled={saved} className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* 分享列 */}
+          <div className="flex gap-2">
+            <p className="text-xs flex items-center mr-1" style={{ color: 'var(--muted)' }}>
+              {t('揪朋友', 'Share')}
+            </p>
+            {/* LINE */}
+            <button
+              onClick={handleShareLine}
+              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-medium transition-all hover:scale-[1.02]"
+              style={{ background: '#06C755', color: '#fff' }}
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314" />
+              </svg>
+              LINE
+            </button>
+            {/* Threads */}
+            <button
+              onClick={handleShareThreads}
+              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-medium transition-all hover:scale-[1.02]"
+              style={{ background: 'var(--faint)', color: 'var(--text)' }}
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                <path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.75-.375-1.36-.75-1.82-.513-.62-1.275-.936-2.27-.943h-.03c-.735 0-1.932.206-2.653 1.472l-1.773-1.017C8.478 5.58 10.004 4.99 11.979 4.99h.044c3.013.022 4.818 1.842 5.198 5.198.168.03.334.064.497.104 1.538.386 2.694 1.23 3.337 2.44.952 1.79.963 4.493-.815 6.229-1.678 1.643-3.81 2.351-6.918 2.374l-.136-.335Z" />
+              </svg>
+              Threads
             </button>
           </div>
         </div>
