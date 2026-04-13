@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Concert } from '@/types/concert'
 import { useLang } from '@/contexts/LangContext'
@@ -55,6 +56,26 @@ export default function ConcertDetailClient({ concert }: Props) {
   const handleShareThreads = () => {
     const text = `${buildShareText()}\n\n${shareUrl}`
     window.open(`https://www.threads.com/intent/post?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer')
+  }
+
+  const [igCopied, setIgCopied] = useState(false)
+  const handleShareInstagram = async () => {
+    const text = `${buildShareText()}\n\n${shareUrl}`
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({ title: concert.artist, text, url: shareUrl })
+        return
+      } catch {
+        // 使用者取消或不支援，fallback 到複製
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(text)
+    } catch {
+      // clipboard 也不可用時靜默失敗
+    }
+    setIgCopied(true)
+    setTimeout(() => setIgCopied(false), 2000)
   }
 
   const infoRows = [
@@ -235,6 +256,33 @@ export default function ConcertDetailClient({ concert }: Props) {
             <path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.75-.375-1.36-.75-1.82-.513-.62-1.275-.936-2.27-.943h-.03c-.735 0-1.932.206-2.653 1.472l-1.773-1.017C8.478 5.58 10.004 4.99 11.979 4.99h.044c3.013.022 4.818 1.842 5.198 5.198.168.03.334.064.497.104 1.538.386 2.694 1.23 3.337 2.44.952 1.79.963 4.493-.815 6.229-1.678 1.643-3.81 2.351-6.918 2.374l-.136-.335Z" />
           </svg>
           Threads
+        </button>
+        {/* Instagram */}
+        <button
+          onClick={handleShareInstagram}
+          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-medium transition-all hover:scale-[1.02]"
+          style={{
+            background: igCopied
+              ? '#22c55e'
+              : 'linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)',
+            color: '#fff',
+          }}
+        >
+          {igCopied ? (
+            <>
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+              </svg>
+              {t('已複製！', 'Copied!')}
+            </>
+          ) : (
+            <>
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z" />
+              </svg>
+              IG
+            </>
+          )}
         </button>
       </div>
 
