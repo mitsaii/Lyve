@@ -47,7 +47,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -238,7 +238,7 @@ def read_env() -> dict[str, str]:
         line = line.strip()
         if line and not line.startswith("#") and "=" in line:
             k, _, v = line.partition("=")
-            env[k.strip()] = v.strip()
+            env[k.strip()] = v.strip().strip('"').strip("'")
     return env
 
 
@@ -296,17 +296,46 @@ def parse_dates(text: str) -> list[str]:
     return list(dict.fromkeys(found))  # deduplicate, preserve order
 
 
+def _infer_sale_year(mo: int, d: int) -> int:
+    """推算中文日期（無年份）的年份：若已過今天則用明年，否則今年。"""
+    today = date.today()
+    try:
+        ev = date(today.year, mo, d)
+        return today.year if ev >= today else today.year + 1
+    except ValueError:
+        return today.year
+
+
+def _cn_hour(time_qualifier: str, h: int) -> int:
+    """將中文時段詞換算成 24 小時制。"""
+    q = time_qualifier.strip()
+    if q in ("下午", "晚上") and h < 12:
+        return h + 12
+    if q in ("上午", "早上") and h == 12:
+        return 0
+    if q == "中午":
+        return 12
+    return h
+
+
 def parse_sale_start(text: str) -> str | None:
     """
     從頁面文字中提取售票開始時間。
-    常見格式: 開賣時間: 2026/04/15 12:00 / On Sale: 2026-04-15 10:00
+    支援格式：
+      1. 開賣時間: 2026/04/15 12:00        ← YYYY/MM/DD HH:MM
+      2. On Sale: 2026-04-15 10:00          ← YYYY-MM-DD HH:MM
+      3. 售票日期\n2026/05/10 (日) 12:00    ← keyword 跨行 + YYYY/MM/DD
+      4. 3 月 27 日中午 12 點開賣           ← 中文月日 + 時段詞 + X點
+      5. 5月15日 下午 2:30 開賣             ← 中文月日 + HH:MM
     回傳 ISO 8601 字串 "YYYY-MM-DDTHH:MM:00+08:00"（台灣 UTC+8），或 None。
     """
     kw = (
         r'(?:開賣|售票開始|搶票|票券開賣|票務開始|購票開始|會員預售|公開發售|'
+        r'售票日期|公開售票|網路售票|一般售票|現場售票開始|預售開始|'
         r'on[\s\-]+sale|sale[\s\-]+start|tickets?\s+on\s+sale)'
     )
-    # Pattern 1: keyword + date + time (HH:MM)
+
+    # ── Pattern 1: keyword + YYYY/MM/DD HH:MM ───────────────────────────────
     m = re.search(
         kw + r'[^\n\d]{0,30}(20(?:25|26|27))[/\-年](\d{1,2})[/\-月](\d{1,2})'
         r'[日\s\(（\)）A-Za-z,]*(\d{1,2}):(\d{2})',
@@ -318,7 +347,8 @@ def parse_sale_start(text: str) -> str | None:
             return f"{y}-{int(mo):02d}-{int(d):02d}T{int(h):02d}:{mi}:00+08:00"
         except ValueError:
             pass
-    # Pattern 2: keyword + date only (default noon 12:00)
+
+    # ── Pattern 2: keyword + YYYY/MM/DD（預設正午）────────────────────────────
     m = re.search(
         kw + r'[^\n\d]{0,30}(20(?:25|26|27))[/\-年](\d{1,2})[/\-月](\d{1,2})',
         text, re.IGNORECASE,
@@ -329,6 +359,62 @@ def parse_sale_start(text: str) -> str | None:
             return f"{y}-{int(mo):02d}-{int(d):02d}T12:00:00+08:00"
         except ValueError:
             pass
+
+    # ── Pattern 3: keyword 跨行 + YYYY/MM/DD HH:MM（Tixcraft 格式）──────────
+    m = re.search(
+        kw + r'[\s\S]{0,60}?(20(?:25|26|27))[/\-](\d{1,2})[/\-](\d{1,2})'
+        r'[^\n\d]{0,20}(\d{1,2}):(\d{2})',
+        text, re.IGNORECASE,
+    )
+    if m:
+        y, mo, d, h, mi = m.group(1), m.group(2), m.group(3), m.group(4), m.group(5)
+        try:
+            return f"{y}-{int(mo):02d}-{int(d):02d}T{int(h):02d}:{mi}:00+08:00"
+        except ValueError:
+            pass
+
+    # ── Pattern 4: 中文日期 + 時段詞 + X點 + keyword（ERA 格式）──────────────
+    # 例: "3 月 27 日中午 12 點開賣" / "5月15日下午2點半開賣"
+    m = re.search(
+        r'(\d{1,2})\s*月\s*(\d{1,2})\s*日\s*'
+        r'(上午|早上|中午|下午|晚上)?\s*'
+        r'(\d{1,2})\s*[點点]\s*(?:半\s*)?'
+        r'[^\n\d]{0,10}' + kw,
+        text, re.IGNORECASE,
+    )
+    if m:
+        mo_s, d_s, qualifier, h_s = m.group(1), m.group(2), m.group(3) or "", m.group(4)
+        try:
+            mo_i, d_i, h_i = int(mo_s), int(d_s), _cn_hour(qualifier, int(h_s))
+            mi_i = 30 if "半" in text[m.start():m.end()] else 0
+            y_i = _infer_sale_year(mo_i, d_i)
+            return f"{y_i}-{mo_i:02d}-{d_i:02d}T{h_i:02d}:{mi_i:02d}:00+08:00"
+        except ValueError:
+            pass
+
+    # ── Pattern 5: 中文日期 + HH:MM + keyword（混合格式）────────────────────
+    # 例: "5月15日 下午 2:30 開賣"
+    m = re.search(
+        r'(\d{1,2})\s*月\s*(\d{1,2})\s*日\s*'
+        r'(?:上午|早上|中午|下午|晚上)?\s*'
+        r'(\d{1,2}):(\d{2})\s*'
+        r'[^\n\d]{0,10}' + kw,
+        text, re.IGNORECASE,
+    )
+    if m:
+        mo_s, d_s, h_s, mi_s = m.group(1), m.group(2), m.group(3), m.group(4)
+        qualifier = ""
+        q_m = re.search(r'(上午|早上|中午|下午|晚上)', text[m.start():m.end()])
+        if q_m:
+            qualifier = q_m.group(1)
+        try:
+            mo_i, d_i = int(mo_s), int(d_s)
+            h_i = _cn_hour(qualifier, int(h_s))
+            y_i = _infer_sale_year(mo_i, d_i)
+            return f"{y_i}-{mo_i:02d}-{d_i:02d}T{h_i:02d}:{mi_s}:00+08:00"
+        except ValueError:
+            pass
+
     return None
 
 
@@ -567,6 +653,7 @@ def scrape_tixcraft() -> list[dict]:
         genre = classify_genre(artist, raw_title + " " + raw_venue)
 
         # Prices: Tixcraft listing doesn't show price, individual page needs auth
+        # Note: detail pages return 401 — sale_start_at will be filled by KKTIX or other sources
         results.append({
             "artist":       artist,
             "date_str":     date_str,
@@ -582,11 +669,27 @@ def scrape_tixcraft() -> list[dict]:
             "platform_url": "https://tixcraft.com" + link_path,
             "genre":        genre,
             "image_url":    image_url,
+            "sale_start_at": None,
             "source":       "tixcraft",
         })
 
     log(f"  → 找到 {len(results)} 個活動")
     return results
+
+
+def _fetch_tixcraft_sale_start(link_path: str) -> str | None:
+    """
+    拜訪 Tixcraft 個別活動頁面，提取售票開始時間。
+    使用較短的 timeout（8 秒）且只重試一次，避免拖慢整體爬蟲。
+    Tixcraft 頁面常見格式：
+      <li><div class="title">售票日期</div><div class="detail">2026/05/10 (日) 12:00 開賣</div></li>
+    """
+    url = "https://tixcraft.com" + link_path
+    html = fetch(url, timeout=8, retries=1, referer="https://tixcraft.com/activity/list")
+    if not html:
+        return None
+    text = clean(strip_tags(html))
+    return parse_sale_start(text)
 
 
 def _split_tixcraft_title(raw_title: str) -> tuple[str, str]:
@@ -974,10 +1077,15 @@ def _parse_livenation_event_page(url: str) -> dict | None:
 # ─────────────────────────────────────────────────────────────────────────────
 
 _DDG_QUERIES = [
+    # 一般演唱會資訊
     "台灣 演唱會 2026 售票",
     "Taiwan concert 2026 ticket",
     "台北 演唱會 2026",
     "台灣 開唱 2026",
+    # 開賣公告（抓即將開搶的預告）
+    "台灣 演唱會 開賣時間 2026",
+    "台灣 演唱會 售票開始 2026",
+    "台北 演唱會 開賣 拓元 2026",
 ]
 
 
@@ -1011,6 +1119,9 @@ def scrape_duckduckgo() -> list[dict]:
                 "kpopn.com", "livenation.com.tw", "tixcraft.com",
                 "kktix.com", "ibon.com.tw", "koreastardaily.com",
                 "ltn.com.tw", "udn.com", "chinatimes.com",
+                "ettoday.net", "storm.mg", "ent.ltn.com.tw",
+                "streetvoice.com", "kkday.com", "kkbox.com",
+                "rockintaiwan.com", "shortshort.tw", "muzikpro.net",
             ]):
                 candidate_urls.add(href)
 
@@ -1170,6 +1281,8 @@ def scrape_colatour() -> list[dict]:
     date_re    = re.compile(r'<div[^>]+class="concert-date"[^>]*>([^<]+)</div>')
     venue_re   = re.compile(r'<div[^>]+class="concert-lacation"[^>]*>([^<]+)</div>')
     img_re     = re.compile(r'<img[^>]+src="([^"]+)"', re.IGNORECASE)
+    # 可樂旅遊頁面整頁文字，用於全頁 sale_start_at 萃取
+    full_page_text = clean(strip_tags(html))
 
     seen: set[str] = set()
     for m in box_re.finditer(html):
@@ -1210,6 +1323,18 @@ def scrape_colatour() -> list[dict]:
         city_zh, city_en, venue_zh, venue_en = resolve_venue(raw_venue, raw_venue)
         genre = classify_genre(artist, tour_zh)
 
+        # 嘗試從 concert-box 的 HTML 片段解析售票時間
+        box_text = clean(strip_tags(inner))
+        sale_start_at = parse_sale_start(box_text)
+
+        # 若 box 內無售票時間，嘗試從整頁找藝人名稱附近的售票時間
+        if not sale_start_at:
+            # 在全頁文字中找含有藝人名稱的上下文區塊（前後 200 字元）
+            idx = full_page_text.lower().find(artist.lower())
+            if idx >= 0:
+                ctx = full_page_text[max(0, idx - 50):idx + 250]
+                sale_start_at = parse_sale_start(ctx)
+
         results.append({
             "artist":       artist,
             "date_str":     date_str,
@@ -1225,7 +1350,7 @@ def scrape_colatour() -> list[dict]:
             "platform_url": _COLATOUR_URL,
             "genre":        genre,
             "image_url":    image_url,
-            "sale_start_at": None,
+            "sale_start_at": sale_start_at,
             "source":       "colatour",
         })
 
@@ -1591,6 +1716,822 @@ def scrape_liveking_fb(fetch_ticket_images: int = 20) -> list[dict]:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# NEW Source: 寬宏售票 Kham — kham.com.tw
+# ─────────────────────────────────────────────────────────────────────────────
+
+def scrape_kham() -> list[dict]:
+    """
+    爬取寬宏售票 kham.com.tw 活動列表。
+    與年代售票相同的 ASP.NET UTK 系統：
+      列表頁: /application/utk01/UTK0101_03.aspx
+      詳情頁: /application/UTK02/UTK0201_.aspx?PRODUCT_ID=PXXXXXXXX
+    """
+    log("── [寬宏售票 Kham] 開始掃描...")
+    results: list[dict] = []
+
+    _KHAM_BASE = "https://kham.com.tw"
+    html = fetch(f"{_KHAM_BASE}/application/utk01/UTK0101_03.aspx", timeout=20,
+                 referer=_KHAM_BASE + "/")
+    if not html:
+        log("  ✗ 寬宏售票 無法取得")
+        return results
+
+    # 抓所有 PRODUCT_ID（同年代售票格式）
+    prod_ids = list(dict.fromkeys(re.findall(r'PRODUCT_ID=([A-Z0-9]+)', html)))
+    log(f"  找到 {len(prod_ids)} 個 Product ID")
+
+    for pid in prod_ids[:20]:
+        time.sleep(1.2)
+        url = f"{_KHAM_BASE}/application/UTK02/UTK0201_.aspx?PRODUCT_ID={pid}"
+        detail_html = fetch(url, referer=f"{_KHAM_BASE}/application/utk01/UTK0101_03.aspx")
+        if not detail_html:
+            continue
+        parsed = _parse_kham_detail(url, detail_html)
+        if parsed:
+            results.append(parsed)
+
+    log(f"  → 找到 {len(results)} 個活動")
+    return results
+
+
+def _parse_kham_detail(url: str, html: str) -> dict | None:
+    text = clean(strip_tags(html))
+
+    # Require future date
+    dates = parse_dates(text)
+    if not dates:
+        return None
+    date_str = next((d for d in dates if is_future_date(d)), None)
+    if not date_str:
+        return None
+
+    # Must be Taiwan concert
+    has_tw = any(k in text.lower() for k in TW_KEYWORDS)
+    has_concert = any(k in text.lower() for k in CONCERT_KEYWORDS)
+    if not (has_tw and has_concert):
+        return None
+
+    # Title from <title> or og:title
+    title = ""
+    og_title = re.search(r'<meta[^>]+property=["\']og:title["\'][^>]+content=["\']([^"\']+)["\']', html)
+    if og_title:
+        title = clean(html_lib.unescape(og_title.group(1)))
+    if not title:
+        title_m = re.search(r'<title[^>]*>(.*?)</title>', html, re.DOTALL)
+        title = clean(strip_tags(title_m.group(1))) if title_m else ""
+    # Strip site name
+    title = re.sub(r'\s*[-|｜]\s*寬宏.*$', '', title).strip()
+    title = re.sub(r'^寬宏\s*[|｜]\s*', '', title).strip()
+
+    # Venue: look for 台北/高雄/台中 + venue keyword
+    venues = re.findall(
+        r'(?:台北|臺北|高雄|台中|林口|新北|桃園)[^\s，,。\n]{0,30}'
+        r'(?:巨蛋|小巨蛋|大巨蛋|體育館|場館|劇場|音樂中心|文化中心|展覽館|藝文中心)',
+        text,
+    )
+    raw_venue = venues[0] if venues else ""
+
+    # og:image
+    og_img = re.search(r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)["\']', html)
+    if not og_img:
+        og_img = re.search(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']', html)
+    image_url = og_img.group(1) if og_img else None
+
+    # Prices
+    prices = re.findall(r'NT\$\s?[\d,]+', text)
+    price_str = prices[0].strip()[:40] if prices else "票價待公布"
+
+    # Artist
+    artist_m = re.match(
+        r'^(.+?)\s+(?=.*(?:演唱會|巡演|Concert|Tour|LIVE|音樂會))',
+        title, re.IGNORECASE
+    )
+    artist = artist_m.group(1).strip() if artist_m else (_extract_artist_from_title(title) or title[:40])
+
+    city_zh, city_en, venue_zh, venue_en = resolve_venue(raw_venue, text)
+    genre = classify_genre(artist, text[:400])
+
+    return {
+        "artist": artist, "date_str": date_str,
+        "city_zh": city_zh, "city_en": city_en,
+        "venue_zh": venue_zh, "venue_en": venue_en,
+        "tour_zh": title[:60], "tour_en": title[:60],
+        "price_zh": price_str,
+        "price_en": price_str if re.search(r'[a-zA-Z]', price_str) else "TBA",
+        "platform": "寬宏售票 Kham",
+        "platform_url": url,
+        "genre": genre, "image_url": image_url,
+        "sale_start_at": parse_sale_start(text), "source": "kham",
+    }
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# NEW Source: iNDIEVOX — indievox.com (獨立音樂/Live House 票券)
+# ─────────────────────────────────────────────────────────────────────────────
+
+def scrape_indievox() -> list[dict]:
+    """
+    爬取 iNDIEVOX 活動列表 (indievox.com/activity)。
+    個別活動頁: /activity/detail/26_ivXXXXXXX
+    """
+    log("── [iNDIEVOX] 開始掃描...")
+    results: list[dict] = []
+
+    html = fetch("https://www.indievox.com/activity", timeout=20,
+                 referer="https://www.indievox.com/")
+    if not html:
+        # 首頁也有近期活動列表
+        html = fetch("https://www.indievox.com/", timeout=20)
+    if not html:
+        log("  ✗ iNDIEVOX 無法取得")
+        return results
+
+    # 抓活動詳情頁連結 /activity/detail/XX_ivXXXXXXX
+    event_paths = list(dict.fromkeys(re.findall(
+        r'href="(/activity/detail/[^"]+)"', html
+    )))
+    # 也抓 Legacy 等場館頁面嵌入的 iNDIEVOX 連結（完整 URL 格式）
+    event_paths += [
+        "/" + u
+        for u in re.findall(r'https://www\.indievox\.com/(activity/detail/[^"\']+)', html)
+        if "/" + u not in event_paths
+    ]
+
+    log(f"  找到 {len(event_paths)} 個活動連結")
+
+    for path in event_paths[:20]:
+        url = "https://www.indievox.com" + path
+        time.sleep(1.0)
+        detail_html = fetch(url, referer="https://www.indievox.com/activity")
+        if not detail_html:
+            continue
+        parsed = _parse_indievox_event(url, detail_html)
+        if parsed:
+            results.append(parsed)
+
+    log(f"  → 找到 {len(results)} 個活動")
+    return results
+
+
+def _parse_indievox_event(url: str, html: str) -> dict | None:
+    text = clean(strip_tags(html))
+
+    # JSON-LD first
+    for block in re.findall(r'<script[^>]*type=["\']application/ld\+json["\'][^>]*>(.*?)</script>', html, re.DOTALL):
+        try:
+            data = json.loads(block)
+            if isinstance(data, list):
+                data = data[0]
+            if data.get("@type") in ("MusicEvent", "Event"):
+                name = data.get("name", "")
+                start = data.get("startDate", "")
+                dates = parse_dates(start or text)
+                if not dates:
+                    continue
+                date_str = next((d for d in dates if is_future_date(d)), None)
+                if not date_str:
+                    continue
+                location = data.get("location", {})
+                raw_venue = location.get("name", "") if isinstance(location, dict) else ""
+                city_zh, city_en, venue_zh, venue_en = resolve_venue(raw_venue, text)
+                og_img = re.search(r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)["\']', html)
+                if not og_img:
+                    og_img = re.search(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']', html)
+                image_url = og_img.group(1) if og_img else None
+                artist = _extract_artist_from_title(name) or name[:40]
+                genre = classify_genre(artist, text[:400])
+                return {
+                    "artist": artist, "date_str": date_str,
+                    "city_zh": city_zh, "city_en": city_en,
+                    "venue_zh": venue_zh, "venue_en": venue_en,
+                    "tour_zh": name[:60], "tour_en": name[:60],
+                    "price_zh": "票價待公布", "price_en": "TBA",
+                    "platform": "iNDIEVOX",
+                    "platform_url": url,
+                    "genre": genre, "image_url": image_url,
+                    "sale_start_at": parse_sale_start(text), "source": "indievox",
+                }
+        except (json.JSONDecodeError, KeyError):
+            continue
+
+    # HTML fallback
+    dates = parse_dates(text)
+    if not dates:
+        return None
+    date_str = next((d for d in dates if is_future_date(d)), None)
+    if not date_str:
+        return None
+
+    og_title = re.search(r'<meta[^>]+property=["\']og:title["\'][^>]+content=["\']([^"\']+)["\']', html)
+    title = clean(html_lib.unescape(og_title.group(1))) if og_title else ""
+    if not title:
+        t_m = re.search(r'<title[^>]*>(.*?)</title>', html, re.DOTALL)
+        title = clean(strip_tags(t_m.group(1))) if t_m else ""
+    title = re.sub(r'\s*[-|]\s*iNDIEVOX.*$', '', title, flags=re.IGNORECASE).strip()
+
+    venues = re.findall(
+        r'(?:台北|臺北|高雄|台中|林口|新北)[^\s，,。\n]{0,30}'
+        r'(?:Legacy|The Wall|PIPE|live\s*house|藝文|音樂|展演|劇場)',
+        text, re.IGNORECASE,
+    )
+    raw_venue = venues[0] if venues else ""
+
+    og_img = re.search(r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)["\']', html)
+    if not og_img:
+        og_img = re.search(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']', html)
+    image_url = og_img.group(1) if og_img else None
+
+    artist = _extract_artist_from_title(title) or title[:40]
+    city_zh, city_en, venue_zh, venue_en = resolve_venue(raw_venue, text)
+    genre = classify_genre(artist, text[:400])
+
+    return {
+        "artist": artist, "date_str": date_str,
+        "city_zh": city_zh, "city_en": city_en,
+        "venue_zh": venue_zh, "venue_en": venue_en,
+        "tour_zh": title[:60], "tour_en": title[:60],
+        "price_zh": "票價待公布", "price_en": "TBA",
+        "platform": "iNDIEVOX",
+        "platform_url": url,
+        "genre": genre, "image_url": image_url,
+        "sale_start_at": parse_sale_start(text), "source": "indievox",
+    }
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# NEW Source: 台北流行音樂中心 (北流) — tmc.taipei
+# ─────────────────────────────────────────────────────────────────────────────
+
+def scrape_tmc_taipei() -> list[dict]:
+    """
+    爬取台北流行音樂中心活動頁面 tmc.taipei/zh_TW/activities。
+    政府網站通常為 SSR，含 JSON-LD 事件資料。
+    """
+    log("── [北流 tmc.taipei] 開始掃描...")
+    results: list[dict] = []
+
+    # 正確域名為 www.tmc.taipei（有 www.）
+    # 活動列表: /tw/blog/show?filter=eyJkaXJlY3Rpb24iOiJsYXN0ZXN0In0= ({"direction":"lastest"})
+    _TMC_BASE = "https://www.tmc.taipei"
+    _TMC_LIST = _TMC_BASE + "/tw/blog/show?filter=eyJkaXJlY3Rpb24iOiJsYXN0ZXN0In0="
+
+    html = fetch(_TMC_LIST, timeout=25, referer=_TMC_BASE + "/")
+    if not html:
+        html = fetch(_TMC_BASE + "/", timeout=20)
+    if not html:
+        log("  ✗ 北流 tmc.taipei 無法取得")
+        return results
+
+    # 個別活動連結格式: /tw/blog/show/{slug}
+    # 連結以 JS 字串形式嵌入（非 href 屬性），需同時比對兩種格式
+    slugs = list(dict.fromkeys(re.findall(
+        r'/tw/blog/show/([A-Za-z0-9][A-Za-z0-9_-]{2,})', html
+    )))
+    event_links = [f"/tw/blog/show/{s}" for s in slugs]
+    # 篩掉非活動頁面（filter 參數連結等）
+    event_links = [l for l in event_links if not l.endswith("/show/")]
+    log(f"  找到 {len(event_links)} 個活動連結")
+
+    for path in event_links[:20]:
+        url = _TMC_BASE + path
+        time.sleep(1.0)
+        detail_html = fetch(url, referer=_TMC_LIST)
+        if not detail_html:
+            continue
+        parsed = _parse_venue_event_page(url, detail_html, "台北流行音樂中心 (北流)",
+                                          "tmc.taipei", "tmc_taipei",
+                                          default_venue="台北流行音樂中心",
+                                          default_city="台北")
+        if parsed:
+            results.append(parsed)
+
+    log(f"  → 找到 {len(results)} 個活動")
+    return results
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# NEW Source: 高雄流行音樂中心 (高流) — kpmc.com.tw
+# ─────────────────────────────────────────────────────────────────────────────
+
+def scrape_kpmc() -> list[dict]:
+    """
+    爬取高雄流行音樂中心活動頁面 kpmc.com.tw/event。
+    """
+    log("── [高流 kpmc.com.tw] 開始掃描...")
+    results: list[dict] = []
+
+    # 正確展演資訊頁: kpmc.com.tw/program/
+    # 個別活動連結格式: /program/2026-xxx-MMDD/
+    _KPMC_BASE = "https://kpmc.com.tw"
+    _KPMC_LIST = _KPMC_BASE + "/program/"
+
+    html = fetch(_KPMC_LIST, timeout=25, referer=_KPMC_BASE + "/")
+    if not html:
+        log("  ✗ 高流 kpmc.com.tw 無法取得")
+        return results
+
+    # 個別活動連結 (slug 格式如 2026-hih-0411)
+    # href 可能是完整 URL 或相對路徑，直接抓 slug 再組路徑
+    slugs = list(dict.fromkeys(re.findall(
+        r'/program/(20\d{2}-[A-Za-z0-9_-]+)', html
+    )))
+    event_links = [f"/program/{s}" for s in slugs]
+    log(f"  找到 {len(event_links)} 個活動連結")
+
+    for path in event_links[:20]:
+        url = _KPMC_BASE + path
+        time.sleep(1.0)
+        detail_html = fetch(url, referer=_KPMC_LIST)
+        if not detail_html:
+            continue
+        parsed = _parse_venue_event_page(url, detail_html, "高雄流行音樂中心 (高流)",
+                                          "kpmc.com.tw", "kpmc",
+                                          default_venue="高雄流行音樂中心",
+                                          default_city="高雄")
+        if parsed:
+            results.append(parsed)
+
+    log(f"  → 找到 {len(results)} 個活動")
+    return results
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# NEW Source: Legacy Taipei — legacy.com.tw
+# ─────────────────────────────────────────────────────────────────────────────
+
+def scrape_legacy() -> list[dict]:
+    """
+    爬取 Legacy Taipei/台中 活動列表 legacy.com.tw/page/programlist/。
+    列表頁直接包含所有活動資訊，無需進入詳情頁。
+    HTML 結構：每個活動為 <li><table>...</table></li>
+    文字格式：
+      {活動標題}
+      主辦單位：{xxx}
+      演出場地：Legacy XXX
+      演出地址：台北市...
+      演出日期：2026-MM-DD(day)
+    票券連結多為 https://www.indievox.com/activity/detail/26_ivXXXXXX
+    支援多頁爬取（每頁10筆，用 per_page 偏移控制）。
+    """
+    log("── [Legacy] 開始掃描...")
+    results: list[dict] = []
+    _LEGACY_BASE = "https://www.legacy.com.tw"
+    _LEGACY_LIST = _LEGACY_BASE + "/page/programlist/"
+    seen: set[str] = set()
+
+    # 爬前3頁（共30筆），per_page 是 offset
+    for offset in [0, 10, 20]:
+        url = _LEGACY_LIST if offset == 0 else f"{_LEGACY_LIST}?year=&month=&area_id=&per_page={offset}"
+        html = fetch(url, timeout=20, referer=_LEGACY_BASE + "/")
+        if not html:
+            break
+
+        text = clean(strip_tags(html))
+        # 每個活動以「演出日期」為分隔點，回頭找上面的標題、場地資訊
+        # 格式: {標題} {主辦單位:...} 演出場地：{venue} 演出地址：{addr} 演出日期：YYYY-MM-DD(day)
+        blocks = re.split(r'演出日期：', text)
+        for i in range(1, len(blocks)):
+            # 日期在 blocks[i] 的開頭
+            date_m = re.match(r'(20\d{2}-\d{2}-\d{2})', blocks[i].strip())
+            if not date_m:
+                continue
+            raw_date = date_m.group(1).replace("-", "/")
+            dates = parse_dates(raw_date)
+            if not dates:
+                continue
+            date_str = dates[0]
+            if not is_future_date(date_str):
+                continue
+
+            # 從前一個 block 找標題和場地
+            prev = blocks[i - 1]
+            # 演出場地
+            venue_m = re.search(r'演出場地：(Legacy[^\n\r]+)', prev)
+            raw_venue = venue_m.group(1).strip() if venue_m else "Legacy Taipei"
+
+            # 演出地址（用來判斷城市）
+            addr_m = re.search(r'演出地址：([^\n\r]+)', prev)
+            raw_addr = addr_m.group(1).strip() if addr_m else ""
+
+            # 標題：在「主辦單位」之前的最後一段非空文字
+            organizer_split = re.split(r'主辦單位：', prev)
+            title_block = organizer_split[0].strip() if organizer_split else prev.strip()
+            # 取最後一個非空行作為標題
+            title_lines = [l.strip() for l in title_block.split("\n") if l.strip()]
+            title = title_lines[-1][:80] if title_lines else ""
+            if not title or len(title) < 3:
+                continue
+
+            dedup_key = f"{title.lower()[:30]}|{date_str}"
+            if dedup_key in seen:
+                continue
+            seen.add(dedup_key)
+
+            # 城市判斷：地址含台中→台中，否則台北
+            city_raw = raw_addr + raw_venue
+            if "台中" in city_raw:
+                city_zh, city_en = "台中", "Taichung"
+            else:
+                city_zh, city_en = "台北", "Taipei"
+
+            venue_zh = raw_venue.strip()
+            venue_en = {"Legacy Taipei": "Legacy Taipei",
+                        "Legacy Taichung": "Legacy Taichung",
+                        "Legacy TERA": "Legacy TERA",
+                        "Legacy MAX": "Legacy MAX",
+                        "Legacy mini": "Legacy mini"}.get(
+                next((k for k in ["Legacy TERA", "Legacy MAX", "Legacy Taichung", "Legacy mini", "Legacy Taipei"]
+                      if k in venue_zh), "Legacy Taipei"), venue_zh)
+
+            # 找票券連結（iNDIEVOX）
+            ticket_url = _LEGACY_LIST
+            # 從原始 HTML 找對應的 iNDIEVOX 連結
+            iv_links = re.findall(r'https://www\.indievox\.com/activity/detail/[^\s"\'<>]+', html)
+            if iv_links:
+                ticket_url = iv_links[min(i - 1, len(iv_links) - 1)]
+
+            artist = _extract_artist_from_title(title) or title[:40]
+            genre = classify_genre(artist, title + " " + raw_venue)
+
+            results.append({
+                "artist": artist, "date_str": date_str,
+                "city_zh": city_zh, "city_en": city_en,
+                "venue_zh": venue_zh, "venue_en": venue_en,
+                "tour_zh": title[:60], "tour_en": title[:60],
+                "price_zh": "票價待公布", "price_en": "TBA",
+                "platform": "Legacy",
+                "platform_url": ticket_url,
+                "genre": genre, "image_url": None,
+                "sale_start_at": None, "source": "legacy",
+            })
+
+        if len(results) == 0 and offset == 0:
+            break  # 第一頁就空了，不繼續
+        time.sleep(1.0)
+
+    log(f"  → 找到 {len(results)} 個活動")
+    return results
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# NEW Source: The Wall Live House — thewalllivehouse.com
+# ─────────────────────────────────────────────────────────────────────────────
+
+def scrape_thewall() -> list[dict]:
+    """
+    爬取 The Wall Live House 活動列表。
+    注意：thewall.tw / thewalllivehouse.com 目前 SSL 憑證失效（Cloudflare 526），
+    暫時回傳空列表；待網站恢復後可重新啟用。
+    """
+    log("── [The Wall] 開始掃描...")
+    results: list[dict] = []
+
+    html = fetch("https://www.thewall.tw/shows/", timeout=20,
+                 referer="https://www.thewall.tw/")
+    if not html:
+        html = fetch("https://thewall.tw/", timeout=20)
+    if not html:
+        log("  ✗ The Wall 無法取得（SSL 憑證問題，暫時跳過）")
+        return results
+
+    # JSON-LD
+    for block in re.findall(r'<script[^>]*type=["\']application/ld\+json["\'][^>]*>(.*?)</script>', html, re.DOTALL):
+        try:
+            data = json.loads(block)
+            events = data if isinstance(data, list) else [data]
+            for ev in events:
+                if ev.get("@type") not in ("MusicEvent", "Event"):
+                    continue
+                parsed = _parse_jsonld_event(ev, html, "The Wall Live House", "thewall")
+                if parsed:
+                    results.append(parsed)
+        except (json.JSONDecodeError, KeyError):
+            continue
+
+    if results:
+        log(f"  → 找到 {len(results)} 個活動 (JSON-LD)")
+        return results
+
+    # HTML event links
+    event_links = list(dict.fromkeys(re.findall(
+        r'href="((?:https://thewalllivehouse\.com)?/(?:shows?|events?|concerts?)/[^"]+)"', html
+    )))
+    log(f"  找到 {len(event_links)} 個活動連結")
+
+    for path in event_links[:20]:
+        url = ("https://thewalllivehouse.com" + path) if path.startswith("/") else path
+        time.sleep(1.0)
+        detail_html = fetch(url, referer="https://thewalllivehouse.com/shows/")
+        if not detail_html:
+            continue
+        parsed = _parse_venue_event_page(url, detail_html, "The Wall Live House",
+                                          "thewalllivehouse.com", "thewall",
+                                          default_venue="The Wall Live House",
+                                          default_city="台北")
+        if parsed:
+            results.append(parsed)
+
+    log(f"  → 找到 {len(results)} 個活動")
+    return results
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# NEW Source: PIPE Live Music — pipemusic.com.tw
+# ─────────────────────────────────────────────────────────────────────────────
+
+def scrape_pipe() -> list[dict]:
+    """
+    爬取 PIPE Live Music 活動列表。
+    注意：pipemusic.com.tw 目前 DNS 無法解析，暫時回傳空列表；
+    待確認正確網址後可重新啟用。
+    """
+    log("── [PIPE Live Music] 開始掃描...")
+    results: list[dict] = []
+
+    html = fetch("https://www.pipemusic.com.tw/event", timeout=15,
+                 referer="https://www.pipemusic.com.tw/")
+    if not html:
+        html = fetch("https://pipemusic.com.tw/", timeout=15)
+    if not html:
+        log("  ✗ PIPE Live Music 無法取得（DNS/網站問題，暫時跳過）")
+        return results
+
+    # JSON-LD
+    for block in re.findall(r'<script[^>]*type=["\']application/ld\+json["\'][^>]*>(.*?)</script>', html, re.DOTALL):
+        try:
+            data = json.loads(block)
+            events = data if isinstance(data, list) else [data]
+            for ev in events:
+                if ev.get("@type") not in ("MusicEvent", "Event"):
+                    continue
+                parsed = _parse_jsonld_event(ev, html, "PIPE Live Music", "pipe")
+                if parsed:
+                    results.append(parsed)
+        except (json.JSONDecodeError, KeyError):
+            continue
+
+    if results:
+        log(f"  → 找到 {len(results)} 個活動 (JSON-LD)")
+        return results
+
+    # HTML event links
+    event_links = list(dict.fromkeys(re.findall(
+        r'href="(/event/[^"]+|/shows?/[^"]+)"', html
+    )))
+    log(f"  找到 {len(event_links)} 個活動連結")
+
+    for path in event_links[:20]:
+        url = "https://www.pipemusic.com.tw" + path
+        time.sleep(1.0)
+        detail_html = fetch(url, referer="https://www.pipemusic.com.tw/event")
+        if not detail_html:
+            continue
+        parsed = _parse_venue_event_page(url, detail_html, "PIPE Live Music",
+                                          "pipemusic.com.tw", "pipe",
+                                          default_venue="PIPE Live Music",
+                                          default_city="台北")
+        if parsed:
+            results.append(parsed)
+
+    log(f"  → 找到 {len(results)} 個活動")
+    return results
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# NEW Source: NUZONE — nuzone.com.tw
+# ─────────────────────────────────────────────────────────────────────────────
+
+def scrape_nuzone() -> list[dict]:
+    """
+    爬取 NUZONE 演唱會/展演活動列表 nuzone.com.tw/concert。
+    """
+    log("── [NUZONE] 開始掃描...")
+    results: list[dict] = []
+
+    # NUZONE 首頁 https://www.nuzone.com.tw/ 顯示近期活動（無專屬列表頁）
+    _NUZONE_BASE = "https://www.nuzone.com.tw"
+    html = fetch(_NUZONE_BASE + "/", timeout=20)
+    if not html:
+        log("  ✗ NUZONE 無法取得")
+        return results
+
+    text = clean(strip_tags(html))
+    # 首頁有輪播活動文字，嘗試直接從頁面文字解析
+    # 格式類似: "{活動名稱}將於YYYY年M月D日於NUZONE展演空間開演"
+    # 或: "{活動名稱}將於115年M月D日在NUZONE展演空間進行"
+    seen: set[str] = set()
+
+    # 民國年轉西元
+    def roc_to_ad(text_chunk: str) -> str:
+        return re.sub(
+            r'(\d{3})年(\d{1,2})月(\d{1,2})日',
+            lambda m: f"{int(m.group(1)) + 1911}/{int(m.group(2)):02d}/{int(m.group(3)):02d}",
+            text_chunk,
+        )
+
+    text_ad = roc_to_ad(text)
+    dates = parse_dates(text_ad)
+
+    for date_str in dates:
+        if not is_future_date(date_str):
+            continue
+        # 找日期前後的活動名稱
+        idx = text_ad.find(date_str[:7])  # YYYY/MM
+        if idx < 0:
+            continue
+        snippet = text_ad[max(0, idx - 150):idx + 50]
+        # 活動名稱：取最後一個有意義的句子
+        lines = [l.strip() for l in snippet.split("\n") if l.strip() and len(l.strip()) > 3]
+        title = lines[-1][:60] if lines else ""
+        if not title or "NUZONE" in title:
+            continue
+        dedup_key = f"{title.lower()[:20]}|{date_str}"
+        if dedup_key in seen:
+            continue
+        seen.add(dedup_key)
+        artist = _extract_artist_from_title(title) or title[:40]
+        genre = classify_genre(artist, title)
+        results.append({
+            "artist": artist, "date_str": date_str,
+            "city_zh": "台北", "city_en": "Taipei",
+            "venue_zh": "NUZONE 展演空間", "venue_en": "NUZONE",
+            "tour_zh": title[:60], "tour_en": title[:60],
+            "price_zh": "票價待公布", "price_en": "TBA",
+            "platform": "NUZONE",
+            "platform_url": _NUZONE_BASE + "/",
+            "genre": genre, "image_url": None,
+            "sale_start_at": None, "source": "nuzone",
+        })
+
+    log(f"  → 找到 {len(results)} 個活動")
+    return results
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Shared helpers for new venue scrapers
+# ─────────────────────────────────────────────────────────────────────────────
+
+def _parse_jsonld_event(ev: dict, html: str, platform: str, source: str) -> dict | None:
+    """Parse a JSON-LD MusicEvent/Event dict into a concert record."""
+    name = ev.get("name", "")
+    if not name:
+        return None
+
+    start = ev.get("startDate", "")
+    dates = parse_dates(start) or parse_dates(clean(strip_tags(html)))
+    if not dates:
+        return None
+    date_str = next((d for d in dates if is_future_date(d)), None)
+    if not date_str:
+        return None
+
+    location = ev.get("location", {})
+    raw_venue = ""
+    if isinstance(location, dict):
+        raw_venue = location.get("name", "")
+    elif isinstance(location, str):
+        raw_venue = location
+
+    url = ev.get("url", "")
+    if not url:
+        url_m = re.search(r'<link[^>]+rel=["\']canonical["\'][^>]+href=["\']([^"\']+)["\']', html)
+        url = url_m.group(1) if url_m else ""
+
+    # Image
+    image_url = None
+    img_data = ev.get("image")
+    if isinstance(img_data, str) and img_data.startswith("http"):
+        image_url = img_data
+    elif isinstance(img_data, list) and img_data:
+        image_url = img_data[0] if isinstance(img_data[0], str) else None
+    if not image_url:
+        og_img = re.search(r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)["\']', html)
+        if not og_img:
+            og_img = re.search(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']', html)
+        if og_img:
+            image_url = og_img.group(1)
+
+    # Price
+    offers = ev.get("offers", {})
+    price_str = "票價待公布"
+    if isinstance(offers, dict):
+        price = offers.get("price")
+        currency = offers.get("priceCurrency", "TWD")
+        if price:
+            price_str = f"NT${price}" if currency == "TWD" else f"{price} {currency}"
+    elif isinstance(offers, list) and offers:
+        price = offers[0].get("price") if isinstance(offers[0], dict) else None
+        if price:
+            price_str = f"NT${price}"
+
+    # Sale start
+    valid_from = offers.get("validFrom", "") if isinstance(offers, dict) else ""
+    sale_start_at = None
+    if valid_from:
+        dates_sf = parse_dates(valid_from)
+        if dates_sf:
+            sale_start_at = f"{dates_sf[0].replace('/', '-')}T00:00:00+08:00"
+    if not sale_start_at:
+        sale_start_at = parse_sale_start(clean(strip_tags(html)))
+
+    city_zh, city_en, venue_zh, venue_en = resolve_venue(raw_venue, name + " " + raw_venue)
+    artist = _extract_artist_from_title(name) or name[:40]
+    genre = classify_genre(artist, name)
+
+    return {
+        "artist": artist, "date_str": date_str,
+        "city_zh": city_zh, "city_en": city_en,
+        "venue_zh": venue_zh, "venue_en": venue_en,
+        "tour_zh": name[:60], "tour_en": name[:60],
+        "price_zh": price_str,
+        "price_en": price_str if re.search(r'[a-zA-Z]', price_str) else "TBA",
+        "platform": platform,
+        "platform_url": url,
+        "genre": genre, "image_url": image_url,
+        "sale_start_at": sale_start_at, "source": source,
+    }
+
+
+def _parse_venue_event_page(url: str, html: str, platform: str, domain: str,
+                             source: str, default_venue: str = "",
+                             default_city: str = "台北") -> dict | None:
+    """Generic event detail page parser for venue websites."""
+    text = clean(strip_tags(html))
+
+    # JSON-LD first
+    for block in re.findall(r'<script[^>]*type=["\']application/ld\+json["\'][^>]*>(.*?)</script>', html, re.DOTALL):
+        try:
+            data = json.loads(block)
+            if isinstance(data, list):
+                data = data[0]
+            if data.get("@type") in ("MusicEvent", "Event"):
+                return _parse_jsonld_event(data, html, platform, source)
+        except (json.JSONDecodeError, KeyError):
+            continue
+
+    # Date
+    dates = parse_dates(text)
+    if not dates:
+        return None
+    date_str = next((d for d in dates if is_future_date(d)), None)
+    if not date_str:
+        return None
+
+    # Concert check
+    has_concert = any(k in text.lower() for k in CONCERT_KEYWORDS)
+    if not has_concert:
+        return None
+
+    # Title
+    og_title = re.search(r'<meta[^>]+property=["\']og:title["\'][^>]+content=["\']([^"\']+)["\']', html)
+    title = clean(html_lib.unescape(og_title.group(1))) if og_title else ""
+    if not title:
+        t_m = re.search(r'<title[^>]*>(.*?)</title>', html, re.DOTALL)
+        title = clean(strip_tags(t_m.group(1))) if t_m else ""
+    # Strip site name suffix (e.g. " | Legacy Taipei")
+    title = re.sub(r'\s*[-|｜]\s*' + re.escape(platform[:10]) + r'.*$', '', title).strip()
+    if not title:
+        return None
+
+    # Venue
+    venues = re.findall(
+        r'(?:台北|臺北|高雄|台中|林口|新北|桃園)[^\s，,。\n]{0,30}'
+        r'(?:巨蛋|小巨蛋|大巨蛋|體育館|場館|劇場|音樂中心|展演|Live|LIVE)',
+        text,
+    )
+    raw_venue = venues[0] if venues else default_venue
+
+    # og:image
+    og_img = re.search(r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)["\']', html)
+    if not og_img:
+        og_img = re.search(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']', html)
+    image_url = og_img.group(1) if og_img else None
+
+    prices = re.findall(r'NT\$\s?[\d,]+', text)
+    price_str = prices[0].strip()[:40] if prices else "票價待公布"
+
+    artist = _extract_artist_from_title(title) or title[:40]
+    city_zh, city_en, venue_zh, venue_en = resolve_venue(raw_venue, text)
+    if city_zh == "台北" and default_city != "台北":
+        city_zh = default_city
+        city_en = {"高雄": "Kaohsiung", "台中": "Taichung"}.get(default_city, default_city)
+    genre = classify_genre(artist, text[:400])
+
+    return {
+        "artist": artist, "date_str": date_str,
+        "city_zh": city_zh, "city_en": city_en,
+        "venue_zh": venue_zh or default_venue, "venue_en": venue_en or default_venue,
+        "tour_zh": title[:60], "tour_en": title[:60],
+        "price_zh": price_str,
+        "price_en": price_str if re.search(r'[a-zA-Z]', price_str) else "TBA",
+        "platform": platform,
+        "platform_url": url,
+        "genre": genre, "image_url": image_url,
+        "sale_start_at": parse_sale_start(text), "source": source,
+    }
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Normalize & deduplicate
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -1637,6 +2578,27 @@ def normalize_concerts(raw: list[dict]) -> list[dict]:
         genre = c.get("genre", "western")
         seed = c.get("artist", "") + c.get("date_str", "")
         sale_start_at = c.get("sale_start_at") or None
+
+        # ── 售票時間合理性驗證 ─────────────────────────────────────────────────
+        if sale_start_at:
+            try:
+                sale_date = date.fromisoformat(sale_start_at[:10])
+                today = date.today()
+                # 1. 開賣日早於今天 → 已過期，對搶票提醒無用
+                if sale_date < today:
+                    sale_start_at = None
+                else:
+                    # 2. 開賣日 > 演唱會日期 → year 推算錯誤（如 3月27日→2027 但演唱會在2026年7月）
+                    concert_date_m = re.search(r'(20\d{2})[/\-](\d{1,2})[/\-](\d{1,2})',
+                                               c.get("date_str", ""))
+                    if concert_date_m:
+                        concert_date = date(int(concert_date_m.group(1)),
+                                            int(concert_date_m.group(2)),
+                                            int(concert_date_m.group(3)))
+                        if sale_date > concert_date:
+                            sale_start_at = None
+            except (ValueError, TypeError):
+                sale_start_at = None
 
         out.append({
             "artist":        c.get("artist", "TBA"),
@@ -1875,6 +2837,49 @@ def main() -> None:
         raw += scrape_liveking_fb()
     except Exception as e:
         log(f"  ✗ LIVE王 FB 爬取失敗: {e}")
+
+    # ── 新增售票平台 ──────────────────────────────────────────────────────────
+    try:
+        raw += scrape_kham()
+    except Exception as e:
+        log(f"  ✗ 寬宏售票 爬取失敗: {e}")
+
+    try:
+        raw += scrape_indievox()
+    except Exception as e:
+        log(f"  ✗ iNDIEVOX 爬取失敗: {e}")
+
+    # ── 指標性大型場館 ────────────────────────────────────────────────────────
+    try:
+        raw += scrape_tmc_taipei()
+    except Exception as e:
+        log(f"  ✗ 北流 tmc.taipei 爬取失敗: {e}")
+
+    try:
+        raw += scrape_kpmc()
+    except Exception as e:
+        log(f"  ✗ 高流 kpmc.com.tw 爬取失敗: {e}")
+
+    # ── 熱門 Live House ───────────────────────────────────────────────────────
+    try:
+        raw += scrape_legacy()
+    except Exception as e:
+        log(f"  ✗ Legacy 爬取失敗: {e}")
+
+    try:
+        raw += scrape_thewall()
+    except Exception as e:
+        log(f"  ✗ The Wall 爬取失敗: {e}")
+
+    try:
+        raw += scrape_pipe()
+    except Exception as e:
+        log(f"  ✗ PIPE Live Music 爬取失敗: {e}")
+
+    try:
+        raw += scrape_nuzone()
+    except Exception as e:
+        log(f"  ✗ NUZONE 爬取失敗: {e}")
 
     log(f"\n共收集 {len(raw)} 筆原始資料（含重複）")
 
