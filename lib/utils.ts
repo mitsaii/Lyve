@@ -113,6 +113,19 @@ export function parseLastDate(dateStr: string): Date {
   return new Date(lastStr.replace(/\//g, '-'))
 }
 
+/**
+ * 判斷是否為真正的售票平台（可直接導購票連結）
+ * 旅遊套裝業者（可樂旅遊）或新聞網站不算售票平台
+ */
+const NON_TICKETING_PLATFORMS = new Set([
+  '可樂旅遊',
+  '網路新聞',
+])
+
+export function isTicketingPlatform(platform: string): boolean {
+  return !NON_TICKETING_PLATFORMS.has(platform)
+}
+
 export function getVisiblePageItems(currentPage: number, totalPages: number, maxVisiblePages = 5) {
   if (totalPages <= maxVisiblePages) {
     return Array.from({ length: totalPages }, (_, index) => index + 1)

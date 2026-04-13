@@ -8,18 +8,21 @@ import { ConcertId } from '@/types/concert'
 
 interface SavedContextType {
   savedIds: Set<ConcertId>
+  savedSynced: boolean  // DB 同步是否完成（避免登入後短暫顯示空收藏）
   toggleSave: (concertId: ConcertId) => Promise<void>
   isSaved: (concertId: ConcertId) => boolean
 }
 
 const SavedContext = createContext<SavedContextType>({
   savedIds: new Set(),
+  savedSynced: false,
   toggleSave: async () => {},
   isSaved: () => false,
 })
 
 export function SavedProvider({ children }: { children: ReactNode }) {
   const [savedIds, setSavedIds] = useState<Set<ConcertId>>(new Set())
+  const [savedSynced, setSavedSynced] = useState(false)
   const { user } = useAuth()
   const router = useRouter()
 
@@ -27,17 +30,23 @@ export function SavedProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!user) {
       setSavedIds(new Set())
+      setSavedSynced(true)  // 未登入視為已同步（空集合）
       return
     }
 
+    setSavedSynced(false)
     const supabase = createClient()
     supabase
       .from('saved_concerts')
       .select('concert_id')
-      .then(({ data }) => {
+      .then(({ data, error }) => {
+        if (error) {
+          console.error('[SavedContext] fetch failed:', error.message)
+        }
         if (data) {
           setSavedIds(new Set<ConcertId>(data.map((item) => item.concert_id as ConcertId)))
         }
+        setSavedSynced(true)
       })
   }, [user])
 
@@ -71,7 +80,7 @@ export function SavedProvider({ children }: { children: ReactNode }) {
   const isSaved = (concertId: ConcertId) => savedIds.has(concertId)
 
   return (
-    <SavedContext.Provider value={{ savedIds, toggleSave, isSaved }}>
+    <SavedContext.Provider value={{ savedIds, savedSynced, toggleSave, isSaved }}>
       {children}
     </SavedContext.Provider>
   )

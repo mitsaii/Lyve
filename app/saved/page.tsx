@@ -15,7 +15,7 @@ import { createClient } from '@/lib/supabase/client'
 export default function SavedPage() {
   const router = useRouter()
   const { user, loading: authLoading } = useAuth()
-  const { savedIds } = useSaved()
+  const { savedIds, savedSynced } = useSaved()
   const { t } = useLang()
 
   const [savedConcerts, setSavedConcerts] = useState<Concert[]>([])
@@ -33,6 +33,8 @@ export default function SavedPage() {
 
     async function fetchSaved() {
       setLoading(true)
+      // savedSynced 確保 DB 同步完成後才判斷空集合，避免先閃一下「沒有收藏」
+      if (!savedSynced) return
       if (savedIds.size === 0) {
         setSavedConcerts([])
         setLoading(false)
@@ -51,7 +53,7 @@ export default function SavedPage() {
     }
 
     fetchSaved()
-  }, [user, savedIds])
+  }, [user, savedIds, savedSynced])
 
   if (authLoading || (!user && !authLoading)) return null
 

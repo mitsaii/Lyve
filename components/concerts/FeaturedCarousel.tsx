@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { Concert } from '@/types/concert'
 import { useLang } from '@/contexts/LangContext'
-import { tagColor } from '@/lib/utils'
+import { tagColor, statusLabel } from '@/lib/utils'
 
 interface FeaturedCarouselProps {
   concerts: Concert[]
@@ -102,9 +102,14 @@ export function FeaturedCarousel({ concerts, onSelect }: FeaturedCarouselProps) 
           <div className="flex items-center gap-2 mb-2">
             <span
               className="px-2.5 py-0.5 rounded-full text-xs font-bold"
-              style={{ background: tagColor(concert.status), color: '#000' }}
+              style={{
+                background: tagColor(concert.status),
+                color: concert.status === 'pending' ? '#fff' : '#000',
+              }}
             >
-              HOT
+              {concert.is_hot && concert.status === 'selling'
+                ? '🔥 HOT'
+                : statusLabel(concert.status, lang)}
             </span>
             <span className="text-white/70 text-xs">
               {lang === 'zh' ? concert.city_zh : concert.city_en}

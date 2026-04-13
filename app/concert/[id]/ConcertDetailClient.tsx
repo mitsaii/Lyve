@@ -7,7 +7,7 @@ import { useLang } from '@/contexts/LangContext'
 import { useSaved } from '@/contexts/SavedContext'
 import { useAlert } from '@/contexts/AlertContext'
 import { StatusTag } from '@/components/ui/StatusTag'
-import { statusLabel, genreLabel } from '@/lib/utils'
+import { statusLabel, genreLabel, isTicketingPlatform } from '@/lib/utils'
 import {
   IconPin, IconCalendar, IconTag, IconVenue,
   IconTicket, IconClock, IconHeart,
@@ -213,16 +213,18 @@ export default function ConcertDetailClient({ concert }: Props) {
 
       {/* 動作按鈕 */}
       <div className="flex gap-3 mb-3">
-        <button
-          onClick={() => window.open(concert.platform_url, '_blank', 'noopener,noreferrer')}
-          className="flex-1 py-4 rounded-xl font-bold text-white transition-transform hover:scale-[1.02]"
-          style={{ background: 'var(--accent)' }}
-        >
-          {t('前往購票', 'Buy Tickets')} →
-        </button>
+        {isTicketingPlatform(concert.platform) && (
+          <button
+            onClick={() => window.open(concert.platform_url, '_blank', 'noopener,noreferrer')}
+            className="flex-1 py-4 rounded-xl font-bold text-white transition-transform hover:scale-[1.02]"
+            style={{ background: 'var(--accent)' }}
+          >
+            {t('前往購票', 'Buy Tickets')} →
+          </button>
+        )}
         <button
           onClick={() => toggleSave(concert.id)}
-          className="px-5 py-4 rounded-xl font-bold transition-all hover:scale-110 flex items-center justify-center"
+          className={`${isTicketingPlatform(concert.platform) ? 'px-5' : 'flex-1'} py-4 rounded-xl font-bold transition-all hover:scale-110 flex items-center justify-center`}
           style={{ background: 'var(--surface)', color: saved ? 'var(--accent)' : 'var(--muted)' }}
           title={saved ? t('取消收藏', 'Unsave') : t('收藏', 'Save')}
         >

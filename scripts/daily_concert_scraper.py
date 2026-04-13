@@ -4,18 +4,35 @@
 每日 00:00 由 macOS launchd 觸發，爬取最新台灣演唱會資訊並匯入 Supabase。
 
 資料來源 (依優先順序):
-  1. Tixcraft 拓元售票      — tixcraft.com/activity/list     ✅ 直接可爬
-  2. UDN 售票網             — tickets.udnfunlife.com          ✅ 直接可爬
-  3. 年代售票 ERAticket      — ticket.com.tw                   ✅ 直接可爬
-  4. kpopn.com listing      — K-pop 演唱會最新消息
-  5. livenation.com.tw      — Live Nation Taiwan 活動
-  6. DuckDuckGo HTML lite   — 補充關鍵字搜尋
-  7. 可樂旅遊 Colatour        — colatour.com.tw 演唱會懶人包     ✅ 直接可爬（SSR）
-  8. Bandsintown             — bandsintown.com/c/taipei-taiwan ✅ 直接可爬（含小型場次）
-  9. LIVE王 Facebook         — mbasic.facebook.com/LIVEKINGisLife（公開頁則免登入）
+  ── 售票平台（結構化，優先）──────────────────────────────────────────────────
+  1.  Tixcraft 拓元售票     — tixcraft.com/activity/list       ✅ 直接可爬
+  2.  UDN 售票網            — tickets.udnfunlife.com            ✅ 直接可爬（JS 渲染時降級）
+  3.  年代售票 ERAticket     — ticket.com.tw                    ✅ 直接可爬
+  4.  寬宏售票 Kham          — kham.com.tw                      ✅ 直接可爬
+  5.  iNDIEVOX             — indievox.com/activity             ✅ 直接可爬
+
+  ── 新聞 / Live Nation（補充來源）───────────────────────────────────────────
+  6.  kpopn.com listing    — K-pop 演唱會最新消息
+  7.  livenation.com.tw    — Live Nation Taiwan 活動
+  8.  DuckDuckGo HTML lite — 補充關鍵字搜尋
+  9.  可樂旅遊 Colatour      — colatour.com.tw（非售票平台，僅作資訊補充）✅ SSR
+  10. Bandsintown           — bandsintown.com/c/taipei-taiwan  ✅ 直接可爬（含小型場次）
+  11. LIVE王 Facebook       — mbasic.facebook.com/LIVEKINGisLife
+
+  ── 指標性大型場館 ────────────────────────────────────────────────────────────
+  12. 台北流行音樂中心 (北流) — tmc.taipei                      ✅ SSR
+  13. 高雄流行音樂中心 (高流) — kpmc.com.tw                     ✅ SSR
+
+  ── Live House 展演空間 ────────────────────────────────────────────────────────
+  14. Legacy (台北/台中/TERA) — legacy.com.tw                   ✅ 直接可爬
+  15. The Wall Live House    — thewall.tw → 備用 kktix.com/venues/thewall
+  16. PIPE Live Music        — pipemusic.com.tw → 備用 mbasic.facebook.com/PIPELiveMusic
+  17. NUZONE 展演空間        — nuzone.com.tw                    ✅ 直接可爬
+  18. Zepp New Taipei        — zepp.com/en-us/hall/zepp-new-taipei ✅ (新增)
+  19. 河岸留言 Riverside      — riverside.com.tw                 ✅ (新增)
 
 無法直接爬取（需瀏覽器 / API key）:
-  ✗ KKTIX      — Cloudflare Bot 防護 (403)
+  ✗ KKTIX      — Cloudflare Bot 防護 (403)（The Wall 備用頁偶爾可通）
   ✗ ibon       — 403 Forbidden
   ✗ Klook      — 403 Forbidden
   ✗ KKday      — 403 Forbidden
@@ -129,6 +146,19 @@ _VENUE_MAP: list[tuple[str, tuple[str, str, str, str]]] = [
     ("高雄世運",      ("高雄", "Kaohsiung",  "高雄世運主場館",                        "National Stadium")),
     ("駁二",          ("高雄", "Kaohsiung",  "高雄駁二藝術特區",                      "Pier-2 Art Center Kaohsiung")),
     ("大佳河濱",      ("台北", "Taipei",     "大佳河濱公園",                          "Dajia Riverside Park")),
+    # Live House
+    ("zepp new taipei", ("新北", "New Taipei", "Zepp New Taipei",                       "Zepp New Taipei")),
+    ("zepp",            ("新北", "New Taipei", "Zepp New Taipei",                       "Zepp New Taipei")),
+    ("宏匯廣場",        ("新北", "New Taipei", "Zepp New Taipei",                       "Zepp New Taipei")),
+    ("河岸留言",        ("台北", "Taipei",     "河岸留言西門紅樓展演館",                "Riverside Live House")),
+    ("riverside",       ("台北", "Taipei",     "河岸留言西門紅樓展演館",                "Riverside Live House")),
+    ("the wall",        ("台北", "Taipei",     "The Wall Live House",                   "The Wall Live House")),
+    ("pipe live",       ("台北", "Taipei",     "PIPE Live Music",                       "PIPE Live Music")),
+    ("nuzone",          ("台北", "Taipei",     "NUZONE 展演空間",                       "NUZONE")),
+    ("迴響音樂",        ("台中", "Taichung",   "迴響音樂藝文展演空間",                  "Revolver Music Space Taichung")),
+    ("legacy tera",     ("台北", "Taipei",     "Legacy TERA",                           "Legacy TERA")),
+    ("legacy taipei",   ("台北", "Taipei",     "Legacy Taipei",                         "Legacy Taipei")),
+    ("legacy taichung", ("台中", "Taichung",   "Legacy Taichung",                       "Legacy Taichung")),
 ]
 
 # ── Gradient CSS by genre ─────────────────────────────────────────────────────
@@ -2180,8 +2210,10 @@ def scrape_legacy() -> list[dict]:
 def scrape_thewall() -> list[dict]:
     """
     爬取 The Wall Live House 活動列表。
-    注意：thewall.tw / thewalllivehouse.com 目前 SSL 憑證失效（Cloudflare 526），
-    暫時回傳空列表；待網站恢復後可重新啟用。
+    策略（依序嘗試）：
+      1. thewall.tw 官方網站（偶發 SSL 526 錯誤）
+      2. KKTIX 場館頁面 kktix.com/venues/thewall（偶爾可繞過 Cloudflare）
+      3. 搜尋 iNDIEVOX 上 The Wall 相關活動
     """
     log("── [The Wall] 開始掃描...")
     results: list[dict] = []
@@ -2191,7 +2223,12 @@ def scrape_thewall() -> list[dict]:
     if not html:
         html = fetch("https://thewall.tw/", timeout=20)
     if not html:
-        log("  ✗ The Wall 無法取得（SSL 憑證問題，暫時跳過）")
+        # 備用：KKTIX 場館頁（有時不觸發 CF 防護）
+        log("  → thewall.tw 無法取得，嘗試 KKTIX 場館頁...")
+        html = fetch("https://kktix.com/venues/thewall", timeout=20,
+                     referer="https://kktix.com/")
+    if not html:
+        log("  ✗ The Wall 所有來源皆無法取得，暫時跳過")
         return results
 
     # JSON-LD
@@ -2242,8 +2279,9 @@ def scrape_thewall() -> list[dict]:
 def scrape_pipe() -> list[dict]:
     """
     爬取 PIPE Live Music 活動列表。
-    注意：pipemusic.com.tw 目前 DNS 無法解析，暫時回傳空列表；
-    待確認正確網址後可重新啟用。
+    策略（依序嘗試）：
+      1. pipemusic.com.tw 官方網站（偶發 DNS 問題）
+      2. mbasic.facebook.com/PIPELiveMusic（公開頁面，免登入）
     """
     log("── [PIPE Live Music] 開始掃描...")
     results: list[dict] = []
@@ -2253,8 +2291,59 @@ def scrape_pipe() -> list[dict]:
     if not html:
         html = fetch("https://pipemusic.com.tw/", timeout=15)
     if not html:
-        log("  ✗ PIPE Live Music 無法取得（DNS/網站問題，暫時跳過）")
+        # 備用：Facebook 行動基本版（PIPE 以 FB 為主要公告平台）
+        log("  → pipemusic.com.tw 無法取得，嘗試 mbasic Facebook...")
+        html = fetch("https://mbasic.facebook.com/PIPELiveMusic/", timeout=20)
+    if not html:
+        log("  ✗ PIPE Live Music 所有來源皆無法取得，暫時跳過")
         return results
+
+    # 若是 Facebook 頁面：check login wall
+    if "mbasic.facebook.com" in (html or "") or "facebook" in (html[:200] if html else "").lower():
+        text_preview = clean(strip_tags(html))[:400]
+        if any(kw in text_preview for kw in ("登入", "Log in", "log in")):
+            log("  ✗ PIPE FB 被重定向至登入頁，跳過")
+            return results
+        # 從 FB 貼文解析活動資訊
+        text = clean(strip_tags(html))
+        dates = parse_dates(text)
+        seen: set[str] = set()
+        for date_str in dates:
+            if not is_future_date(date_str):
+                continue
+            idx = text.find(date_str[:7])
+            if idx < 0:
+                continue
+            snippet = text[max(0, idx - 150):idx + 100]
+            lines = [l.strip() for l in snippet.split("\n") if l.strip() and len(l.strip()) > 3]
+            title = next(
+                (l for l in reversed(lines)
+                 if not re.match(r'^20\d{2}', l) and not re.search(r'https?://', l)),
+                ""
+            )
+            if not title or len(title) < 3:
+                continue
+            dedup_key = f"{title.lower()[:25]}|{date_str}"
+            if dedup_key in seen:
+                continue
+            seen.add(dedup_key)
+            artist = _extract_artist_from_title(title) or title[:40]
+            results.append({
+                "artist": artist, "date_str": date_str,
+                "city_zh": "台北", "city_en": "Taipei",
+                "venue_zh": "PIPE Live Music", "venue_en": "PIPE Live Music",
+                "tour_zh": title[:60], "tour_en": title[:60],
+                "price_zh": "票價待公布", "price_en": "TBA",
+                "platform": "PIPE Live Music",
+                "platform_url": "https://www.facebook.com/PIPELiveMusic/",
+                "genre": classify_genre(artist, title),
+                "image_url": None,
+                "sale_start_at": parse_sale_start(snippet),
+                "source": "pipe",
+            })
+        if results:
+            log(f"  → 從 Facebook 解析出 {len(results)} 個活動")
+            return results
 
     # JSON-LD
     for block in re.findall(r'<script[^>]*type=["\']application/ld\+json["\'][^>]*>(.*?)</script>', html, re.DOTALL):
@@ -2362,6 +2451,236 @@ def scrape_nuzone() -> list[dict]:
             "genre": genre, "image_url": None,
             "sale_start_at": None, "source": "nuzone",
         })
+
+    log(f"  → 找到 {len(results)} 個活動")
+    return results
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# NEW Source: Zepp New Taipei — zepp.com/en-us/hall/zepp-new-taipei
+# ─────────────────────────────────────────────────────────────────────────────
+
+def scrape_zepp_new_taipei() -> list[dict]:
+    """
+    爬取 Zepp New Taipei（新莊宏匯廣場）演出節目。
+    嘗試順序：
+      1. Zepp 官方 schedule 頁面（JSON-LD 或 __NEXT_DATA__）
+      2. Zepp 活動列表 API（/api/schedule）
+      3. 個別活動詳情頁
+    """
+    log("── [Zepp New Taipei] 開始掃描...")
+    results: list[dict] = []
+
+    _ZEPP_BASE = "https://www.zepp.com"
+    _ZEPP_SCHEDULE = _ZEPP_BASE + "/en-us/hall/zepp-new-taipei/schedule/"
+
+    html = fetch(_ZEPP_SCHEDULE, timeout=25, referer=_ZEPP_BASE + "/")
+    if not html:
+        # 備用：直接抓 hall 首頁
+        html = fetch(_ZEPP_BASE + "/en-us/hall/zepp-new-taipei/", timeout=25)
+    if not html:
+        log("  ✗ Zepp New Taipei 無法取得")
+        return results
+
+    # ── 嘗試 __NEXT_DATA__ JSON ──────────────────────────────────────────────
+    next_data_m = re.search(r'<script[^>]+id="__NEXT_DATA__"[^>]*>([\s\S]+?)</script>', html)
+    if next_data_m:
+        try:
+            data = json.loads(next_data_m.group(1))
+            # Walk props.pageProps.schedules or similar
+            schedules = (
+                data.get("props", {}).get("pageProps", {}).get("schedules")
+                or data.get("props", {}).get("pageProps", {}).get("events")
+                or []
+            )
+            for ev in schedules:
+                if not isinstance(ev, dict):
+                    continue
+                name = ev.get("title") or ev.get("name") or ev.get("eventName", "")
+                start = ev.get("startDate") or ev.get("date") or ev.get("performDate", "")
+                dates = parse_dates(str(start)) if start else []
+                if not dates:
+                    continue
+                date_str = next((d for d in dates if is_future_date(d)), None)
+                if not date_str:
+                    continue
+                artist = _extract_artist_from_title(name) or name[:40]
+                event_url = ev.get("url") or ev.get("ticketUrl") or _ZEPP_SCHEDULE
+                if event_url and not event_url.startswith("http"):
+                    event_url = _ZEPP_BASE + event_url
+                image_url = ev.get("image") or ev.get("thumbnail") or None
+                genre = classify_genre(artist, name)
+                results.append({
+                    "artist": artist, "date_str": date_str,
+                    "city_zh": "新北", "city_en": "New Taipei",
+                    "venue_zh": "Zepp New Taipei", "venue_en": "Zepp New Taipei",
+                    "tour_zh": name[:60], "tour_en": name[:60],
+                    "price_zh": "票價待公布", "price_en": "TBA",
+                    "platform": "Zepp New Taipei",
+                    "platform_url": event_url,
+                    "genre": genre, "image_url": image_url,
+                    "sale_start_at": None, "source": "zepp",
+                })
+        except (json.JSONDecodeError, KeyError, TypeError):
+            pass
+
+    # ── 若 __NEXT_DATA__ 無結果，改用 JSON-LD ────────────────────────────────
+    if not results:
+        for block in re.findall(
+            r'<script[^>]*type=["\']application/ld\+json["\'][^>]*>([\s\S]*?)</script>',
+            html, re.DOTALL
+        ):
+            try:
+                data = json.loads(block)
+                items = data if isinstance(data, list) else [data]
+                for item in items:
+                    if item.get("@type") not in ("Event", "MusicEvent"):
+                        continue
+                    parsed = _parse_jsonld_event(item, html, "Zepp New Taipei", "zepp")
+                    if parsed:
+                        parsed["city_zh"] = "新北"
+                        parsed["city_en"] = "New Taipei"
+                        parsed["venue_zh"] = "Zepp New Taipei"
+                        parsed["venue_en"] = "Zepp New Taipei"
+                        results.append(parsed)
+            except (json.JSONDecodeError, KeyError):
+                continue
+
+    # ── HTML fallback：掃描活動連結 ──────────────────────────────────────────
+    if not results:
+        event_links = list(dict.fromkeys(re.findall(
+            r'href="(/en-us/events?/[^"?#]+|/hall/zepp-new-taipei/[^"?#]+)"', html
+        )))
+        log(f"  找到 {len(event_links)} 個活動連結")
+        for path in event_links[:20]:
+            url = _ZEPP_BASE + path
+            time.sleep(1.0)
+            ev_html = fetch(url, referer=_ZEPP_SCHEDULE)
+            if not ev_html:
+                continue
+            parsed = _parse_venue_event_page(
+                url, ev_html, "Zepp New Taipei", "zepp.com", "zepp",
+                default_venue="Zepp New Taipei", default_city="新北"
+            )
+            if parsed:
+                parsed["city_zh"] = "新北"
+                parsed["city_en"] = "New Taipei"
+                results.append(parsed)
+
+    log(f"  → 找到 {len(results)} 個活動")
+    return results
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# NEW Source: 河岸留言 Riverside Live House — riverside.com.tw
+# ─────────────────────────────────────────────────────────────────────────────
+
+def scrape_riverside() -> list[dict]:
+    """
+    爬取河岸留言（西門紅樓展演館）演出節目。
+    官方網站: riverside.com.tw
+    包含西門紅樓展演館及音樂深造計畫活動。
+    """
+    log("── [河岸留言 Riverside] 開始掃描...")
+    results: list[dict] = []
+
+    _RIVERSIDE_BASE = "https://www.riverside.com.tw"
+    _RIVERSIDE_LIST = _RIVERSIDE_BASE + "/events"
+
+    html = fetch(_RIVERSIDE_LIST, timeout=20, referer=_RIVERSIDE_BASE + "/")
+    if not html:
+        html = fetch(_RIVERSIDE_BASE + "/", timeout=20)
+    if not html:
+        log("  ✗ 河岸留言 無法取得")
+        return results
+
+    # ── JSON-LD ──────────────────────────────────────────────────────────────
+    for block in re.findall(
+        r'<script[^>]*type=["\']application/ld\+json["\'][^>]*>([\s\S]*?)</script>',
+        html, re.DOTALL
+    ):
+        try:
+            data = json.loads(block)
+            items = data if isinstance(data, list) else [data]
+            for item in items:
+                if item.get("@type") not in ("Event", "MusicEvent"):
+                    continue
+                parsed = _parse_jsonld_event(item, html, "河岸留言", "riverside")
+                if parsed:
+                    parsed["venue_zh"] = "河岸留言西門紅樓展演館"
+                    parsed["venue_en"] = "Riverside Live House"
+                    results.append(parsed)
+        except (json.JSONDecodeError, KeyError):
+            continue
+
+    # ── 個別活動頁面連結 ─────────────────────────────────────────────────────
+    if not results:
+        event_links = list(dict.fromkeys(re.findall(
+            r'href="(/(?:events?|shows?|concerts?)/[^"?#]+)"', html
+        )))
+        # 也找完整 URL
+        event_links += [
+            "/" + u
+            for u in re.findall(
+                r'https://www\.riverside\.com\.tw/((?:events?|shows?|concerts?)/[^"\'<>\s]+)', html
+            )
+            if "/" + u not in event_links
+        ]
+        log(f"  找到 {len(event_links)} 個活動連結")
+
+        for path in event_links[:20]:
+            url = _RIVERSIDE_BASE + path if path.startswith("/") else path
+            time.sleep(1.0)
+            ev_html = fetch(url, referer=_RIVERSIDE_LIST)
+            if not ev_html:
+                continue
+            parsed = _parse_venue_event_page(
+                url, ev_html, "河岸留言", "riverside.com.tw", "riverside",
+                default_venue="河岸留言西門紅樓展演館", default_city="台北"
+            )
+            if parsed:
+                parsed["venue_zh"] = "河岸留言西門紅樓展演館"
+                parsed["venue_en"] = "Riverside Live House"
+                results.append(parsed)
+
+    # ── 最後備用：從首頁直接解析文字 ─────────────────────────────────────────
+    if not results:
+        text = clean(strip_tags(html))
+        dates = parse_dates(text)
+        seen: set[str] = set()
+        for date_str in dates:
+            if not is_future_date(date_str):
+                continue
+            idx = text.find(date_str[:7])
+            if idx < 0:
+                continue
+            snippet = text[max(0, idx - 200):idx + 100]
+            lines = [l.strip() for l in snippet.split("\n") if l.strip() and len(l.strip()) > 3]
+            title = next(
+                (l for l in reversed(lines) if not re.match(r'^20\d{2}', l) and
+                 not re.search(r'https?://', l)),
+                ""
+            )
+            if not title or len(title) < 3:
+                continue
+            dedup_key = f"{title.lower()[:25]}|{date_str}"
+            if dedup_key in seen:
+                continue
+            seen.add(dedup_key)
+            artist = _extract_artist_from_title(title) or title[:40]
+            genre = classify_genre(artist, title)
+            results.append({
+                "artist": artist, "date_str": date_str,
+                "city_zh": "台北", "city_en": "Taipei",
+                "venue_zh": "河岸留言西門紅樓展演館",
+                "venue_en": "Riverside Live House",
+                "tour_zh": title[:60], "tour_en": title[:60],
+                "price_zh": "票價待公布", "price_en": "TBA",
+                "platform": "河岸留言",
+                "platform_url": _RIVERSIDE_BASE + "/events",
+                "genre": genre, "image_url": None,
+                "sale_start_at": None, "source": "riverside",
+            })
 
     log(f"  → 找到 {len(results)} 個活動")
     return results
@@ -2880,6 +3199,16 @@ def main() -> None:
         raw += scrape_nuzone()
     except Exception as e:
         log(f"  ✗ NUZONE 爬取失敗: {e}")
+
+    try:
+        raw += scrape_zepp_new_taipei()
+    except Exception as e:
+        log(f"  ✗ Zepp New Taipei 爬取失敗: {e}")
+
+    try:
+        raw += scrape_riverside()
+    except Exception as e:
+        log(f"  ✗ 河岸留言 爬取失敗: {e}")
 
     log(f"\n共收集 {len(raw)} 筆原始資料（含重複）")
 

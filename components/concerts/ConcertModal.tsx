@@ -8,6 +8,7 @@ import { StatusTag } from '../ui/StatusTag'
 import { statusLabel, genreLabel } from '@/lib/utils'
 import { IconPin, IconCalendar, IconTag, IconVenue, IconTicket, IconClock, IconHeart } from '../ui/Icons'
 import { ConcertAvatar } from './ConcertAvatar'
+import { isTicketingPlatform } from '@/lib/utils'
 
 interface ConcertModalProps {
   concert: Concert | null
@@ -39,6 +40,8 @@ export function ConcertModal({ concert, onClose }: ConcertModalProps) {
     if (concert.status === 'sold_out') return t('🔴 已截止', '🔴 Closed')
     if (concert.sale_start_at) {
       const d = new Date(concert.sale_start_at)
+      // 防禦：sale_start_at 格式錯誤時 d 為 Invalid Date
+      if (isNaN(d.getTime())) return t('⏳ 待公布', '⏳ TBA')
       const now = new Date()
       const diff = d.getTime() - now.getTime()
       const dateStr = d.toLocaleDateString('zh-TW', {
@@ -204,16 +207,18 @@ export function ConcertModal({ concert, onClose }: ConcertModalProps) {
 
           {/* 主要按鈕 */}
           <div className="flex gap-3 mb-3">
-            <button
-              onClick={handleBuyTicket}
-              className="flex-1 py-4 rounded-xl font-bold text-white transition-transform hover:scale-[1.02]"
-              style={{ background: 'var(--accent)' }}
-            >
-              {t('前往購票', 'Buy Tickets')} →
-            </button>
+            {isTicketingPlatform(concert.platform) && (
+              <button
+                onClick={handleBuyTicket}
+                className="flex-1 py-4 rounded-xl font-bold text-white transition-transform hover:scale-[1.02]"
+                style={{ background: 'var(--accent)' }}
+              >
+                {t('前往購票', 'Buy Tickets')} →
+              </button>
+            )}
             <button
               onClick={handleSave}
-              className="px-6 py-4 rounded-xl font-bold transition-all hover:scale-110 flex items-center justify-center"
+              className={`${isTicketingPlatform(concert.platform) ? 'px-6' : 'flex-1'} py-4 rounded-xl font-bold transition-all hover:scale-110 flex items-center justify-center`}
               style={{ background: 'var(--faint)', color: saved ? 'var(--accent)' : 'var(--muted)' }}
             >
               <IconHeart filled={saved} className="w-5 h-5" />
