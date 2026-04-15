@@ -27,7 +27,7 @@ const config: Config = {
         card: 'var(--shadow)',
       },
       fontFamily: {
-        serif: ['Noto Serif TC', 'serif'],
+        sans: ['Noto Sans TC', 'Microsoft JhengHei', 'sans-serif'],
         mono: ['Space Mono', 'monospace'],
       },
     },

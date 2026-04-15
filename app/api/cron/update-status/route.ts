@@ -6,8 +6,11 @@ import { parseLastDate } from '@/lib/utils'
  * 自動更新演唱會狀態
  *
  * 規則：
- *  - 若 sale_start_at <= now()  AND status === 'pending'  → 更新為 'selling'
- *  - 若 date_str 的最後日期 < today AND status !== 'sold_out' → 更新為 'sold_out'
+ *  - 若 sale_start_at <= now()  AND status === 'pending'   → 更新為 'selling'
+ *  - 若 date_str 的最後日期 < today AND status !== 'ended'
+ *                             AND status !== 'sold_out'    → 更新為 'ended'
+ *
+ * 注意：sold_out 表示票真的賣完（手動標記），ended 表示演唱會日期已過（自動）。
  *
  * 由 Vercel Cron Job（每小時執行一次）觸發。
  */
@@ -38,13 +41,13 @@ export async function GET(req: NextRequest) {
   if (e1) results.push(`pending→selling error: ${e1.message}`)
   else results.push(`pending→selling: ${toSelling?.length ?? 0} updated`)
 
-  // 2. 演唱會日期已過 → sold_out（使用 date_str 前10碼比較）
+  // 2. 演唱會日期已過 → ended（使用 date_str 最後日期比較）
   //    date_str 格式: "2026/04/25–26" 或 "2026/04/25"
-  //    取最後的日期：先取 – 後半，若無則取前半
+  //    sold_out 是手動標記（票真的賣完），不應被自動覆蓋
   const { data: allActive, error: e2 } = await supabase
     .from('concerts')
     .select('id, artist, date_str, status')
-    .neq('status', 'sold_out')
+    .not('status', 'in', '("ended","sold_out")')
 
   if (e2) {
     results.push(`fetch active error: ${e2.message}`)
@@ -69,13 +72,13 @@ export async function GET(req: NextRequest) {
     if (expiredIds.length > 0) {
       const { error: e3 } = await supabase
         .from('concerts')
-        .update({ status: 'sold_out' })
+        .update({ status: 'ended' })
         .in('id', expiredIds)
 
-      if (e3) results.push(`expired→sold_out error: ${e3.message}`)
-      else results.push(`expired→sold_out: ${expiredIds.length} updated`)
+      if (e3) results.push(`expired→ended error: ${e3.message}`)
+      else results.push(`expired→ended: ${expiredIds.length} updated`)
     } else {
-      results.push('expired→sold_out: 0 updated')
+      results.push('expired→ended: 0 updated')
     }
   }
 

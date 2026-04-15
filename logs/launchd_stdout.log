@@ -65,3 +65,725 @@
 [00:40:58]   ✓ Supabase upsert OK (201) — 52 筆
 [00:40:58] ============================================================
 [00:40:58] 完成！
+[00:00:05] ============================================================
+[00:00:05] Taiwan Concert Daily Scraper — 2026-04-03
+[00:00:05] ============================================================
+[00:00:05] ── [Tixcraft 拓元] 開始掃描...
+[00:00:06]   → 找到 37 個活動
+[00:00:06] ── [UDN 售票網] 開始掃描...
+[00:00:06]   UDN product links found: 0
+[00:00:06]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[00:00:06] ── [年代售票 ERAticket] 開始掃描...
+[00:00:06]   找到 21 個 Product ID
+[00:00:34]   → 找到 15 個活動
+[00:00:34] ── [kpopn.com] 開始掃描...
+[00:00:44]   → 找到 0 篇台灣演唱會文章
+[00:00:44] ── [livenation.com.tw] 開始掃描...
+[00:00:50]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[00:00:50]   ✗ livenation 無法取得，嘗試備用網址...
+[00:00:56]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[00:00:56] ── [DuckDuckGo] 開始搜尋...
+[00:01:06]   → 收集到 2 個候選連結
+[00:01:15]   ✗ fetch failed: https://tixcraft.com/ — HTTP Error 401: Unauthorized
+[00:01:15]   → 解析出 1 個活動
+[00:01:15] ── [可樂旅遊 Colatour] 開始掃描...
+[00:01:16]   → 找到 44 個活動
+[00:01:16] ── [Bandsintown] 開始掃描台北場次...
+[00:01:24]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[00:01:24]   ✗ Bandsintown 無法取得
+[00:01:24] ── [LIVE王 FB] 開始掃描...
+[00:01:28]   ✗ fetch failed: https://mbasic.facebook.com/LIVEKINGisLife/posts/pfbid0rqzJZwF1N5QHbw2SoKbPGn8cs — HTTP Error 400: Bad Request
+[00:01:33]   → 取得 328263 字元
+[00:01:33]   → 解析出 0 個活動，其中 0 個取得圖片
+[00:01:33] 
+共收集 97 筆原始資料（含重複）
+[00:01:33] 去重後剩 97 筆
+[00:01:33] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260403.json
+[00:01:33] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260403.sql
+[00:01:33] 
+自動寫入 Supabase (97 筆)...
+[00:01:33]   ✗ Supabase upsert 錯誤: <urlopen error unknown url type: "https>
+[00:01:33] 
+清理超過 7 天的過期演唱會...
+[00:01:33]   ✗ 清理錯誤: <urlopen error unknown url type: "https>
+[00:01:33] 
+📊 今日統計: 97 筆 | 🔥 搶票提醒 0 筆 | 🎫 有開賣時間 1 筆 | 🖼️ 有圖片 52 筆
+[00:01:33] ============================================================
+[00:01:33] 完成！
+[00:00:02] ============================================================
+[00:00:02] Taiwan Concert Daily Scraper — 2026-04-04
+[00:00:02] ============================================================
+[00:00:02] ── [Tixcraft 拓元] 開始掃描...
+[00:00:03]   → 找到 37 個活動
+[00:00:03] ── [UDN 售票網] 開始掃描...
+[00:00:03]   UDN product links found: 0
+[00:00:03]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[00:00:03] ── [年代售票 ERAticket] 開始掃描...
+[00:00:04]   找到 22 個 Product ID
+[00:00:31]   → 找到 15 個活動
+[00:00:31] ── [kpopn.com] 開始掃描...
+[00:00:42]   → 找到 0 篇台灣演唱會文章
+[00:00:42] ── [livenation.com.tw] 開始掃描...
+[00:00:48]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[00:00:48]   ✗ livenation 無法取得，嘗試備用網址...
+[00:00:53]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[00:00:53] ── [DuckDuckGo] 開始搜尋...
+[00:01:05]   → 收集到 2 個候選連結
+[00:01:14]   ✗ fetch failed: https://tixcraft.com/ — HTTP Error 401: Unauthorized
+[00:01:14]   → 解析出 1 個活動
+[00:01:14] ── [可樂旅遊 Colatour] 開始掃描...
+[00:01:14]   → 找到 44 個活動
+[00:01:14] ── [Bandsintown] 開始掃描台北場次...
+[00:01:18]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[00:01:18]   ✗ Bandsintown 無法取得
+[00:01:18] ── [LIVE王 FB] 開始掃描...
+[00:01:20]   → 取得 325885 字元
+[00:01:20]   → 解析出 0 個活動，其中 0 個取得圖片
+[00:01:20] 
+共收集 97 筆原始資料（含重複）
+[00:01:20] 去重後剩 97 筆
+[00:01:20] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260404.json
+[00:01:20] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260404.sql
+[00:01:20] 
+自動寫入 Supabase (97 筆)...
+[00:01:20]   ✗ Supabase upsert 錯誤: <urlopen error unknown url type: "https>
+[00:01:20] 
+清理超過 7 天的過期演唱會...
+[00:01:20]   ✗ 清理錯誤: <urlopen error unknown url type: "https>
+[00:01:20] 
+📊 今日統計: 97 筆 | 🔥 搶票提醒 0 筆 | 🎫 有開賣時間 1 筆 | 🖼️ 有圖片 52 筆
+[00:01:20] ============================================================
+[00:01:20] 完成！
+[00:00:04] ============================================================
+[00:00:04] Taiwan Concert Daily Scraper — 2026-04-05
+[00:00:04] ============================================================
+[00:00:04] ── [Tixcraft 拓元] 開始掃描...
+[00:00:05]   → 找到 36 個活動
+[00:00:05] ── [UDN 售票網] 開始掃描...
+[00:00:06]   UDN product links found: 0
+[00:00:06]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[00:00:06] ── [年代售票 ERAticket] 開始掃描...
+[00:00:07]   找到 23 個 Product ID
+[00:00:34]   → 找到 15 個活動
+[00:00:34] ── [kpopn.com] 開始掃描...
+[00:00:46]   → 找到 0 篇台灣演唱會文章
+[00:00:46] ── [livenation.com.tw] 開始掃描...
+[00:00:52]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[00:00:52]   ✗ livenation 無法取得，嘗試備用網址...
+[00:00:57]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[00:00:57] ── [DuckDuckGo] 開始搜尋...
+[00:01:09]   → 收集到 2 個候選連結
+[00:01:19]   ✗ fetch failed: https://tixcraft.com/ — HTTP Error 401: Unauthorized
+[00:01:19]   → 解析出 1 個活動
+[00:01:19] ── [可樂旅遊 Colatour] 開始掃描...
+[00:01:19]   → 找到 44 個活動
+[00:01:19] ── [Bandsintown] 開始掃描台北場次...
+[00:01:24]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[00:01:24]   ✗ Bandsintown 無法取得
+[00:01:24] ── [LIVE王 FB] 開始掃描...
+[00:01:27]   → 取得 328039 字元
+[00:01:27]   → 解析出 0 個活動，其中 0 個取得圖片
+[00:01:27] 
+共收集 96 筆原始資料（含重複）
+[00:01:27] 去重後剩 96 筆
+[00:01:27] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260405.json
+[00:01:27] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260405.sql
+[00:01:27] 
+自動寫入 Supabase (96 筆)...
+[00:01:27]   ✗ Supabase upsert 錯誤: <urlopen error unknown url type: "https>
+[00:01:27] 
+清理超過 7 天的過期演唱會...
+[00:01:27]   ✗ 清理錯誤: <urlopen error unknown url type: "https>
+[00:01:27] 
+📊 今日統計: 96 筆 | 🔥 搶票提醒 0 筆 | 🎫 有開賣時間 1 筆 | 🖼️ 有圖片 51 筆
+[00:01:27] ============================================================
+[00:01:27] 完成！
+[00:12:50] ============================================================
+[00:12:50] Taiwan Concert Daily Scraper — 2026-04-06
+[00:12:50] ============================================================
+[00:12:50] ── [Tixcraft 拓元] 開始掃描...
+[00:12:51]   → 找到 36 個活動
+[00:12:51] ── [UDN 售票網] 開始掃描...
+[00:12:52]   UDN product links found: 0
+[00:12:52]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[00:12:52] ── [年代售票 ERAticket] 開始掃描...
+[00:12:52]   找到 21 個 Product ID
+[00:34:33]   → 找到 15 個活動
+[00:34:33] ── [kpopn.com] 開始掃描...
+[03:04:07]   → 找到 0 篇台灣演唱會文章
+[03:04:07] ── [livenation.com.tw] 開始掃描...
+[04:41:04]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[04:41:04]   ✗ livenation 無法取得，嘗試備用網址...
+[06:35:29]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[06:35:29] ── [DuckDuckGo] 開始搜尋...
+[08:59:16]   → 收集到 2 個候選連結
+[10:09:51]   ✗ fetch failed: https://tixcraft.com/ — The read operation timed out
+[11:01:53]   → 解析出 1 個活動
+[11:01:53] ── [可樂旅遊 Colatour] 開始掃描...
+[11:28:01]   → 找到 44 個活動
+[11:28:01] ── [Bandsintown] 開始掃描台北場次...
+[11:29:42]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[11:29:42]   ✗ Bandsintown 無法取得
+[11:29:42] ── [LIVE王 FB] 開始掃描...
+[12:48:40]   → 取得 325957 字元
+[12:48:40]   → 解析出 0 個活動，其中 0 個取得圖片
+[12:48:40] 
+共收集 96 筆原始資料（含重複）
+[12:48:40] 去重後剩 96 筆
+[12:48:40] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260406.json
+[12:48:40] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260406.sql
+[12:48:40] 
+自動寫入 Supabase (96 筆)...
+[12:48:40]   ✗ Supabase upsert 錯誤: <urlopen error unknown url type: "https>
+[12:48:40] 
+清理超過 7 天的過期演唱會...
+[12:48:40]   ✗ 清理錯誤: <urlopen error unknown url type: "https>
+[12:48:40] 
+📊 今日統計: 96 筆 | 🔥 搶票提醒 0 筆 | 🎫 有開賣時間 1 筆 | 🖼️ 有圖片 51 筆
+[12:48:40] ============================================================
+[12:48:40] 完成！
+[00:03:46] ============================================================
+[00:03:46] Taiwan Concert Daily Scraper — 2026-04-07
+[00:03:46] ============================================================
+[00:03:46] ── [Tixcraft 拓元] 開始掃描...
+[00:03:47]   → 找到 36 個活動
+[00:03:47] ── [UDN 售票網] 開始掃描...
+[00:03:47]   UDN product links found: 0
+[00:03:47]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[00:03:47] ── [年代售票 ERAticket] 開始掃描...
+[00:03:48]   找到 20 個 Product ID
+[02:31:44]   → 找到 15 個活動
+[02:31:44] ── [kpopn.com] 開始掃描...
+[03:11:03]   ✗ fetch failed: https://www.kpopn.com/category/news/page/4/ — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[03:11:03]   → 找到 0 篇台灣演唱會文章
+[03:11:03] ── [livenation.com.tw] 開始掃描...
+[03:11:06]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[03:11:06]   ✗ livenation 無法取得，嘗試備用網址...
+[03:11:09]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[03:11:09] ── [DuckDuckGo] 開始搜尋...
+[03:12:45]   ✗ fetch failed: https://html.duckduckgo.com/html/?q=%E5%8F%B0%E7%81%A3%20%E6%BC%94%E5%94%B1%E6%9 — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[03:12:48]   ✗ fetch failed: https://html.duckduckgo.com/html/?q=Taiwan%20concert%202026%20ticket&kl=tw-tzh — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[03:12:51]   ✗ fetch failed: https://html.duckduckgo.com/html/?q=%E5%8F%B0%E5%8C%97%20%E6%BC%94%E5%94%B1%E6%9 — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[03:22:53]   ✗ fetch failed: https://html.duckduckgo.com/html/?q=%E5%8F%B0%E7%81%A3%20%E9%96%8B%E5%94%B1%2020 — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[03:22:53]   → 收集到 0 個候選連結
+[03:22:53]   → 解析出 0 個活動
+[03:22:53] ── [可樂旅遊 Colatour] 開始掃描...
+[03:22:57]   → 找到 44 個活動
+[03:22:57] ── [Bandsintown] 開始掃描台北場次...
+[03:40:06]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[03:40:06]   ✗ Bandsintown 無法取得
+[03:40:06] ── [LIVE王 FB] 開始掃描...
+[03:40:07]   → 取得 327696 字元
+[03:40:07]   → 解析出 0 個活動，其中 0 個取得圖片
+[03:40:07] 
+共收集 95 筆原始資料（含重複）
+[03:40:07] 去重後剩 95 筆
+[03:40:07] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260407.json
+[03:40:07] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260407.sql
+[03:40:07] 
+自動寫入 Supabase (95 筆)...
+[05:17:04]   ✗ Supabase upsert 錯誤: The read operation timed out
+[05:17:04] 
+清理超過 7 天的過期演唱會...
+[05:17:05]   ✓ 清理過期演唱會完成 (HTTP 204)，截止日: 2026/03/31
+[05:17:05] 
+📊 今日統計: 95 筆 | 🔥 搶票提醒 0 筆 | 🎫 有開賣時間 0 筆 | 🖼️ 有圖片 51 筆
+[05:17:05] ============================================================
+[05:17:05] 完成！
+[00:00:00] ============================================================
+[00:00:00] Taiwan Concert Daily Scraper — 2026-04-08
+[00:00:00] ============================================================
+[00:00:00] ── [Tixcraft 拓元] 開始掃描...
+[00:00:01]   → 找到 36 個活動
+[00:00:01] ── [UDN 售票網] 開始掃描...
+[00:00:02]   UDN product links found: 0
+[00:00:02]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[00:00:02] ── [年代售票 ERAticket] 開始掃描...
+[00:00:02]   找到 20 個 Product ID
+[00:00:31]   → 找到 15 個活動
+[00:00:31] ── [kpopn.com] 開始掃描...
+[00:00:41]   → 找到 0 篇台灣演唱會文章
+[00:00:41] ── [livenation.com.tw] 開始掃描...
+[00:00:46]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[00:00:46]   ✗ livenation 無法取得，嘗試備用網址...
+[00:00:52]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[00:00:52] ── [DuckDuckGo] 開始搜尋...
+[00:01:09]   → 收集到 2 個候選連結
+[00:01:15]   ✗ fetch failed: https://tixcraft.com/ — HTTP Error 401: Unauthorized
+[00:01:20]   → 解析出 1 個活動
+[00:01:20] ── [可樂旅遊 Colatour] 開始掃描...
+[00:01:20]   → 找到 44 個活動
+[00:01:20] ── [Bandsintown] 開始掃描台北場次...
+[00:01:24]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[00:01:24]   ✗ Bandsintown 無法取得
+[00:01:24] ── [LIVE王 FB] 開始掃描...
+[00:01:25]   → 取得 326044 字元
+[00:01:25]   → 解析出 0 個活動，其中 0 個取得圖片
+[00:01:25] 
+共收集 96 筆原始資料（含重複）
+[00:01:25] 去重後剩 96 筆
+[00:01:25] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260408.json
+[00:01:25] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260408.sql
+[00:01:25] 
+自動寫入 Supabase (96 筆)...
+[00:01:26]   ✓ Supabase upsert OK (201) — 96 筆
+[00:01:26] 
+清理超過 7 天的過期演唱會...
+[00:01:26]   ✓ 清理過期演唱會完成 (HTTP 204)，截止日: 2026/04/01
+[00:01:26] 
+📊 今日統計: 96 筆 | 🔥 搶票提醒 1 筆 | 🎫 有開賣時間 2 筆 | 🖼️ 有圖片 51 筆
+[00:01:26] ============================================================
+[00:01:26] 完成！
+[00:03:05] ============================================================
+[00:03:05] Taiwan Concert Daily Scraper — 2026-04-09
+[00:03:05] ============================================================
+[00:03:05] ── [Tixcraft 拓元] 開始掃描...
+[00:03:05]   → 找到 36 個活動
+[00:03:05] ── [UDN 售票網] 開始掃描...
+[00:03:06]   UDN product links found: 0
+[00:03:06]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[00:03:06] ── [年代售票 ERAticket] 開始掃描...
+[00:03:06]   找到 23 個 Product ID
+[00:33:10]   → 找到 15 個活動
+[00:33:10] ── [kpopn.com] 開始掃描...
+[00:53:54]   → 找到 0 篇台灣演唱會文章
+[00:53:54] ── [livenation.com.tw] 開始掃描...
+[00:54:00]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[00:54:00]   ✗ livenation 無法取得，嘗試備用網址...
+[04:46:19]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — The read operation timed out
+[04:46:19] ── [DuckDuckGo] 開始搜尋...
+[05:20:02]   → 收集到 2 個候選連結
+[08:36:00]   ✗ fetch failed: https://www.livenation.com.tw/event/lany-soft-world-tour-taipei-tickets-edp16601 — The read operation timed out
+[08:48:42]   ✗ fetch failed: https://tixcraft.com/ — HTTP Error 401: Unauthorized
+[08:48:42]   → 解析出 0 個活動
+[08:48:42] ── [可樂旅遊 Colatour] 開始掃描...
+[08:48:42]   → 找到 44 個活動
+[08:48:42] ── [Bandsintown] 開始掃描台北場次...
+[08:48:46]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[08:48:46]   ✗ Bandsintown 無法取得
+[08:48:46] ── [LIVE王 FB] 開始掃描...
+[08:48:47]   → 取得 323804 字元
+[08:48:47]   → 解析出 0 個活動，其中 0 個取得圖片
+[08:48:47] 
+共收集 95 筆原始資料（含重複）
+[08:48:47] 去重後剩 95 筆
+[08:48:47] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260409.json
+[08:48:47] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260409.sql
+[08:48:47] 
+自動寫入 Supabase (95 筆)...
+[09:47:05]   ✗ Supabase upsert 錯誤: The read operation timed out
+[09:47:05] 
+清理超過 7 天的過期演唱會...
+[09:47:05]   ✓ 清理過期演唱會完成 (HTTP 204)，截止日: 2026/04/02
+[09:47:05] 
+📊 今日統計: 95 筆 | 🔥 搶票提醒 0 筆 | 🎫 有開賣時間 0 筆 | 🖼️ 有圖片 51 筆
+[09:47:05] ============================================================
+[09:47:05] 完成！
+[00:00:40] ============================================================
+[00:00:40] Taiwan Concert Daily Scraper — 2026-04-10
+[00:00:40] ============================================================
+[00:00:40] ── [Tixcraft 拓元] 開始掃描...
+[00:00:41]   → 找到 38 個活動
+[00:00:41] ── [UDN 售票網] 開始掃描...
+[00:00:42]   UDN product links found: 0
+[00:00:42]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[00:00:42] ── [年代售票 ERAticket] 開始掃描...
+[00:00:42]   找到 24 個 Product ID
+[00:25:38]   → 找到 15 個活動
+[00:25:38] ── [kpopn.com] 開始掃描...
+[00:26:58]   → 找到 0 篇台灣演唱會文章
+[00:26:58] ── [livenation.com.tw] 開始掃描...
+[00:32:47]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[00:32:47]   ✗ livenation 無法取得，嘗試備用網址...
+[00:32:53]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[00:32:53] ── [DuckDuckGo] 開始搜尋...
+[00:43:04]   → 收集到 2 個候選連結
+[00:43:10]   ✗ fetch failed: https://tixcraft.com/ — HTTP Error 401: Unauthorized
+[00:43:13]   → 解析出 0 個活動
+[00:43:13] ── [可樂旅遊 Colatour] 開始掃描...
+[00:43:14]   → 找到 43 個活動
+[00:43:14] ── [Bandsintown] 開始掃描台北場次...
+[00:43:17]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[00:43:17]   ✗ Bandsintown 無法取得
+[00:43:17] ── [LIVE王 FB] 開始掃描...
+[00:43:18]   → 取得 325761 字元
+[00:43:18]   → 解析出 0 個活動，其中 0 個取得圖片
+[00:43:18] 
+共收集 96 筆原始資料（含重複）
+[00:43:18] 去重後剩 96 筆
+[00:43:18] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260410.json
+[00:43:18] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260410.sql
+[00:43:18] 
+自動寫入 Supabase (96 筆)...
+[01:28:06]   ✗ Supabase upsert 錯誤: The read operation timed out
+[01:28:06] 
+清理超過 7 天的過期演唱會...
+[02:35:05]   ✗ 清理錯誤: The read operation timed out
+[02:35:05] 
+📊 今日統計: 96 筆 | 🔥 搶票提醒 0 筆 | 🎫 有開賣時間 0 筆 | 🖼️ 有圖片 53 筆
+[02:35:05] ============================================================
+[02:35:05] 完成！
+[00:04:24] ============================================================
+[00:04:24] Taiwan Concert Daily Scraper — 2026-04-11
+[00:04:24] ============================================================
+[00:04:24] ── [Tixcraft 拓元] 開始掃描...
+[00:04:26]   → 找到 38 個活動
+[00:04:26] ── [UDN 售票網] 開始掃描...
+[00:04:26]   UDN product links found: 0
+[00:04:26]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[00:04:26] ── [年代售票 ERAticket] 開始掃描...
+[00:04:26]   找到 25 個 Product ID
+[01:14:43]   → 找到 15 個活動
+[01:14:43] ── [kpopn.com] 開始掃描...
+[03:16:50]   → 找到 0 篇台灣演唱會文章
+[03:16:50] ── [livenation.com.tw] 開始掃描...
+[06:00:38]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[06:00:38]   ✗ livenation 無法取得，嘗試備用網址...
+[07:29:00]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[07:29:00] ── [DuckDuckGo] 開始搜尋...
+[09:18:05]   → 收集到 5 個候選連結
+[09:33:25]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_ive — HTTP Error 401: Unauthorized
+[09:51:26]   ✗ fetch failed: https://tixcraft.com/ — HTTP Error 401: Unauthorized
+[10:07:12]   → 解析出 3 個活動
+[10:07:12] ── [可樂旅遊 Colatour] 開始掃描...
+[10:07:13]   → 找到 43 個活動
+[10:07:13] ── [Bandsintown] 開始掃描台北場次...
+[10:16:02]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[10:16:02]   ✗ Bandsintown 無法取得
+[10:16:02] ── [LIVE王 FB] 開始掃描...
+[10:16:03]   → 取得 325800 字元
+[10:16:03]   → 解析出 0 個活動，其中 0 個取得圖片
+[10:16:03] ── [寬宏售票 Kham] 開始掃描...
+[10:16:04]   找到 38 個 Product ID
+[11:33:45]   → 找到 4 個活動
+[11:33:45] ── [iNDIEVOX] 開始掃描...
+[11:33:47]   ✗ iNDIEVOX 爬取失敗: list index out of range
+[11:33:47] ── [北流 tmc.taipei] 開始掃描...
+[14:51:48]   ✗ fetch failed: https://www.tmc.taipei/tw/blog/show?filter=eyJkaXJlY3Rpb24iOiJsYXN0ZXN0In0= — <urlopen error [Errno 60] Operation timed out>
+[16:08:31]   ✗ fetch failed: https://www.tmc.taipei/ — <urlopen error [Errno 60] Operation timed out>
+[16:08:31]   ✗ 北流 tmc.taipei 無法取得
+[16:08:31] ── [高流 kpmc.com.tw] 開始掃描...
+[17:23:04]   找到 0 個活動連結
+[17:23:04]   → 找到 0 個活動
+[17:23:04] ── [Legacy] 開始掃描...
+[18:21:19]   → 找到 29 個活動
+[18:21:19] ── [The Wall] 開始掃描...
+[18:24:06]   ✗ fetch failed: https://www.thewall.tw/shows/ — HTTP Error 526: <none>
+[18:29:45]   ✗ fetch failed: https://thewall.tw/ — HTTP Error 526: <none>
+[18:29:45]   ✗ The Wall 無法取得（SSL 憑證問題，暫時跳過）
+[18:29:45] ── [PIPE Live Music] 開始掃描...
+[18:29:48]   ✗ fetch failed: https://www.pipemusic.com.tw/event — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[18:46:54]   ✗ fetch failed: https://pipemusic.com.tw/ — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[18:46:54]   ✗ PIPE Live Music 無法取得（DNS/網站問題，暫時跳過）
+[18:46:54] ── [NUZONE] 開始掃描...
+[18:46:56]   → 找到 1 個活動
+[18:46:56] 
+共收集 133 筆原始資料（含重複）
+[18:46:56] 去重後剩 133 筆
+[18:46:56] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260411.json
+[18:46:56] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260411.sql
+[18:46:56] 
+自動寫入 Supabase (133 筆)...
+[18:49:21]   ✓ Supabase upsert OK (201) — 133 筆
+[18:49:21] 
+清理超過 7 天的過期演唱會...
+[18:49:21]   ✓ 清理過期演唱會完成 (HTTP 204)，截止日: 2026/04/04
+[18:49:21] 
+📊 今日統計: 133 筆 | 🔥 搶票提醒 1 筆 | 🎫 有開賣時間 2 筆 | 🖼️ 有圖片 57 筆
+[18:49:21] ============================================================
+[18:49:21] 完成！
+[00:05:48] ============================================================
+[00:05:48] Taiwan Concert Daily Scraper — 2026-04-12
+[00:05:48] ============================================================
+[00:05:48] ── [Tixcraft 拓元] 開始掃描...
+[00:05:49]   → 找到 37 個活動
+[00:05:49] ── [UDN 售票網] 開始掃描...
+[00:05:52]   UDN product links found: 0
+[00:05:52]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[00:05:52] ── [年代售票 ERAticket] 開始掃描...
+[00:05:52]   找到 25 個 Product ID
+[00:45:28]   → 找到 15 個活動
+[00:45:28] ── [kpopn.com] 開始掃描...
+[01:44:09]   → 找到 0 篇台灣演唱會文章
+[01:44:09] ── [livenation.com.tw] 開始掃描...
+[02:16:34]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[02:16:34]   ✗ livenation 無法取得，嘗試備用網址...
+[02:47:04]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[02:47:04] ── [DuckDuckGo] 開始搜尋...
+[04:37:01]   → 收集到 2 個候選連結
+[05:09:17]   ✗ fetch failed: https://tixcraft.com/ — HTTP Error 401: Unauthorized
+[05:09:17]   → 解析出 1 個活動
+[05:09:17] ── [可樂旅遊 Colatour] 開始掃描...
+[05:25:13]   → 找到 43 個活動
+[05:25:13] ── [Bandsintown] 開始掃描台北場次...
+[05:25:16]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[05:25:16]   ✗ Bandsintown 無法取得
+[05:25:16] ── [LIVE王 FB] 開始掃描...
+[07:04:39]   ✗ fetch failed: https://mbasic.facebook.com/LIVEKINGisLife/posts/pfbid0rqzJZwF1N5QHbw2SoKbPGn8cs — HTTP Error 400: Bad Request
+[08:21:19]   ✗ fetch failed: https://mbasic.facebook.com/LIVEKINGisLife/ — HTTP Error 400: Bad Request
+[08:21:19]   ✗ LIVE王 FB 無法取得（可能需要登入）
+[08:21:19] ── [寬宏售票 Kham] 開始掃描...
+[08:21:20]   找到 37 個 Product ID
+[10:14:46]   → 找到 4 個活動
+[10:14:46] ── [iNDIEVOX] 開始掃描...
+[10:14:47]   ✗ iNDIEVOX 爬取失敗: list index out of range
+[10:14:47] ── [北流 tmc.taipei] 開始掃描...
+[11:55:24]   ✗ fetch failed: https://www.tmc.taipei/tw/blog/show?filter=eyJkaXJlY3Rpb24iOiJsYXN0ZXN0In0= — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[13:25:14]   ✗ fetch failed: https://www.tmc.taipei/ — <urlopen error [Errno 60] Operation timed out>
+[13:25:14]   ✗ 北流 tmc.taipei 無法取得
+[13:25:14] ── [高流 kpmc.com.tw] 開始掃描...
+[13:25:15]   找到 0 個活動連結
+[13:25:15]   → 找到 0 個活動
+[13:25:15] ── [Legacy] 開始掃描...
+[13:25:19]   → 找到 27 個活動
+[13:25:19] ── [The Wall] 開始掃描...
+[13:59:39]   ✗ fetch failed: https://www.thewall.tw/shows/ — HTTP Error 526: <none>
+[14:10:44]   ✗ fetch failed: https://thewall.tw/ — HTTP Error 526: <none>
+[14:10:44]   ✗ The Wall 無法取得（SSL 憑證問題，暫時跳過）
+[14:10:44] ── [PIPE Live Music] 開始掃描...
+[14:10:48]   ✗ fetch failed: https://www.pipemusic.com.tw/event — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[14:10:51]   ✗ fetch failed: https://pipemusic.com.tw/ — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[14:10:51]   ✗ PIPE Live Music 無法取得（DNS/網站問題，暫時跳過）
+[14:10:51] ── [NUZONE] 開始掃描...
+[14:10:53]   → 找到 1 個活動
+[14:10:53] 
+共收集 128 筆原始資料（含重複）
+[14:10:53] 去重後剩 128 筆
+[14:10:53] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260412.json
+[14:10:53] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260412.sql
+[14:10:53] 
+自動寫入 Supabase (128 筆)...
+[14:10:55]   ✓ Supabase upsert OK (201) — 128 筆
+[14:10:55] 
+清理超過 7 天的過期演唱會...
+[14:10:56]   ✓ 清理過期演唱會完成 (HTTP 204)，截止日: 2026/04/05
+[14:10:56] 
+📊 今日統計: 128 筆 | 🔥 搶票提醒 1 筆 | 🎫 有開賣時間 2 筆 | 🖼️ 有圖片 56 筆
+[14:10:56] ============================================================
+[14:10:56] 完成！
+[00:00:01] ============================================================
+[00:00:01] Taiwan Concert Daily Scraper — 2026-04-13
+[00:00:01] ============================================================
+[00:00:01] ── [Tixcraft 拓元] 開始掃描...
+[00:00:02]   → 找到 36 個活動
+[00:00:02] ── [UDN 售票網] 開始掃描...
+[00:00:03]   UDN product links found: 0
+[00:00:03]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[00:00:03] ── [年代售票 ERAticket] 開始掃描...
+[00:00:03]   找到 25 個 Product ID
+[00:00:31]   → 找到 15 個活動
+[00:00:31] ── [kpopn.com] 開始掃描...
+[00:00:43]   → 找到 0 篇台灣演唱會文章
+[00:00:43] ── [livenation.com.tw] 開始掃描...
+[00:00:49]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[00:00:49]   ✗ livenation 無法取得，嘗試備用網址...
+[00:00:55]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[00:00:55] ── [DuckDuckGo] 開始搜尋...
+[00:01:15]   → 收集到 2 個候選連結
+[00:01:24]   ✗ fetch failed: https://tixcraft.com/ — HTTP Error 401: Unauthorized
+[00:01:24]   → 解析出 1 個活動
+[00:01:24] ── [可樂旅遊 Colatour] 開始掃描...
+[00:01:24]   → 找到 43 個活動
+[00:01:24] ── [Bandsintown] 開始掃描台北場次...
+[00:01:27]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[00:01:27]   ✗ Bandsintown 無法取得
+[00:01:27] ── [LIVE王 FB] 開始掃描...
+[00:01:28]   → 取得 328291 字元
+[00:01:28]   → 解析出 0 個活動，其中 0 個取得圖片
+[00:01:28] ── [寬宏售票 Kham] 開始掃描...
+[00:01:28]   找到 37 個 Product ID
+[00:01:57]   → 找到 4 個活動
+[00:01:57] ── [iNDIEVOX] 開始掃描...
+[00:01:58]   ✗ iNDIEVOX 爬取失敗: list index out of range
+[00:01:58] ── [北流 tmc.taipei] 開始掃描...
+[00:02:02]   ✗ fetch failed: https://www.tmc.taipei/tw/blog/show?filter=eyJkaXJlY3Rpb24iOiJsYXN0ZXN0In0= — HTTP Error 500: Internal Server Error
+[00:02:05]   ✗ fetch failed: https://www.tmc.taipei/ — HTTP Error 500: Internal Server Error
+[00:02:05]   ✗ 北流 tmc.taipei 無法取得
+[00:02:05] ── [高流 kpmc.com.tw] 開始掃描...
+[00:02:06]   找到 0 個活動連結
+[00:02:06]   → 找到 0 個活動
+[00:02:06] ── [Legacy] 開始掃描...
+[00:02:12]   → 找到 26 個活動
+[00:02:12] ── [The Wall] 開始掃描...
+[00:02:18]   ✗ fetch failed: https://www.thewall.tw/shows/ — HTTP Error 526: <none>
+[00:02:23]   ✗ fetch failed: https://thewall.tw/ — HTTP Error 526: <none>
+[00:02:23]   ✗ The Wall 無法取得（SSL 憑證問題，暫時跳過）
+[00:02:23] ── [PIPE Live Music] 開始掃描...
+[00:02:26]   ✗ fetch failed: https://www.pipemusic.com.tw/event — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[00:02:29]   ✗ fetch failed: https://pipemusic.com.tw/ — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[00:02:29]   ✗ PIPE Live Music 無法取得（DNS/網站問題，暫時跳過）
+[00:02:29] ── [NUZONE] 開始掃描...
+[00:02:29]   → 找到 1 個活動
+[00:02:29] 
+共收集 126 筆原始資料（含重複）
+[00:02:29] 去重後剩 126 筆
+[00:02:29] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260413.json
+[00:02:29] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260413.sql
+[00:02:29] 
+自動寫入 Supabase (126 筆)...
+[00:02:31]   ✓ Supabase upsert OK (201) — 126 筆
+[00:02:31] 
+清理超過 7 天的過期演唱會...
+[00:02:31]   ✓ 清理過期演唱會完成 (HTTP 204)，截止日: 2026/04/06
+[00:02:31] 
+📊 今日統計: 126 筆 | 🔥 搶票提醒 1 筆 | 🎫 有開賣時間 2 筆 | 🖼️ 有圖片 55 筆
+[00:02:31] ============================================================
+[00:02:31] 完成！
+[00:03:03] ============================================================
+[00:03:03] Taiwan Concert Daily Scraper — 2026-04-14
+[00:03:03] ============================================================
+[00:03:03] ── [Tixcraft 拓元] 開始掃描...
+[00:03:04]   → 找到 38 個活動
+[00:03:04] ── [UDN 售票網] 開始掃描...
+[00:03:05]   UDN product links found: 0
+[00:03:05]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[00:03:05] ── [年代售票 ERAticket] 開始掃描...
+[00:03:05]   找到 20 個 Product ID
+[00:26:50]   → 找到 15 個活動
+[00:26:50] ── [kpopn.com] 開始掃描...
+[00:27:02]   → 找到 0 篇台灣演唱會文章
+[00:27:02] ── [livenation.com.tw] 開始掃描...
+[00:27:08]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[00:27:08]   ✗ livenation 無法取得，嘗試備用網址...
+[00:27:14]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[00:27:14] ── [DuckDuckGo] 開始搜尋...
+[00:27:34]   → 收集到 3 個候選連結
+[00:27:40]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_ive — HTTP Error 401: Unauthorized
+[00:27:49]   ✗ fetch failed: https://tixcraft.com/ — HTTP Error 401: Unauthorized
+[00:27:49]   → 解析出 1 個活動
+[00:27:49] ── [可樂旅遊 Colatour] 開始掃描...
+[00:27:50]   → 找到 43 個活動
+[00:27:50] ── [Bandsintown] 開始掃描台北場次...
+[00:27:54]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[00:27:54]   ✗ Bandsintown 無法取得
+[00:27:54] ── [LIVE王 FB] 開始掃描...
+[00:27:58]   ✗ fetch failed: https://mbasic.facebook.com/LIVEKINGisLife/posts/pfbid0rqzJZwF1N5QHbw2SoKbPGn8cs — HTTP Error 400: Bad Request
+[00:28:02]   ✗ fetch failed: https://mbasic.facebook.com/LIVEKINGisLife/ — HTTP Error 400: Bad Request
+[00:28:02]   ✗ LIVE王 FB 無法取得（可能需要登入）
+[00:28:02] ── [寬宏售票 Kham] 開始掃描...
+[00:28:02]   找到 37 個 Product ID
+[00:28:31]   → 找到 4 個活動
+[00:28:31] ── [iNDIEVOX] 開始掃描...
+[00:28:33]   找到 18 個活動連結
+[00:33:07]   → 找到 12 個活動
+[00:33:07] ── [北流 tmc.taipei] 開始掃描...
+[00:33:08]   找到 12 個活動連結
+[01:12:42]   → 找到 3 個活動
+[01:12:42] ── [高流 kpmc.com.tw] 開始掃描...
+[01:29:56]   找到 1 個活動連結
+[01:29:58]   → 找到 0 個活動
+[01:29:58] ── [Legacy] 開始掃描...
+[02:05:19]   → 找到 26 個活動
+[02:05:19] ── [The Wall] 開始掃描...
+[02:21:37]   ✗ fetch failed: https://www.thewall.tw/shows/ — HTTP Error 526: <none>
+[02:30:06]   ✗ fetch failed: https://thewall.tw/ — HTTP Error 526: <none>
+[02:30:06]   → thewall.tw 無法取得，嘗試 KKTIX 場館頁...
+[02:47:22]   ✗ fetch failed: https://kktix.com/venues/thewall — HTTP Error 403: Forbidden
+[02:47:22]   ✗ The Wall 所有來源皆無法取得，暫時跳過
+[02:47:22] ── [PIPE Live Music] 開始掃描...
+[03:04:05]   ✗ fetch failed: https://www.pipemusic.com.tw/event — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[03:19:29]   ✗ fetch failed: https://pipemusic.com.tw/ — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[03:19:29]   → pipemusic.com.tw 無法取得，嘗試 mbasic Facebook...
+[03:19:30]   找到 0 個活動連結
+[03:19:30]   → 找到 0 個活動
+[03:19:30] ── [NUZONE] 開始掃描...
+[04:22:41]   → 找到 1 個活動
+[04:22:41] ── [Zepp New Taipei] 開始掃描...
+[04:55:43]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/schedule/ — HTTP Error 404: Not Found
+[05:11:21]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/ — HTTP Error 404: Not Found
+[05:11:21]   ✗ Zepp New Taipei 無法取得
+[05:11:21] ── [河岸留言 Riverside] 開始掃描...
+[05:11:22]   → 找到 1 個活動
+[05:11:22] 
+共收集 144 筆原始資料（含重複）
+[05:11:22] 去重後剩 144 筆
+[05:11:22] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260414.json
+[05:11:22] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260414.sql
+[05:11:22] 
+自動寫入 Supabase (144 筆)...
+[05:11:23]   ✓ Supabase upsert OK (201) — 144 筆
+[05:11:23] 
+清理超過 7 天的過期演唱會...
+[05:11:23]   ✓ 清理過期演唱會完成 (HTTP 204)，截止日: 2026/04/07
+[05:11:23] 
+📊 今日統計: 144 筆 | 🔥 搶票提醒 1 筆 | 🎫 有開賣時間 2 筆 | 🖼️ 有圖片 60 筆
+[05:11:23] ============================================================
+[05:11:23] 完成！
+[00:00:33] ============================================================
+[00:00:33] Taiwan Concert Daily Scraper — 2026-04-15
+[00:00:33] ============================================================
+[00:00:33] ── [Tixcraft 拓元] 開始掃描...
+[00:00:34]   → 找到 38 個活動
+[00:00:34] ── [UDN 售票網] 開始掃描...
+[00:00:34]   UDN product links found: 0
+[00:00:34]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[00:00:34] ── [年代售票 ERAticket] 開始掃描...
+[00:00:34]   找到 22 個 Product ID
+[00:01:02]   → 找到 15 個活動
+[00:01:02] ── [kpopn.com] 開始掃描...
+[00:10:41]   → 找到 0 篇台灣演唱會文章
+[00:10:41] ── [livenation.com.tw] 開始掃描...
+[01:56:02]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[01:56:02]   ✗ livenation 無法取得，嘗試備用網址...
+[02:29:19]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — <urlopen error [Errno 54] Connection reset by peer>
+[02:29:19] ── [DuckDuckGo] 開始搜尋...
+[07:17:10]   → 收集到 2 個候選連結
+[07:46:31]   ✗ fetch failed: https://tixcraft.com/ — HTTP Error 401: Unauthorized
+[07:46:31]   → 解析出 1 個活動
+[07:46:31] ── [可樂旅遊 Colatour] 開始掃描...
+[07:46:32]   → 找到 43 個活動
+[07:46:32] ── [Bandsintown] 開始掃描台北場次...
+[08:02:06]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[08:02:06]   ✗ Bandsintown 無法取得
+[08:02:06] ── [LIVE王 FB] 開始掃描...
+[08:02:08]   → 取得 312747 字元
+[08:02:08]   → 解析出 0 個活動，其中 0 個取得圖片
+[08:02:08] ── [寬宏售票 Kham] 開始掃描...
+[08:02:08]   找到 38 個 Product ID
+[09:20:51]   → 找到 4 個活動
+[09:20:51] ── [iNDIEVOX] 開始掃描...
+[09:20:52]   找到 18 個活動連結
+[09:24:31]   → 找到 12 個活動
+[09:24:31] ── [北流 tmc.taipei] 開始掃描...
+[09:24:31]   找到 12 個活動連結
+[09:24:47]   → 找到 3 個活動
+[09:24:47] ── [高流 kpmc.com.tw] 開始掃描...
+[09:24:47]   找到 1 個活動連結
+[09:24:49]   → 找到 0 個活動
+[09:24:49] ── [Legacy] 開始掃描...
+[09:24:54]   → 找到 26 個活動
+[09:24:54] ── [The Wall] 開始掃描...
+[09:24:58]   ✗ fetch failed: https://www.thewall.tw/shows/ — HTTP Error 526: <none>
+[09:25:03]   ✗ fetch failed: https://thewall.tw/ — HTTP Error 526: <none>
+[09:25:03]   → thewall.tw 無法取得，嘗試 KKTIX 場館頁...
+[09:25:07]   ✗ fetch failed: https://kktix.com/venues/thewall — HTTP Error 403: Forbidden
+[09:25:07]   ✗ The Wall 所有來源皆無法取得，暫時跳過
+[09:25:07] ── [PIPE Live Music] 開始掃描...
+[09:25:10]   ✗ fetch failed: https://www.pipemusic.com.tw/event — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[09:25:13]   ✗ fetch failed: https://pipemusic.com.tw/ — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[09:25:13]   → pipemusic.com.tw 無法取得，嘗試 mbasic Facebook...
+[09:25:14]   找到 0 個活動連結
+[09:25:14]   → 找到 0 個活動
+[09:25:14] ── [NUZONE] 開始掃描...
+[09:25:15]   → 找到 1 個活動
+[09:25:15] ── [Zepp New Taipei] 開始掃描...
+[09:25:19]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/schedule/ — HTTP Error 404: Not Found
+[09:25:23]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/ — HTTP Error 404: Not Found
+[09:25:23]   ✗ Zepp New Taipei 無法取得
+[09:25:23] ── [河岸留言 Riverside] 開始掃描...
+[09:25:27]   → 找到 1 個活動
+[09:25:27] 
+共收集 144 筆原始資料（含重複）
+[09:25:27] 去重後剩 144 筆
+[09:25:27] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260415.json
+[09:25:27] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260415.sql
+[09:25:27] 
+自動寫入 Supabase (144 筆)...
+[09:25:28]   ✓ Supabase upsert OK (201) — 144 筆
+[09:25:28] 
+清理超過 7 天的過期演唱會...
+[09:25:28]   ✓ 清理過期演唱會完成 (HTTP 204)，截止日: 2026/04/08
+[09:25:28] 
+📊 今日統計: 144 筆 | 🔥 搶票提醒 2 筆 | 🎫 有開賣時間 3 筆 | 🖼️ 有圖片 60 筆
+[09:25:28] ============================================================
+[09:25:28] 完成！

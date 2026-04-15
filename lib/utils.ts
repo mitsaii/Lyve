@@ -18,19 +18,21 @@ export function deduplicateConcerts(concerts: Concert[]): Concert[] {
 }
 
 export function statusLabel(status: Status, lang: Lang): string {
-  const labels = {
-    selling: { zh: '熱賣中', en: 'On Sale' },
-    pending: { zh: '待公告', en: 'Coming Soon' },
+  const labels: Record<Status, { zh: string; en: string }> = {
+    selling:  { zh: '熱賣中', en: 'On Sale' },
+    pending:  { zh: '待公告', en: 'Coming Soon' },
     sold_out: { zh: '已售完', en: 'Sold Out' },
+    ended:    { zh: '已結束', en: 'Ended' },
   }
   return labels[status][lang]
 }
 
 export function tagColor(status: Status): string {
-  const colors = {
-    selling: 'var(--accent3)', // green
-    pending: '#a78bfa',        // purple
-    sold_out: 'var(--muted)',  // gray
+  const colors: Record<Status, string> = {
+    selling:  'var(--accent3)', // green
+    pending:  '#a78bfa',        // purple
+    sold_out: '#f87171',        // red  — 票真的賣完（手動標記）
+    ended:    'var(--muted)',   // gray — 演唱會日期已過（自動）
   }
   return colors[status]
 }

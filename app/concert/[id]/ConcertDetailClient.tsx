@@ -26,18 +26,22 @@ export default function ConcertDetailClient({ concert }: Props) {
   const saved = isSaved(concert.id)
   const alerted = alertIds.has(concert.id)
 
-  const ticketSaleTime =
-    concert.status === 'selling'
-      ? t('已開賣', 'On Sale Now')
-      : concert.status === 'pending'
-        ? concert.sale_start_at
-          ? new Date(concert.sale_start_at).toLocaleString('zh-TW', {
-              timeZone: 'Asia/Taipei',
-              year: 'numeric', month: '2-digit', day: '2-digit',
-              hour: '2-digit', minute: '2-digit',
-            })
-          : t('待公布', 'TBA')
-        : t('已截止', 'Closed')
+  const ticketSaleTime = (() => {
+    if (concert.status === 'selling') return t('🟢 已開賣', '🟢 On Sale Now')
+    if (concert.status === 'sold_out') return t('🔴 已售完', '🔴 Sold Out')
+    if (concert.status === 'ended') return t('⚫ 演唱會已結束', '⚫ Event Ended')
+    // pending
+    if (concert.sale_start_at) {
+      const d = new Date(concert.sale_start_at)
+      if (isNaN(d.getTime())) return t('⏳ 待公布', '⏳ TBA')
+      return d.toLocaleString('zh-TW', {
+        timeZone: 'Asia/Taipei',
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit',
+      })
+    }
+    return t('⏳ 待公布', '⏳ TBA')
+  })()
 
   const buildShareText = () => [
     `🎤 ${concert.artist}`,

@@ -37,7 +37,8 @@ export function ConcertModal({ concert, onClose }: ConcertModalProps) {
   // 搶票時間顯示
   const formatSaleTime = () => {
     if (concert.status === 'selling') return t('🟢 已開賣', '🟢 On Sale Now')
-    if (concert.status === 'sold_out') return t('🔴 已截止', '🔴 Closed')
+    if (concert.status === 'sold_out') return t('🔴 已售完', '🔴 Sold Out')
+    if (concert.status === 'ended') return t('⚫ 演唱會已結束', '⚫ Event Ended')
     if (concert.sale_start_at) {
       const d = new Date(concert.sale_start_at)
       // 防禦：sale_start_at 格式錯誤時 d 為 Invalid Date

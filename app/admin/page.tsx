@@ -208,7 +208,8 @@ export default function AdminPage() {
                   >
                     <option value="pending">待公告</option>
                     <option value="selling">熱賣中</option>
-                    <option value="sold_out">已售完</option>
+                    <option value="sold_out">已售完（票真的賣完）</option>
+                    <option value="ended">已結束（日期已過）</option>
                   </select>
                 </div>
 

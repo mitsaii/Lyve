@@ -33,3 +33,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .env.local
+
+# generated data and logs
+/data/*.json
+/data/*.sql
+/logs/*.log
+/scripts/__pycache__/

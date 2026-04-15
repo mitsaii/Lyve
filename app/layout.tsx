@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Noto_Serif_TC, Space_Mono } from 'next/font/google'
+import { Noto_Sans_TC, Space_Mono } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/contexts/ThemeContext'
 import { LangProvider } from '@/contexts/LangContext'
@@ -12,10 +12,10 @@ import { Footer } from '@/components/layout/Footer'
 import { ServiceWorkerRegistration } from '@/components/layout/ServiceWorkerRegistration'
 import { Analytics } from '@vercel/analytics/react'
 
-const notoSerifTC = Noto_Serif_TC({
-  weight: ['400', '700'],
+const notoSansTC = Noto_Sans_TC({
+  weight: ['400', '500', '700'],
   subsets: ['latin'],
-  variable: '--font-noto-serif',
+  variable: '--font-noto-sans',
 })
 
 const spaceMono = Space_Mono({
@@ -80,7 +80,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-TW">
-      <body className={`${notoSerifTC.variable} ${spaceMono.variable}`}>
+      <body className={`${notoSansTC.variable} ${spaceMono.variable}`}>
         <ServiceWorkerRegistration />
         <Analytics />
         <ThemeProvider>
