@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { Concert } from '@/types/concert'
 import { useLang } from '@/contexts/LangContext'
 import { ConcertCard } from '@/components/concerts/ConcertCard'
@@ -8,17 +8,36 @@ import { ConcertModal } from '@/components/concerts/ConcertModal'
 import { SectionLabel } from '@/components/ui/SectionLabel'
 import { IconCalendar } from '@/components/ui/Icons'
 import { createClient } from '@/lib/supabase/client'
-import { deduplicateConcerts } from '@/lib/utils'
+import { deduplicateConcerts, getVisiblePageItems } from '@/lib/utils'
+
+const CONCERTS_PER_PAGE = 10
 
 export default function CalendarPage() {
   const { t } = useLang()
   const [concerts, setConcerts] = useState<Concert[]>([])
   const [selectedConcert, setSelectedConcert] = useState<Concert | null>(null)
   const [selectedMonth, setSelectedMonth] = useState<string>('all')
+  const [currentPage, setCurrentPage] = useState(1)
+  const listRef = useRef<HTMLDivElement | null>(null)
+  const hasMountedPaginationRef = useRef(false)
 
   useEffect(() => {
     fetchConcerts()
   }, [])
+
+  // 切換月份或頁碼時捲回列表頂端
+  useEffect(() => {
+    if (!hasMountedPaginationRef.current) {
+      hasMountedPaginationRef.current = true
+      return
+    }
+    listRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [currentPage])
+
+  // 切換月份時重置頁碼
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [selectedMonth])
 
   const fetchConcerts = async () => {
     const supabase = createClient()
@@ -33,17 +52,44 @@ export default function CalendarPage() {
   }
 
   // 分組演出 (依月份)
-  const groupedConcerts: Record<string, Concert[]> = {}
-  concerts.forEach((concert) => {
-    const month = concert.date_str.substring(0, 7) // YYYY-MM
-    if (!groupedConcerts[month]) {
-      groupedConcerts[month] = []
-    }
-    groupedConcerts[month].push(concert)
-  })
+  const groupedConcerts = useMemo(() => {
+    const groups: Record<string, Concert[]> = {}
+    concerts.forEach((concert) => {
+      const month = concert.date_str.substring(0, 7)
+      if (!groups[month]) groups[month] = []
+      groups[month].push(concert)
+    })
+    return groups
+  }, [concerts])
 
-  const months = Object.keys(groupedConcerts).sort()
+  const months = useMemo(() => Object.keys(groupedConcerts).sort(), [groupedConcerts])
   const displayedMonths = selectedMonth === 'all' ? months : [selectedMonth]
+
+  // 展開分頁用的扁平清單
+  const allDisplayedConcerts = useMemo(
+    () => displayedMonths.flatMap((month) => groupedConcerts[month] ?? []),
+    [displayedMonths, groupedConcerts]
+  )
+
+  const totalPages = Math.ceil(allDisplayedConcerts.length / CONCERTS_PER_PAGE)
+  const visiblePageItems = getVisiblePageItems(currentPage, totalPages)
+  const paginatedConcerts = allDisplayedConcerts.slice(
+    (currentPage - 1) * CONCERTS_PER_PAGE,
+    currentPage * CONCERTS_PER_PAGE
+  )
+
+  // 重新依月份分組（僅含當頁資料）
+  const paginatedGrouped = useMemo(() => {
+    const groups: Record<string, Concert[]> = {}
+    paginatedConcerts.forEach((concert) => {
+      const month = concert.date_str.substring(0, 7)
+      if (!groups[month]) groups[month] = []
+      groups[month].push(concert)
+    })
+    return groups
+  }, [paginatedConcerts])
+
+  const paginatedMonths = Object.keys(paginatedGrouped).sort()
 
   return (
     <>
@@ -82,30 +128,115 @@ export default function CalendarPage() {
             ))}
           </div>
 
-          {/* 演出列表 (分月顯示) */}
-          <div className="space-y-8">
-            {displayedMonths.map((month) => (
-              <div key={month}>
-                <div className="text-sm font-bold mb-3 px-2" style={{ color: 'var(--accent)' }}>
-                  {month}
-                </div>
-                <div className="space-y-3">
-                  {groupedConcerts[month].map((concert) => (
-                    <ConcertCard
-                      key={concert.id}
-                      concert={concert}
-                      onClick={() => setSelectedConcert(concert)}
-                    />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {concerts.length === 0 && (
+          {concerts.length === 0 ? (
             <div className="text-center py-12" style={{ color: 'var(--muted)' }}>
               {t('暫無演出', 'No concerts found')}
             </div>
+          ) : (
+            <>
+              {/* 頁數資訊 */}
+              <div
+                ref={listRef}
+                className="flex items-center justify-between pb-3 text-sm scroll-mt-24"
+                style={{ color: 'var(--muted)' }}
+              >
+                <span>
+                  {t(
+                    `第 ${currentPage} 頁，共 ${totalPages} 頁`,
+                    `Page ${currentPage} of ${totalPages}`
+                  )}
+                </span>
+                <span>
+                  {t(
+                    `共 ${allDisplayedConcerts.length} 場演出`,
+                    `${allDisplayedConcerts.length} concerts`
+                  )}
+                </span>
+              </div>
+
+              {/* 演出列表 (分月顯示) */}
+              <div className="space-y-8">
+                {paginatedMonths.map((month) => (
+                  <div key={month}>
+                    <div className="text-sm font-bold mb-3 px-2" style={{ color: 'var(--accent)' }}>
+                      {month}
+                    </div>
+                    <div className="space-y-3">
+                      {paginatedGrouped[month].map((concert) => (
+                        <ConcertCard
+                          key={concert.id}
+                          concert={concert}
+                          onClick={() => setSelectedConcert(concert)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* 分頁控制 */}
+              {totalPages > 1 && (
+                <div className="flex flex-wrap items-center justify-center gap-2 pt-6 pb-2">
+                  <button
+                    type="button"
+                    onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                    disabled={currentPage === 1}
+                    className="rounded-full px-4 py-2 text-sm font-medium transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
+                    style={{
+                      background: 'var(--surface)',
+                      color: 'var(--text)',
+                      border: '1px solid var(--faint)',
+                    }}
+                  >
+                    {t('上一頁', 'Previous')}
+                  </button>
+
+                  {visiblePageItems.map((item, index) => {
+                    if (typeof item !== 'number') {
+                      return (
+                        <span
+                          key={`${item}-${index}`}
+                          className="px-1 text-sm"
+                          style={{ color: 'var(--muted)' }}
+                        >
+                          ...
+                        </span>
+                      )
+                    }
+                    const isActive = item === currentPage
+                    return (
+                      <button
+                        key={item}
+                        type="button"
+                        onClick={() => setCurrentPage(item)}
+                        className="h-10 min-w-10 rounded-full px-3 text-sm font-semibold transition-transform hover:scale-105"
+                        style={{
+                          background: isActive ? 'var(--accent)' : 'var(--surface)',
+                          color: isActive ? '#ffffff' : 'var(--text)',
+                          border: isActive ? '1px solid var(--accent)' : '1px solid var(--faint)',
+                        }}
+                      >
+                        {item}
+                      </button>
+                    )
+                  })}
+
+                  <button
+                    type="button"
+                    onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                    disabled={currentPage === totalPages}
+                    className="rounded-full px-4 py-2 text-sm font-medium transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
+                    style={{
+                      background: 'var(--surface)',
+                      color: 'var(--text)',
+                      border: '1px solid var(--faint)',
+                    }}
+                  >
+                    {t('下一頁', 'Next')}
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Concert } from '@/types/concert'
 import { useLang } from '@/contexts/LangContext'
 import { useAlert } from '@/contexts/AlertContext'
@@ -8,51 +8,90 @@ import { SectionLabel } from '@/components/ui/SectionLabel'
 import { ConcertModal } from '@/components/concerts/ConcertModal'
 import { IconBell, IconCalendar } from '@/components/ui/Icons'
 import { createClient } from '@/lib/supabase/client'
-import { deduplicateConcerts } from '@/lib/utils'
+import { deduplicateConcerts, getVisiblePageItems } from '@/lib/utils'
 
 const PAGE_SIZE = 10
 
 function Pagination({
   page,
   total,
+  sectionRef,
   onChange,
 }: {
   page: number
   total: number
+  sectionRef?: React.RefObject<HTMLDivElement | null>
   onChange: (p: number) => void
 }) {
+  const { t } = useLang()
   const totalPages = Math.ceil(total / PAGE_SIZE)
   if (totalPages <= 1) return null
+
+  const visiblePageItems = getVisiblePageItems(page, totalPages)
+
+  const handleChange = (p: number) => {
+    onChange(p)
+    sectionRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   return (
-    <div className="flex items-center justify-center gap-2 mt-4">
+    <div className="flex flex-wrap items-center justify-center gap-2 pt-4 pb-2">
       <button
-        onClick={() => onChange(page - 1)}
+        type="button"
+        onClick={() => handleChange(Math.max(page - 1, 1))}
         disabled={page === 1}
-        className="w-8 h-8 rounded-full flex items-center justify-center text-sm transition-all hover:scale-110 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed"
-        style={{ background: 'var(--faint)', color: 'var(--foreground)' }}
+        className="rounded-full px-4 py-2 text-sm font-medium transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
+        style={{
+          background: 'var(--surface)',
+          color: 'var(--text)',
+          border: '1px solid var(--faint)',
+        }}
       >
-        ‹
+        {t('上一頁', 'Previous')}
       </button>
-      {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-        <button
-          key={p}
-          onClick={() => onChange(p)}
-          className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all hover:scale-110 active:scale-95"
-          style={{
-            background: p === page ? 'var(--accent)' : 'var(--faint)',
-            color: p === page ? '#fff' : 'var(--foreground)',
-          }}
-        >
-          {p}
-        </button>
-      ))}
+
+      {visiblePageItems.map((item, index) => {
+        if (typeof item !== 'number') {
+          return (
+            <span
+              key={`${item}-${index}`}
+              className="px-1 text-sm"
+              style={{ color: 'var(--muted)' }}
+            >
+              ...
+            </span>
+          )
+        }
+        const isActive = item === page
+        return (
+          <button
+            key={item}
+            type="button"
+            onClick={() => handleChange(item)}
+            className="h-10 min-w-10 rounded-full px-3 text-sm font-semibold transition-transform hover:scale-105"
+            style={{
+              background: isActive ? 'var(--accent)' : 'var(--surface)',
+              color: isActive ? '#ffffff' : 'var(--text)',
+              border: isActive ? '1px solid var(--accent)' : '1px solid var(--faint)',
+            }}
+          >
+            {item}
+          </button>
+        )
+      })}
+
       <button
-        onClick={() => onChange(page + 1)}
+        type="button"
+        onClick={() => handleChange(Math.min(page + 1, totalPages))}
         disabled={page === totalPages}
-        className="w-8 h-8 rounded-full flex items-center justify-center text-sm transition-all hover:scale-110 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed"
-        style={{ background: 'var(--faint)', color: 'var(--foreground)' }}
+        className="rounded-full px-4 py-2 text-sm font-medium transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
+        style={{
+          background: 'var(--surface)',
+          color: 'var(--text)',
+          border: '1px solid var(--faint)',
+        }}
       >
-        ›
+        {t('下一頁', 'Next')}
       </button>
     </div>
   )
@@ -66,6 +105,8 @@ export default function AlertsPage() {
   const [loading, setLoading] = useState(true)
   const [alertedPage, setAlertedPage] = useState(1)
   const [pendingPage, setPendingPage] = useState(1)
+  const alertedRef = useRef<HTMLDivElement | null>(null)
+  const pendingRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     fetchConcerts()
@@ -103,9 +144,19 @@ export default function AlertsPage() {
           {/* 已設定提醒 */}
           {alertedConcerts.length > 0 && (
             <div className="mb-6">
-              <p className="text-xs font-bold mb-3 uppercase tracking-wider" style={{ color: 'var(--muted)' }}>
-                {t('已設定提醒', 'Alerts Set')} ({alertedConcerts.length})
-              </p>
+              <div ref={alertedRef} className="scroll-mt-24">
+                <div className="flex items-center justify-between pb-3 text-sm" style={{ color: 'var(--muted)' }}>
+                  <p className="text-xs font-bold uppercase tracking-wider">
+                    {t('已設定提醒', 'Alerts Set')} ({alertedConcerts.length})
+                  </p>
+                  <span>
+                    {t(
+                      `第 ${alertedPage} 頁，共 ${Math.ceil(alertedConcerts.length / PAGE_SIZE)} 頁`,
+                      `Page ${alertedPage} of ${Math.ceil(alertedConcerts.length / PAGE_SIZE)}`
+                    )}
+                  </span>
+                </div>
+              </div>
               <div className="space-y-3">
                 {alertedPageConcerts.map((concert) => (
                   <AlertCard
@@ -120,16 +171,29 @@ export default function AlertsPage() {
               <Pagination
                 page={alertedPage}
                 total={alertedConcerts.length}
-                onChange={(p) => { setAlertedPage(p); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
+                sectionRef={alertedRef}
+                onChange={setAlertedPage}
               />
             </div>
           )}
 
           {/* 即將開賣 */}
           <div>
-            <p className="text-xs font-bold mb-3 uppercase tracking-wider" style={{ color: 'var(--muted)' }}>
-              {t('即將開賣', 'Coming Soon')}
-            </p>
+            <div ref={pendingRef} className="scroll-mt-24">
+              <div className="flex items-center justify-between pb-3 text-sm" style={{ color: 'var(--muted)' }}>
+                <p className="text-xs font-bold uppercase tracking-wider">
+                  {t('即將開賣', 'Coming Soon')}
+                </p>
+                {pendingConcerts.length > 0 && (
+                  <span>
+                    {t(
+                      `共 ${pendingConcerts.length} 場`,
+                      `${pendingConcerts.length} concerts`
+                    )}
+                  </span>
+                )}
+              </div>
+            </div>
             {loading ? (
               <div className="text-center py-12" style={{ color: 'var(--muted)' }}>
                 {t('載入中...', 'Loading...')}
@@ -161,7 +225,8 @@ export default function AlertsPage() {
                 <Pagination
                   page={pendingPage}
                   total={pendingConcerts.length}
-                  onChange={(p) => { setPendingPage(p); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
+                  sectionRef={pendingRef}
+                  onChange={setPendingPage}
                 />
               </>
             )}
