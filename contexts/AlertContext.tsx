@@ -7,7 +7,10 @@ import { Concert, ConcertId } from '@/types/concert'
 import { useAuth } from '@/contexts/AuthContext'
 
 const REMINDER_OFFSET_MS = 10 * 60 * 1000
-const REMINDED_STORAGE_KEY = 'alert-reminded-ids'
+
+// localStorage key 與 user ID 綁定，避免多帳號共用資料
+const alertsKey = (userId: string) => `alerts-${userId}`
+const remindedKey = (userId: string) => `alert-reminded-${userId}`
 
 interface AlertContextType {
   alertIds: Set<ConcertId>
@@ -115,11 +118,8 @@ export function AlertProvider({ children }: { children: ReactNode }) {
     new Notification('🎤 搶票提醒', { body: message, icon: '/lyve-logo.png' })
   }
 
+  // 初始化 push 支援狀態
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem('alerts')
-      if (saved) setAlertIds(new Set<ConcertId>(JSON.parse(saved)))
-    } catch {}
     const supported =
       typeof window !== 'undefined' &&
       'serviceWorker' in navigator &&
@@ -128,6 +128,20 @@ export function AlertProvider({ children }: { children: ReactNode }) {
     setPushSupported(supported)
     if (supported) setPushPermission(Notification.permission)
   }, [])
+
+  // 監聽 user 變化：登入時載入該帳號的 alerts，登出時清空
+  useEffect(() => {
+    if (!user) {
+      setAlertIds(new Set())
+      return
+    }
+    try {
+      const saved = localStorage.getItem(alertsKey(user.id))
+      setAlertIds(saved ? new Set<ConcertId>(JSON.parse(saved)) : new Set())
+    } catch {
+      setAlertIds(new Set())
+    }
+  }, [user])
 
   const toggleAlert = async (concertId: ConcertId) => {
     // 未登入時導向個人中心
@@ -144,7 +158,7 @@ export function AlertProvider({ children }: { children: ReactNode }) {
       } else {
         next.add(concertId)
       }
-      localStorage.setItem('alerts', JSON.stringify([...next]))
+      localStorage.setItem(alertsKey(user.id), JSON.stringify([...next]))
       return next
     })
 
@@ -157,10 +171,11 @@ export function AlertProvider({ children }: { children: ReactNode }) {
       await subscribePush(concertId)
     } else {
       try {
-        const rawReminded = localStorage.getItem(REMINDED_STORAGE_KEY)
+        const key = remindedKey(user.id)
+        const rawReminded = localStorage.getItem(key)
         const remindedIds = new Set<ConcertId>(rawReminded ? JSON.parse(rawReminded) : [])
         remindedIds.delete(concertId)
-        localStorage.setItem(REMINDED_STORAGE_KEY, JSON.stringify([...remindedIds]))
+        localStorage.setItem(key, JSON.stringify([...remindedIds]))
       } catch {}
       await unsubscribePush(concertId)
     }
@@ -170,9 +185,10 @@ export function AlertProvider({ children }: { children: ReactNode }) {
 
   // 前景備用輪詢（瀏覽器開著時也檢查一次）
   useEffect(() => {
-    if (alertIds.size === 0) return
+    if (alertIds.size === 0 || !user) return
     const supabase = createClient()
     let mounted = true
+    const rKey = remindedKey(user.id)
 
     const checkAlerts = async () => {
       const ids = [...alertIds]
@@ -186,7 +202,7 @@ export function AlertProvider({ children }: { children: ReactNode }) {
 
       let remindedIds = new Set<ConcertId>()
       try {
-        const rawReminded = localStorage.getItem(REMINDED_STORAGE_KEY)
+        const rawReminded = localStorage.getItem(rKey)
         remindedIds = new Set<ConcertId>(rawReminded ? JSON.parse(rawReminded) : [])
       } catch {}
 
@@ -203,13 +219,13 @@ export function AlertProvider({ children }: { children: ReactNode }) {
           changed = true
         }
       }
-      if (changed) localStorage.setItem(REMINDED_STORAGE_KEY, JSON.stringify([...remindedIds]))
+      if (changed) localStorage.setItem(rKey, JSON.stringify([...remindedIds]))
     }
 
     checkAlerts()
     const timer = window.setInterval(checkAlerts, 60_000)
     return () => { mounted = false; window.clearInterval(timer) }
-  }, [alertIds])
+  }, [alertIds, user])
 
   return (
     <AlertContext.Provider value={{ alertIds, toggleAlert, hasAlert, pushSupported, pushPermission }}>

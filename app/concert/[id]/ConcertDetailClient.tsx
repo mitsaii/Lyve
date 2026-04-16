@@ -27,12 +27,19 @@ export default function ConcertDetailClient({ concert }: Props) {
   const saved = isSaved(concert.id)
   const alerted = alertIds.has(concert.id)
   const [showAlertPrompt, setShowAlertPrompt] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
 
   const handleSave = async () => {
-    const isAdded = await toggleSave(concert.id)
-    // 新增收藏且演唱會尚未開賣時，詢問是否開啟搶票提醒
-    if (isAdded && concert.status === 'pending') {
-      setShowAlertPrompt(true)
+    if (isSaving) return  // 防止快速連點重複送出請求
+    setIsSaving(true)
+    try {
+      const isAdded = await toggleSave(concert.id)
+      // 新增收藏且演唱會尚未開賣時，詢問是否開啟搶票提醒
+      if (isAdded && concert.status === 'pending') {
+        setShowAlertPrompt(true)
+      }
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -85,11 +92,11 @@ export default function ConcertDetailClient({ concert }: Props) {
     }
     try {
       await navigator.clipboard.writeText(text)
+      setIgCopied(true)
+      setTimeout(() => setIgCopied(false), 2000)
     } catch {
-      // clipboard 也不可用時靜默失敗
+      // clipboard 不可用時靜默失敗，不顯示「已複製」
     }
-    setIgCopied(true)
-    setTimeout(() => setIgCopied(false), 2000)
   }
 
   const infoRows = [
@@ -238,7 +245,8 @@ export default function ConcertDetailClient({ concert }: Props) {
         )}
         <button
           onClick={handleSave}
-          className={`${isTicketingPlatform(concert.platform) ? 'px-5' : 'flex-1'} py-4 rounded-xl font-bold transition-all hover:scale-110 flex items-center justify-center`}
+          disabled={isSaving}
+          className={`${isTicketingPlatform(concert.platform) ? 'px-5' : 'flex-1'} py-4 rounded-xl font-bold transition-all hover:scale-110 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed`}
           style={{ background: 'var(--surface)', color: saved ? 'var(--accent)' : 'var(--muted)' }}
           title={saved ? t('取消收藏', 'Unsave') : t('收藏', 'Save')}
         >

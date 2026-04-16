@@ -43,7 +43,7 @@ def upsert_concerts(records: list, supabase_url: str, api_key: str) -> bool:
     )
     try:
         resp = urllib.request.urlopen(req, timeout=30)
-        print(f"  ✓ Supabase upsert OK ({resp.status}) — {len(records)} 筆")
+        print(f"  ✓ Supabase upsert OK ({resp.getcode()}) — {len(records)} 筆")
         return True
     except urllib.error.HTTPError as e:
         body = e.read().decode("utf-8", errors="replace")
@@ -67,7 +67,7 @@ def delete_expired(supabase_url: str, api_key: str) -> None:
     )
     try:
         resp = urllib.request.urlopen(req, timeout=15)
-        print(f"  ✓ 清理過期資料完成 ({resp.status})")
+        print(f"  ✓ 清理過期資料完成 ({resp.getcode()})")
     except Exception as e:
         print(f"  ✗ 清理錯誤: {e}")
 

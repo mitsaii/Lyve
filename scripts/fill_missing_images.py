@@ -111,7 +111,7 @@ for i, cs in enumerate(eventbl_starts):
     # Artist = part before ："
     for sep in ("：", ":", " - "):
         if sep in raw_title:
-            artist = raw_title.split(sep, 0)[0].strip()
+            artist = raw_title.split(sep, 1)[0].strip()
             break
     else:
         artist = raw_title.strip()

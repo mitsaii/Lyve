@@ -8,7 +8,15 @@ import { ConcertModal } from '@/components/concerts/ConcertModal'
 import { SectionLabel } from '@/components/ui/SectionLabel'
 import { IconCalendar } from '@/components/ui/Icons'
 import { createClient } from '@/lib/supabase/client'
-import { deduplicateConcerts, getVisiblePageItems } from '@/lib/utils'
+import { deduplicateConcerts, getVisiblePageItems, parseFirstDate } from '@/lib/utils'
+
+// date_str → "YYYY/MM"（統一補零，避免 "2026/4/25" 與 "2026/04/25" 分到不同組）
+function toMonthKey(dateStr: string): string {
+  const d = parseFirstDate(dateStr)
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  return `${y}/${m}`
+}
 
 const CONCERTS_PER_PAGE = 10
 
@@ -71,7 +79,7 @@ export default function CalendarPage() {
   const groupedConcerts = useMemo(() => {
     const groups: Record<string, Concert[]> = {}
     cityFilteredConcerts.forEach((concert) => {
-      const month = concert.date_str.substring(0, 7)
+      const month = toMonthKey(concert.date_str)
       if (!groups[month]) groups[month] = []
       groups[month].push(concert)
     })
@@ -98,7 +106,7 @@ export default function CalendarPage() {
   const paginatedGrouped = useMemo(() => {
     const groups: Record<string, Concert[]> = {}
     paginatedConcerts.forEach((concert) => {
-      const month = concert.date_str.substring(0, 7)
+      const month = toMonthKey(concert.date_str)
       if (!groups[month]) groups[month] = []
       groups[month].push(concert)
     })

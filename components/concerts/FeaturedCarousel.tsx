@@ -23,7 +23,7 @@ export function FeaturedCarousel({ concerts, onSelect }: FeaturedCarouselProps) 
   }, [])
 
   const next = useCallback(() => {
-    goTo((prev => (prev + 1) % concerts.length)(current))
+    goTo((current + 1) % concerts.length)
   }, [current, concerts.length, goTo])
 
   const prev = useCallback(() => {

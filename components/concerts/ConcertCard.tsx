@@ -20,13 +20,20 @@ export function ConcertCard({ concert, onClick }: ConcertCardProps) {
   const { isSaved, toggleSave } = useSaved()
   const saved = isSaved(concert.id)
   const [showAlertPrompt, setShowAlertPrompt] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
 
   const handleSaveClick = async (e: React.MouseEvent) => {
     e.stopPropagation()
-    const isAdded = await toggleSave(concert.id)
-    // 新增收藏且演唱會尚未開賣時，詢問是否開啟搶票提醒
-    if (isAdded && concert.status === 'pending') {
-      setShowAlertPrompt(true)
+    if (isSaving) return  // 防止快速連點重複送出請求
+    setIsSaving(true)
+    try {
+      const isAdded = await toggleSave(concert.id)
+      // 新增收藏且演唱會尚未開賣時，詢問是否開啟搶票提醒
+      if (isAdded && concert.status === 'pending') {
+        setShowAlertPrompt(true)
+      }
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -77,7 +84,8 @@ export function ConcertCard({ concert, onClick }: ConcertCardProps) {
         <div className="flex items-center gap-2">
           <button
             onClick={handleSaveClick}
-            className="px-3 py-1.5 rounded-lg text-sm transition-all hover:scale-110 flex items-center justify-center"
+            disabled={isSaving}
+            className="px-3 py-1.5 rounded-lg text-sm transition-all hover:scale-110 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
             style={{ background: 'var(--faint)', color: saved ? 'var(--accent)' : 'var(--muted)' }}
           >
             <IconHeart filled={saved} className="w-4 h-4" />

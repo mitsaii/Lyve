@@ -54,7 +54,11 @@ def main():
     else:
         today_str = date.today().strftime("%Y%m%d")
 
-    today_dt   = date(int(today_str[:4]), int(today_str[4:6]), int(today_str[6:]))
+    try:
+        today_dt = date(int(today_str[:4]), int(today_str[4:6]), int(today_str[6:]))
+    except (ValueError, IndexError):
+        print(f"❌ 無效的日期格式: {today_str}，應為 YYYYMMDD（例如 20260416）")
+        return
     yest_str   = (today_dt - timedelta(days=1)).strftime("%Y%m%d")
 
     curr = load_day(today_str)

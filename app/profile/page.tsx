@@ -26,12 +26,17 @@ function GoogleIcon() {
 export default function ProfilePage() {
   const { t } = useLang()
   const { user, loading, signInWithGoogle, signOut } = useAuth()
-  const { savedIds } = useSaved()
+  const { savedIds, savedSynced } = useSaved()
   const [concerts, setConcerts] = useState<Concert[]>([])
   const [selectedConcert, setSelectedConcert] = useState<Concert | null>(null)
 
   useEffect(() => {
-    if (!user || savedIds.size === 0) {
+    // 等 DB 同步完成後再判斷，避免登入後短暫顯示「空收藏」
+    if (!user || !savedSynced) {
+      setConcerts([])
+      return
+    }
+    if (savedIds.size === 0) {
       setConcerts([])
       return
     }
@@ -50,18 +55,19 @@ export default function ProfilePage() {
     }
 
     fetchSavedConcerts()
-  }, [savedIds, user])
+  }, [savedIds, savedSynced, user])
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div
-          className="w-6 h-6 rounded-full border-2 animate-spin"
-          style={{ borderColor: 'var(--accent)', borderTopColor: 'transparent' }}
-        />
-      </div>
-    )
-  }
+  const Spinner = () => (
+    <div className="min-h-screen flex items-center justify-center">
+      <div
+        className="w-6 h-6 rounded-full border-2 animate-spin"
+        style={{ borderColor: 'var(--accent)', borderTopColor: 'transparent' }}
+      />
+    </div>
+  )
+
+  // Auth 尚未初始化 or 已登入但收藏尚未從 DB 同步完成
+  if (loading || (user && !savedSynced)) return <Spinner />
 
   if (!user) {
     return (

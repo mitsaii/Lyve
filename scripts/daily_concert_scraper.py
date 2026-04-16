@@ -3117,7 +3117,6 @@ def cleanup_expired_concerts(supabase_url: str, api_key: str) -> None:
     刪除演唱會日期超過 7 天的過期資料。
     date_str 格式 "YYYY/MM/DD" — 字串排序等於日期排序，可直接用 lt. 比較。
     """
-    from datetime import timedelta
     cutoff = (date.today() - timedelta(days=7)).strftime("%Y/%m/%d")
     endpoint = (
         supabase_url.rstrip("/")

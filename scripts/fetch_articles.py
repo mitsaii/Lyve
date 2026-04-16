@@ -1,24 +1,20 @@
 #!/usr/bin/env python3
 """
-Fetches kpopn.com articles and extracts Taiwan concert info.
-Usage: python3 scripts/fetch_articles.py
-"""
-"""
 Batch-scans kpopn.com listing pages to find Taiwan concert articles.
 Usage:
   python3 scripts/fetch_articles.py             # scan pages 1-8, output JSON
   python3 scripts/fetch_articles.py --pages 15  # scan first 15 pages
 """
-SSL_CTX.verify_mode = ssl.CERT_NONE
+import re
+import json
+import ssl
+import sys
+import time
+import urllib.request
 
 SSL_CTX = ssl.create_default_context()
 SSL_CTX.check_hostname = False
 SSL_CTX.verify_mode = ssl.CERT_NONE
-import re
-import json
-import sys
-
-import time
 HEADERS = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"}
 
 TW_KEYWORDS = ["台北", "高雄", "台灣", "台中", "桃園", "林口", "開唱", "演唱會"]
@@ -35,7 +31,7 @@ def strip_tags(html):
 def clean(s):
     return re.sub(r"\s+", " ", s).strip()
 
-def extract_context(text, keyword, window=150):
+def extract_context(url, text=None, keyword=None, window=150):
     try:
         html = fetch(url)
         # Get title
@@ -112,7 +108,7 @@ if __name__ == "__main__":
     results = []
     for url in ARTICLE_URLS:
         print(f"Fetching: {url.split('/')[-1]}", file=sys.stderr)
-        result = analyze_article(url)
+        result = extract_context(url)
         if result and "error" not in result:
             results.append(result)
             print(f"  ✓ MATCH: {result['title'][:60]}", file=sys.stderr)
@@ -124,7 +120,3 @@ if __name__ == "__main__":
             print(f"  - Not a Taiwan concert article", file=sys.stderr)
     
     print(json.dumps(results, ensure_ascii=False, indent=2))
-
-    # Additional code for scanning pages and analyzing articles
-    # (The rest of the new code goes here)
-            print(f"  - Not a Taiwan concert article", file=sys.stderr)

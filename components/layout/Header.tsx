@@ -3,7 +3,7 @@
 import { useTheme } from '@/contexts/ThemeContext'
 import { useLang } from '@/contexts/LangContext'
 import { usePathname, useRouter } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 
 export function Header() {
@@ -12,31 +12,31 @@ export function Header() {
   const pathname = usePathname()
   const router = useRouter()
   const [isVisible, setIsVisible] = useState(true)
-  const [lastScrollY, setLastScrollY] = useState(0)
+  const lastScrollYRef = useRef(0)
 
   const isHomePage = pathname === '/'
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY
-      
+
       if (currentScrollY < 10) {
         // 在頂部時始終顯示
         setIsVisible(true)
-      } else if (currentScrollY > lastScrollY) {
+      } else if (currentScrollY > lastScrollYRef.current) {
         // 向下滾動時隱藏
         setIsVisible(false)
       } else {
         // 向上滾動時顯示
         setIsVisible(true)
       }
-      
-      setLastScrollY(currentScrollY)
+
+      lastScrollYRef.current = currentScrollY
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [lastScrollY])
+  }, [])
 
   return (
     <header

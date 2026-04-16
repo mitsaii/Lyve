@@ -20,6 +20,7 @@ export function ConcertModal({ concert, onClose }: ConcertModalProps) {
   const { lang, t } = useLang()
   const { isSaved, toggleSave } = useSaved()
   const [showAlertPrompt, setShowAlertPrompt] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
 
   useEffect(() => {
     if (concert) {
@@ -80,9 +81,15 @@ export function ConcertModal({ concert, onClose }: ConcertModalProps) {
 
   const handleSave = async (e: React.MouseEvent) => {
     e.stopPropagation()
-    const isAdded = await toggleSave(concert.id)
-    if (isAdded && concert.status === 'pending') {
-      setShowAlertPrompt(true)
+    if (isSaving) return  // 防止快速連點重複送出請求
+    setIsSaving(true)
+    try {
+      const isAdded = await toggleSave(concert.id)
+      if (isAdded && concert.status === 'pending') {
+        setShowAlertPrompt(true)
+      }
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -242,7 +249,8 @@ export function ConcertModal({ concert, onClose }: ConcertModalProps) {
             )}
             <button
               onClick={handleSave}
-              className={`${isTicketingPlatform(concert.platform) ? 'px-6' : 'flex-1'} py-4 rounded-xl font-bold transition-all hover:scale-110 flex items-center justify-center`}
+              disabled={isSaving}
+              className={`${isTicketingPlatform(concert.platform) ? 'px-6' : 'flex-1'} py-4 rounded-xl font-bold transition-all hover:scale-110 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed`}
               style={{ background: 'var(--faint)', color: saved ? 'var(--accent)' : 'var(--muted)' }}
             >
               <IconHeart filled={saved} className="w-5 h-5" />
