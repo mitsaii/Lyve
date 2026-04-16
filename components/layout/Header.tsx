@@ -43,7 +43,8 @@ export function Header() {
       className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md transition-transform duration-300"
       style={{
         background: 'var(--header-bg)',
-        transform: isVisible ? 'translateY(0)' : 'translateY(-100%)'
+        transform: isVisible ? 'translateY(0)' : 'translateY(-100%)',
+        paddingTop: 'env(safe-area-inset-top)',
       }}
     >
       {/* 內容限制在 480px 欄位內，logo 置左 */}

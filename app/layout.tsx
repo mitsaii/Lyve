@@ -90,7 +90,7 @@ export default function RootLayout({
                 <AlertProvider>
                   <div className="max-w-[480px] mx-auto min-h-screen" style={{ background: 'var(--bg)' }}>
                     <Header />
-                    <div className="pt-28" style={{ paddingBottom: 'calc(6rem + env(safe-area-inset-bottom))' }}>
+                    <div style={{ paddingTop: 'calc(7rem + env(safe-area-inset-top))', paddingBottom: 'calc(6rem + env(safe-area-inset-bottom))' }}>
                       {children}
                       <Footer />
                     </div>

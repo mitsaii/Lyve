@@ -9,14 +9,14 @@ import { ConcertId } from '@/types/concert'
 interface SavedContextType {
   savedIds: Set<ConcertId>
   savedSynced: boolean  // DB 同步是否完成（避免登入後短暫顯示空收藏）
-  toggleSave: (concertId: ConcertId) => Promise<void>
+  toggleSave: (concertId: ConcertId) => Promise<boolean>  // true = 新增收藏, false = 取消收藏
   isSaved: (concertId: ConcertId) => boolean
 }
 
 const SavedContext = createContext<SavedContextType>({
   savedIds: new Set(),
   savedSynced: false,
-  toggleSave: async () => {},
+  toggleSave: async () => false,
   isSaved: () => false,
 })
 
@@ -50,17 +50,18 @@ export function SavedProvider({ children }: { children: ReactNode }) {
       })
   }, [user])
 
-  const toggleSave = async (concertId: ConcertId) => {
+  const toggleSave = async (concertId: ConcertId): Promise<boolean> => {
     // 未登入時導向個人中心
     if (!user) {
       router.push('/profile')
-      return
+      return false
     }
 
     const supabase = createClient()
     const newSavedIds = new Set(savedIds)
+    const isAdding = !newSavedIds.has(concertId)
 
-    if (newSavedIds.has(concertId)) {
+    if (!isAdding) {
       newSavedIds.delete(concertId)
       await supabase
         .from('saved_concerts')
@@ -75,6 +76,7 @@ export function SavedProvider({ children }: { children: ReactNode }) {
     }
 
     setSavedIds(newSavedIds)
+    return isAdding
   }
 
   const isSaved = (concertId: ConcertId) => savedIds.has(concertId)

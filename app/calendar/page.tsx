@@ -17,6 +17,7 @@ export default function CalendarPage() {
   const [concerts, setConcerts] = useState<Concert[]>([])
   const [selectedConcert, setSelectedConcert] = useState<Concert | null>(null)
   const [selectedMonth, setSelectedMonth] = useState<string>('all')
+  const [selectedCity, setSelectedCity] = useState<string>('all')
   const [currentPage, setCurrentPage] = useState(1)
   const listRef = useRef<HTMLDivElement | null>(null)
   const hasMountedPaginationRef = useRef(false)
@@ -34,10 +35,10 @@ export default function CalendarPage() {
     listRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }, [currentPage])
 
-  // 切換月份時重置頁碼
+  // 切換篩選時重置頁碼
   useEffect(() => {
     setCurrentPage(1)
-  }, [selectedMonth])
+  }, [selectedMonth, selectedCity])
 
   const fetchConcerts = async () => {
     const supabase = createClient()
@@ -51,19 +52,34 @@ export default function CalendarPage() {
     }
   }
 
-  // 分組演出 (依月份)
+  // 城市選項（從資料動態產生，固定排序）
+  const CITY_ORDER = ['台北', '新北', '桃園', '台中', '高雄']
+  const availableCities = useMemo(() => {
+    const citySet = new Set(concerts.map((c) => c.city_zh).filter(Boolean))
+    const ordered = CITY_ORDER.filter((c) => citySet.has(c))
+    const rest = [...citySet].filter((c) => !CITY_ORDER.includes(c)).sort()
+    return [...ordered, ...rest]
+  }, [concerts])
+
+  // 套用城市篩選
+  const cityFilteredConcerts = useMemo(() => {
+    if (selectedCity === 'all') return concerts
+    return concerts.filter((c) => c.city_zh === selectedCity)
+  }, [concerts, selectedCity])
+
+  // 分組演出 (依月份，已套用城市篩選)
   const groupedConcerts = useMemo(() => {
     const groups: Record<string, Concert[]> = {}
-    concerts.forEach((concert) => {
+    cityFilteredConcerts.forEach((concert) => {
       const month = concert.date_str.substring(0, 7)
       if (!groups[month]) groups[month] = []
       groups[month].push(concert)
     })
     return groups
-  }, [concerts])
+  }, [cityFilteredConcerts])
 
   const months = useMemo(() => Object.keys(groupedConcerts).sort(), [groupedConcerts])
-  const displayedMonths = selectedMonth === 'all' ? months : [selectedMonth]
+  const displayedMonths = selectedMonth === 'all' ? months : months.filter((m) => m === selectedMonth)
 
   // 展開分頁用的扁平清單
   const allDisplayedConcerts = useMemo(
@@ -96,6 +112,35 @@ export default function CalendarPage() {
       <div className="pb-24 min-h-screen">
         <div className="p-4">
           <SectionLabel icon={<IconCalendar className="w-4 h-4" />} text={t('演出日曆', 'Concert Calendar')} />
+
+          {/* 城市篩選下拉 */}
+          <div className="mb-4">
+            <div className="relative inline-block">
+              <select
+                value={selectedCity}
+                onChange={(e) => setSelectedCity(e.target.value)}
+                className="appearance-none pl-4 pr-9 py-2 rounded-full text-sm font-medium cursor-pointer transition-all"
+                style={{
+                  background: selectedCity !== 'all' ? 'var(--accent)' : 'var(--faint)',
+                  color: selectedCity !== 'all' ? '#fff' : 'var(--text)',
+                  border: 'none',
+                  outline: 'none',
+                }}
+              >
+                <option value="all">{t('全部城市', 'All Cities')}</option>
+                {availableCities.map((city) => (
+                  <option key={city} value={city}>{city}</option>
+                ))}
+              </select>
+              {/* 自訂下拉箭頭 */}
+              <span
+                className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs"
+                style={{ color: selectedCity !== 'all' ? '#fff' : 'var(--muted)' }}
+              >
+                ▾
+              </span>
+            </div>
+          </div>
 
           {/* 月份篩選 */}
           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide mb-6">

@@ -1,8 +1,10 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Concert, ConcertId } from '@/types/concert'
+import { useAuth } from '@/contexts/AuthContext'
 
 const REMINDER_OFFSET_MS = 10 * 60 * 1000
 const REMINDED_STORAGE_KEY = 'alert-reminded-ids'
@@ -80,6 +82,8 @@ export function AlertProvider({ children }: { children: ReactNode }) {
   const [alertIds, setAlertIds] = useState<Set<ConcertId>>(new Set())
   const [pushSupported, setPushSupported] = useState(false)
   const [pushPermission, setPushPermission] = useState<NotificationPermission | 'unsupported'>('unsupported')
+  const { user } = useAuth()
+  const router = useRouter()
 
   const parseSaleDateTime = (concert: Concert): Date | null => {
     if (!concert.sale_start_at) return null
@@ -126,6 +130,12 @@ export function AlertProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const toggleAlert = async (concertId: ConcertId) => {
+    // 未登入時導向個人中心
+    if (!user) {
+      router.push('/profile')
+      return
+    }
+
     const isAdding = !alertIds.has(concertId)
     setAlertIds((prev) => {
       const next = new Set(prev)

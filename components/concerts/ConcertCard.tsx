@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { Concert } from '@/types/concert'
 import { useLang } from '@/contexts/LangContext'
 import { useSaved } from '@/contexts/SavedContext'
@@ -7,6 +8,7 @@ import { StatusTag } from '../ui/StatusTag'
 import { statusLabel, tagColor } from '@/lib/utils'
 import { IconPin, IconCalendar, IconTag, IconHeart } from '../ui/Icons'
 import { ConcertAvatar } from './ConcertAvatar'
+import { AlertPromptSheet } from './AlertPromptSheet'
 
 interface ConcertCardProps {
   concert: Concert
@@ -17,13 +19,19 @@ export function ConcertCard({ concert, onClick }: ConcertCardProps) {
   const { lang, t } = useLang()
   const { isSaved, toggleSave } = useSaved()
   const saved = isSaved(concert.id)
+  const [showAlertPrompt, setShowAlertPrompt] = useState(false)
 
   const handleSaveClick = async (e: React.MouseEvent) => {
     e.stopPropagation()
-    await toggleSave(concert.id)
+    const isAdded = await toggleSave(concert.id)
+    // 新增收藏且演唱會尚未開賣時，詢問是否開啟搶票提醒
+    if (isAdded && concert.status === 'pending') {
+      setShowAlertPrompt(true)
+    }
   }
 
   return (
+    <>
     <div
       onClick={onClick}
       className="p-4 rounded-2xl cursor-pointer transition-all hover:scale-[1.02] fade-up"
@@ -83,5 +91,13 @@ export function ConcertCard({ concert, onClick }: ConcertCardProps) {
         </div>
       </div>
     </div>
+
+    {showAlertPrompt && (
+      <AlertPromptSheet
+        concert={concert}
+        onClose={() => setShowAlertPrompt(false)}
+      />
+    )}
+    </>
   )
 }

@@ -241,6 +241,9 @@ def fetch(url: str, timeout: int = 20, retries: int = 2, referer: str | None = N
 
 
 def strip_tags(html: str) -> str:
+    # 先移除 <script>/<style> 區塊（含內容），再移除剩餘的 HTML 標籤
+    html = re.sub(r"<script[^>]*>.*?</script>", " ", html, flags=re.DOTALL | re.IGNORECASE)
+    html = re.sub(r"<style[^>]*>.*?</style>", " ", html, flags=re.DOTALL | re.IGNORECASE)
     return re.sub(r"<[^>]+>", " ", html_lib.unescape(html))
 
 
@@ -361,7 +364,8 @@ def parse_sale_start(text: str) -> str | None:
     """
     kw = (
         r'(?:開賣|售票開始|搶票|票券開賣|票務開始|購票開始|會員預售|公開發售|'
-        r'售票日期|公開售票|網路售票|一般售票|現場售票開始|預售開始|'
+        r'售票日期|售票時間|開售時間|購票時間|開售日期|購票日期|'
+        r'公開售票|網路售票|一般售票|現場售票開始|預售開始|'
         r'on[\s\-]+sale|sale[\s\-]+start|tickets?\s+on\s+sale)'
     )
 
@@ -597,6 +601,11 @@ def _parse_kpopn_article(url: str, title: str) -> dict | None:
 def _extract_artist_from_title(title: str) -> str:
     # Common kpopn title patterns: "Artist名稱 台灣演唱會 ..."
     # Try splitting on spaces/separators, take the first meaningful segment
+    # 先清除開頭的日期前綴，如 "2026-05-02(六) " 或 "2026/04/25（六）"
+    title = re.sub(
+        r'^20\d{2}[-/]\d{2}[-/]\d{2}[\(（【]?[^)）】\s]{0,10}[\)）】]?\s*',
+        '', title
+    ).strip()
     title = re.sub(r"\s*[\|｜]\s*.*$", "", title)  # remove after pipe
     # Remove trailing: "台灣演唱會", "演唱會", "巡迴演唱會", "台北" etc.
     artist = re.split(r"\s+(?:台灣?|臺灣?|高雄|台中|林口|演唱會|巡演|巡迴|開唱|concert|tour)", title, flags=re.IGNORECASE)[0]
@@ -1801,7 +1810,7 @@ def _parse_kham_detail(url: str, html: str) -> dict | None:
     if not (has_tw and has_concert):
         return None
 
-    # Title from <title> or og:title
+    # Title from og:title → <title> → <h1>/<h2>
     title = ""
     og_title = re.search(r'<meta[^>]+property=["\']og:title["\'][^>]+content=["\']([^"\']+)["\']', html)
     if og_title:
@@ -1809,9 +1818,23 @@ def _parse_kham_detail(url: str, html: str) -> dict | None:
     if not title:
         title_m = re.search(r'<title[^>]*>(.*?)</title>', html, re.DOTALL)
         title = clean(strip_tags(title_m.group(1))) if title_m else ""
-    # Strip site name
+    # Strip site name suffix/prefix
     title = re.sub(r'\s*[-|｜]\s*寬宏.*$', '', title).strip()
     title = re.sub(r'^寬宏\s*[|｜]\s*', '', title).strip()
+    # If title is still the site name (og:title returned only "寬宏售票系統"), fall back to H1/H2
+    _KHAM_SITE_NAMES = {'寬宏售票系統', '寬宏售票', 'kham', 'kham.com.tw'}
+    if not title or title.lower() in _KHAM_SITE_NAMES:
+        h1_m = re.search(r'<h1[^>]*>(.*?)</h1>', html, re.DOTALL | re.IGNORECASE)
+        h2_m = re.search(r'<h2[^>]*>(.*?)</h2>', html, re.DOTALL | re.IGNORECASE)
+        for m in [h1_m, h2_m]:
+            if m:
+                candidate = clean(strip_tags(m.group(1)))
+                candidate = re.sub(r'\s*[-|｜]\s*寬宏.*$', '', candidate).strip()
+                if candidate and len(candidate) >= 3 and candidate.lower() not in _KHAM_SITE_NAMES:
+                    title = candidate
+                    break
+    if not title or title.lower() in _KHAM_SITE_NAMES:
+        return None  # 無法抓到有意義的標題，跳過此活動
 
     # Venue: look for 台北/高雄/台中 + venue keyword
     venues = re.findall(
@@ -1928,6 +1951,11 @@ def _parse_indievox_event(url: str, html: str) -> dict | None:
                 if not og_img:
                     og_img = re.search(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']', html)
                 image_url = og_img.group(1) if og_img else None
+                # 清除標題開頭的日期前綴，如 "2026/04/25（六）" 或 "2026-04-25(六) "
+                name = re.sub(
+                    r'^20\d{2}[-/]\d{2}[-/]\d{2}[\(（【]?[^)）】\s]{0,10}[\)）】]?\s*',
+                    '', name
+                ).strip()
                 artist = _extract_artist_from_title(name) or name[:40]
                 genre = classify_genre(artist, text[:400])
                 return {
@@ -2146,8 +2174,24 @@ def scrape_legacy() -> list[dict]:
             # 標題：在「主辦單位」之前的最後一段非空文字
             organizer_split = re.split(r'主辦單位：', prev)
             title_block = organizer_split[0].strip() if organizer_split else prev.strip()
-            # 取最後一個非空行作為標題
-            title_lines = [l.strip() for l in title_block.split("\n") if l.strip()]
+            # title_block 因 clean() 展平為單行，可能帶有前一筆活動的日期前綴
+            # 例: "2026-05-02(六) 鄭興 2026「來這個星球一陣子」演唱會"
+            # → 先把開頭的 YYYY-MM-DD(day) 或 YYYY/MM/DD(day) 去掉
+            title_block = re.sub(
+                r'^20\d{2}[-/]\d{2}[-/]\d{2}[\(（][^)）]{0,10}[\)）]?\s*',
+                '', title_block.strip()
+            )
+            # 也移除 "YYYY年MM月DD日(day)" 格式
+            title_block = re.sub(
+                r'^20\d{2}年\d{1,2}月\d{1,2}日[\(（][^)）]{0,10}[\)）]?\s*',
+                '', title_block
+            )
+            # 取最後一個非空行作為標題（跳過 JS/程式碼殘留）
+            _JS_PATTERN = re.compile(r'function\s*\(|w\[l\]|gtm\.|<!\[CDATA|{%|var\s+\w')
+            title_lines = [
+                l.strip() for l in title_block.split("\n")
+                if l.strip() and not _JS_PATTERN.search(l)
+            ]
             title = title_lines[-1][:80] if title_lines else ""
             if not title or len(title) < 3:
                 continue
@@ -2429,8 +2473,13 @@ def scrape_nuzone() -> list[dict]:
         if idx < 0:
             continue
         snippet = text_ad[max(0, idx - 150):idx + 50]
-        # 活動名稱：取最後一個有意義的句子
-        lines = [l.strip() for l in snippet.split("\n") if l.strip() and len(l.strip()) > 3]
+        # 活動名稱：取最後一個有意義的句子（排除導覽列/UI 殘留文字）
+        _NAV_WORDS = {'contact', 'download', 'gallery', 'use tab', '下載', '聯絡', '購票資訊', '部落格', 'more', '更多'}
+        lines = [
+            l.strip() for l in snippet.split("\n")
+            if l.strip() and len(l.strip()) > 3
+            and not any(w in l.lower() for w in _NAV_WORDS)
+        ]
         title = lines[-1][:60] if lines else ""
         if not title or "NUZONE" in title:
             continue

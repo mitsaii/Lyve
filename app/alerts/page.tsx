@@ -256,22 +256,24 @@ function AlertCard({
   const saleTimeDisplay = (() => {
     if (!concert.sale_start_at) return lang === 'zh' ? '⏳ 時間待公布' : '⏳ TBA'
     const d = new Date(concert.sale_start_at)
+    if (isNaN(d.getTime())) return lang === 'zh' ? '⏳ 時間待公布' : '⏳ TBA'
     const now = new Date()
     const diff = d.getTime() - now.getTime()
     const dateStr = d.toLocaleDateString('zh-TW', {
       timeZone: 'Asia/Taipei',
-      month: '2-digit', day: '2-digit',
+      year: 'numeric', month: '2-digit', day: '2-digit',
     })
     const timeStr = d.toLocaleTimeString('zh-TW', {
       timeZone: 'Asia/Taipei',
       hour: '2-digit', minute: '2-digit',
+      hour12: false,
     })
     if (diff > 0) {
       const days = Math.floor(diff / 86400000)
       const hours = Math.floor((diff % 86400000) / 3600000)
       const mins = Math.floor((diff % 3600000) / 60000)
       const countdown = days > 0
-        ? (lang === 'zh' ? `還有 ${days} 天` : `In ${days}d`)
+        ? (lang === 'zh' ? `還有 ${days} 天 ${hours} 小時` : `In ${days}d ${hours}h`)
         : hours > 0
           ? (lang === 'zh' ? `還有 ${hours} 小時` : `In ${hours}h`)
           : (lang === 'zh' ? `還有 ${mins} 分` : `In ${mins}m`)
