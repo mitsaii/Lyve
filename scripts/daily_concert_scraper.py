@@ -120,12 +120,40 @@ _JPOP = {
     "sekai no owari",
 }
 _CPOP = {
-    "林俊傑", "jj lin", "五月天", "mayday", "告五人", "茄子蛋", "動力火車",
-    "張惠妹", "a-mei", "周杰倫", "jay chou", "蔡依林", "jolin tsai",
+    "林俊傑", "jj lin", "張惠妹", "a-mei", "周杰倫", "jay chou", "蔡依林", "jolin tsai",
     "張學友", "jacky cheung", "王力宏", "leehom", "孫燕姿", "stefanie sun",
-    "林宥嘉", "楊乃文", "陳奕迅", "eason chan", "草東沒有派對", "落日飛車",
-    "leo王", "熊仔", "陳珊妮", "盧廣仲", "sodagreen", "蘇打綠",
-    "傻子與白痴", "拍謝少年", "大象體操", "老王樂隊", "宇宙人",
+    "林宥嘉", "楊乃文", "陳奕迅", "eason chan", "leo王", "熊仔", "陳珊妮",
+}
+_BANDS = {
+    # 台灣樂團
+    "五月天", "mayday", "告五人", "accusefive", "茄子蛋", "動力火車", "power station",
+    "草東沒有派對", "no party for cao dong", "落日飛車", "sunset rollercoaster",
+    "盧廣仲", "sodagreen", "蘇打綠", "傻子與白痴", "拍謝少年", "sorry youth",
+    "大象體操", "elephant gym", "老王樂隊", "宇宙人", "cosmos people",
+    "魚丁糸", "滅火器", "fire ex", "旺福", "wonfu", "閃靈", "chthonic",
+    "橘子海", "tan lines", "山嵐", "hyper crush", "leo37", "生祥樂隊",
+    "甜約翰", "deca joins", "熱狗", "有你真好", "芒果醬",
+    # 西洋樂團
+    "coldplay", "arctic monkeys", "radiohead", "oasis", "the 1975",
+    "kings of leon", "imagine dragons", "linkin park", "green day",
+    "foo fighters", "red hot chili peppers", "rhcp", "maroon 5",
+    "the killers", "thirty seconds to mars", "30 seconds to mars",
+    "fall out boy", "panic! at the disco", "my chemical romance",
+    "paramore", "weezer", "blink-182", "sum 41", "simple plan",
+    "muse", "blur", "the strokes", "vampire weekend", "mgmt",
+    "the national", "bon iver", "fleet foxes", "beach house",
+    "tame impala", "alvvays", "japanese breakfast", "big thief",
+    "phoebe bridgers", "boygenius", "death cab for cutie",
+    "modest mouse", "arcade fire", "wolf parade", "broken social scene",
+    "phoenix", "daft punk", "air", "justice", "mgmt", "two door cinema club",
+    "the xx", "glass animals", "alt-j", "foals", "bastille",
+    "nothing but thieves", "frank turner", "the lumineers", "mumford",
+    "of monsters and men", "the head and the heart", "iron & wine",
+    "explosions in the sky", "sigur rós", "mogwai",
+    "bring me the horizon", "bmth", "a day to remember", "adtr",
+    "pierce the veil", "sleeping with sirens", "crown the empire",
+    "portishead", "massive attack", "tricky", "thievery corporation",
+    "röyksopp", "beach boys",
 }
 _FESTIVAL_KW = {"音樂節", "音樂祭", "festival", "fest "}
 
@@ -287,6 +315,8 @@ def classify_genre(artist: str, text: str = "") -> str:
         return "kpop"
     if any(k in combined for k in _JPOP):
         return "jpop"
+    if any(k in combined for k in _BANDS):
+        return "bands"
     if any(k in combined for k in _CPOP):
         return "cpop"
     # Heuristics: all-Chinese artist name → cpop; ends in common JP patterns → jpop

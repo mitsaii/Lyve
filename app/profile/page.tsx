@@ -11,6 +11,7 @@ import { ConcertModal } from '@/components/concerts/ConcertModal'
 import { SectionLabel } from '@/components/ui/SectionLabel'
 import { IconHeart, IconMusic } from '@/components/ui/Icons'
 import { createClient } from '@/lib/supabase/client'
+import { MyTicketsSection } from '@/components/tickets/MyTicketsSection'
 
 function GoogleIcon() {
   return (
@@ -147,6 +148,9 @@ export default function ProfilePage() {
               {t('登出', 'Sign out')}
             </button>
           </div>
+
+          {/* 我的門票 */}
+          <MyTicketsSection />
 
           {/* 收藏的演出 */}
           <SectionLabel

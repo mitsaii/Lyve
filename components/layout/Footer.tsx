@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useLang } from '@/contexts/LangContext'
 import { useTheme } from '@/contexts/ThemeContext'
 
@@ -14,6 +15,69 @@ const SOCIALS = [
     ),
   },
 ]
+
+/** 桃紅漸層 hover 效果 — inline handlers 讓純 CSS 難以做到的漸層文字 */
+function GradientLink({
+  href,
+  children,
+  external,
+}: {
+  href: string
+  children: React.ReactNode
+  external?: boolean
+}) {
+  const baseStyle: React.CSSProperties = {
+    color: 'var(--muted)',
+    fontSize: '11px',
+    textDecoration: 'none',
+    transition: 'color 0.2s',
+    WebkitBackgroundClip: 'unset',
+    backgroundClip: 'unset',
+    WebkitTextFillColor: 'unset',
+  }
+
+  const applyGradient = (el: HTMLAnchorElement) => {
+    el.style.background = 'linear-gradient(90deg, var(--accent), var(--accent2))'
+    el.style.WebkitBackgroundClip = 'text'
+    el.style.backgroundClip = 'text'
+    el.style.WebkitTextFillColor = 'transparent'
+    el.style.color = 'transparent'
+  }
+
+  const removeGradient = (el: HTMLAnchorElement) => {
+    el.style.background = ''
+    el.style.WebkitBackgroundClip = ''
+    el.style.backgroundClip = ''
+    el.style.WebkitTextFillColor = ''
+    el.style.color = 'var(--muted)'
+  }
+
+  if (external) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={baseStyle}
+        onMouseEnter={e => applyGradient(e.currentTarget)}
+        onMouseLeave={e => removeGradient(e.currentTarget)}
+      >
+        {children}
+      </a>
+    )
+  }
+
+  return (
+    <Link
+      href={href}
+      style={baseStyle}
+      onMouseEnter={e => applyGradient(e.currentTarget as HTMLAnchorElement)}
+      onMouseLeave={e => removeGradient(e.currentTarget as HTMLAnchorElement)}
+    >
+      {children}
+    </Link>
+  )
+}
 
 export function Footer() {
   const { t } = useLang()
@@ -31,10 +95,13 @@ export function Footer() {
         paddingBottom: 'calc(5.5rem + env(safe-area-inset-bottom))',
       }}
     >
-      {/* 裝飾波浪頂部 */}
-      <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, var(--accent), var(--accent2), var(--accent3), transparent)' }} />
+      {/* 裝飾彩虹線 */}
+      <div
+        className="absolute top-0 left-0 right-0 h-px"
+        style={{ background: 'linear-gradient(90deg, transparent, var(--accent), var(--accent2), var(--accent3), transparent)' }}
+      />
 
-      {/* 背景裝飾圓點 */}
+      {/* 背景光暈 */}
       <div className="absolute inset-0 pointer-events-none select-none overflow-hidden" aria-hidden>
         {[
           { top: '18%', left: '8%', size: 48, color: 'var(--accent)', opacity: isDark ? 0.07 : 0.06 },
@@ -57,7 +124,7 @@ export function Footer() {
         ))}
       </div>
 
-      <div className="relative z-10 px-5 pt-7 pb-2 flex flex-col gap-6">
+      <div className="relative z-10 px-5 pt-7 pb-2 flex flex-col gap-5">
         {/* 品牌區 */}
         <div className="flex flex-col gap-1.5">
           <div className="flex items-center gap-2">
@@ -80,12 +147,23 @@ export function Footer() {
           </p>
         </div>
 
+        {/* 連結列 */}
+        <div className="flex items-center gap-4 flex-wrap">
+          <GradientLink href="/about">
+            {t('關於我們', 'About')}
+          </GradientLink>
+          <span style={{ color: 'var(--faint)', fontSize: '10px' }}>·</span>
+          <GradientLink href="https://www.threads.com/@lyve__________?igshid=NTc4MTIwNjQ2YQ==" external>
+            Threads
+          </GradientLink>
+        </div>
+
         {/* 分隔線 */}
         <div className="h-px w-full" style={{ background: 'var(--faint)' }} />
 
-        {/* 底部：社群 + Copyright */}
+        {/* 底部：社群圖示 + Copyright + 版本號 */}
         <div className="flex items-center justify-between">
-          {/* 社群媒體 */}
+          {/* 社群媒體圖示 */}
           <div className="flex items-center gap-3">
             {SOCIALS.map((s) => (
               <a
@@ -95,15 +173,12 @@ export function Footer() {
                 rel="noopener noreferrer"
                 aria-label={s.label}
                 className="flex items-center justify-center w-7 h-7 rounded-full transition-all"
-                style={{
-                  background: 'var(--faint)',
-                  color: 'var(--muted)',
-                }}
-                onMouseEnter={(e) => {
+                style={{ background: 'var(--faint)', color: 'var(--muted)' }}
+                onMouseEnter={e => {
                   e.currentTarget.style.background = 'var(--accent)'
                   e.currentTarget.style.color = '#fff'
                 }}
-                onMouseLeave={(e) => {
+                onMouseLeave={e => {
                   e.currentTarget.style.background = 'var(--faint)'
                   e.currentTarget.style.color = 'var(--muted)'
                 }}
@@ -113,12 +188,20 @@ export function Footer() {
             ))}
           </div>
 
-          {/* Copyright */}
-          <p className="text-[10px]" style={{ color: 'var(--muted)' }}>
-            © {new Date().getFullYear()} Lyve
-            <span className="mx-1" style={{ color: 'var(--accent)' }}>♡</span>
-            Taiwan
-          </p>
+          {/* Copyright + 版本號 */}
+          <div className="flex flex-col items-end gap-0.5">
+            <p className="text-[10px]" style={{ color: 'var(--muted)' }}>
+              © {new Date().getFullYear()} Lyve
+              <span className="mx-1" style={{ color: 'var(--accent)' }}>♡</span>
+              Taiwan
+            </p>
+            <p
+              className="text-[9px] font-mono tracking-wider"
+              style={{ color: 'var(--faint)', letterSpacing: '0.05em' }}
+            >
+              v0.1.0-alpha
+            </p>
+          </div>
         </div>
       </div>
     </footer>

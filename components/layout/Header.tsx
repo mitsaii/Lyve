@@ -63,8 +63,8 @@ export function Header() {
           <Image
             src={theme === 'dark' ? '/lyve-logo-dark.png' : '/lyve-logo.png'}
             alt="Lyve"
-            width={120}
-            height={48}
+            width={160}
+            height={64}
             className="object-contain cursor-pointer hover:opacity-80 transition-opacity"
             style={{
               mixBlendMode: theme === 'dark' ? 'normal' : 'multiply'
