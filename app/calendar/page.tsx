@@ -67,13 +67,13 @@ export default function CalendarPage() {
   }
 
   // 城市選項（從資料動態產生，固定排序）
-  const CITY_ORDER = ['台北', '新北', '桃園', '台中', '高雄']
+  const CITY_ORDER = useMemo(() => ['台北', '新北', '桃園', '台中', '高雄'], [])
   const availableCities = useMemo(() => {
     const citySet = new Set(concerts.map((c) => c.city_zh).filter(Boolean))
     const ordered = CITY_ORDER.filter((c) => citySet.has(c))
     const rest = [...citySet].filter((c) => !CITY_ORDER.includes(c)).sort()
     return [...ordered, ...rest]
-  }, [concerts])
+  }, [concerts, CITY_ORDER])
 
   // 套用城市篩選
   const cityFilteredConcerts = useMemo(() => {

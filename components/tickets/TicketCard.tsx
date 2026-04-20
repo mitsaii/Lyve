@@ -27,7 +27,7 @@ function getDateParts(dateStr: string) {
 export function TicketCard({ ticket, onDelete, onClick }: TicketCardProps) {
   const { lang } = useLang()
   const theme = TICKET_COLORS[ticket.color]
-  const { monthEn, monthZh, day, isPast } = getDateParts(ticket.dateStr)
+  const { monthEn, day, isPast } = getDateParts(ticket.dateStr)
 
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation()
