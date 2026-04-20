@@ -78,8 +78,7 @@ export default function AboutPage() {
           className="rounded-2xl p-5 space-y-2"
           style={{
             background: 'var(--faint)',
-            border: '1px solid var(--accent)',
-            borderOpacity: 0.2,
+            border: '1px solid rgba(255,51,85,0.35)',
           }}
         >
           <div className="flex items-center gap-2">

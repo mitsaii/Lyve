@@ -31,24 +31,21 @@ function GradientLink({
     fontSize: '11px',
     textDecoration: 'none',
     transition: 'color 0.2s',
-    WebkitBackgroundClip: 'unset',
-    backgroundClip: 'unset',
-    WebkitTextFillColor: 'unset',
   }
 
   const applyGradient = (el: HTMLAnchorElement) => {
     el.style.background = 'linear-gradient(90deg, var(--accent), var(--accent2))'
-    el.style.WebkitBackgroundClip = 'text'
+    el.style.webkitBackgroundClip = 'text'
     el.style.backgroundClip = 'text'
-    el.style.WebkitTextFillColor = 'transparent'
+    ;(el.style as unknown as Record<string, string>).webkitTextFillColor = 'transparent'
     el.style.color = 'transparent'
   }
 
   const removeGradient = (el: HTMLAnchorElement) => {
     el.style.background = ''
-    el.style.WebkitBackgroundClip = ''
+    el.style.webkitBackgroundClip = ''
     el.style.backgroundClip = ''
-    el.style.WebkitTextFillColor = ''
+    ;(el.style as unknown as Record<string, string>).webkitTextFillColor = ''
     el.style.color = 'var(--muted)'
   }
 
