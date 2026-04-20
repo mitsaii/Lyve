@@ -21,6 +21,7 @@ export function ConcertModal({ concert, onClose }: ConcertModalProps) {
   const { isSaved, toggleSave } = useSaved()
   const [showAlertPrompt, setShowAlertPrompt] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
+  const [igCopied, setIgCopied] = useState(false)
 
   useEffect(() => {
     if (concert) {
@@ -56,12 +57,7 @@ export function ConcertModal({ concert, onClose }: ConcertModalProps) {
         hour12: false,
       })
       if (diff > 0) {
-        const days = Math.floor(diff / 86400000)
-        const hours = Math.floor((diff % 86400000) / 3600000)
-        const countdown = days > 0
-          ? t(`⏳ 還有 ${days} 天 ${hours} 小時`, `⏳ In ${days}d ${hours}h`)
-          : t(`⏳ 還有 ${hours} 小時`, `⏳ In ${hours}h`)
-        return `${dateStr} ${timeStr}　${countdown}`
+        return `${dateStr} ${timeStr}`
       }
       // 已過開賣時間，顯示時間 + 狀態標示
       const statusSuffix = concert.status === 'sold_out'
@@ -120,12 +116,24 @@ export function ConcertModal({ concert, onClose }: ConcertModalProps) {
 
   const handleShareInstagram = async () => {
     const text = `${buildShareText()}\n\n${shareUrl}`
-    try {
-      await navigator.clipboard.writeText(text)
-    } catch {
-      // clipboard write failed, still open Instagram
+    // 手機：用系統原生分享選單（可選 IG 限時動態、IG 訊息等）
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({ title: concert.artist, text, url: shareUrl })
+        return
+      } catch {
+        // 使用者取消分享，不做任何事
+        return
+      }
     }
-    window.open('https://www.instagram.com/', '_blank', 'noopener,noreferrer')
+    // 桌機 fallback：複製連結並給予反饋
+    try {
+      await navigator.clipboard.writeText(shareUrl)
+      setIgCopied(true)
+      setTimeout(() => setIgCopied(false), 2000)
+    } catch {
+      // clipboard 不可用時靜默失敗
+    }
   }
 
   return (
@@ -289,14 +297,27 @@ export function ConcertModal({ concert, onClose }: ConcertModalProps) {
               onClick={handleShareInstagram}
               className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-medium transition-all hover:scale-[1.02]"
               style={{
-                background: 'linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)',
-                color: '#fff',
+                background: igCopied
+                  ? 'var(--faint)'
+                  : 'linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)',
+                color: igCopied ? 'var(--text)' : '#fff',
               }}
             >
-              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z" />
-              </svg>
-              IG
+              {igCopied ? (
+                <>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-4 h-4">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                  </svg>
+                  {t('已複製', 'Copied')}
+                </>
+              ) : (
+                <>
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z" />
+                  </svg>
+                  IG
+                </>
+              )}
             </button>
           </div>
         </div>

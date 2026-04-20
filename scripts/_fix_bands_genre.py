@@ -6,8 +6,8 @@
 import json, ssl, urllib.request, urllib.parse, re
 
 env = open(".env.local").read()
-svc = re.search(r"SUPABASE_SERVICE_ROLE_KEY=(.+)", env).group(1).strip()
-base_url = re.search(r"NEXT_PUBLIC_SUPABASE_URL=(.+)", env).group(1).strip()
+svc = re.search(r"SUPABASE_SERVICE_ROLE_KEY=(.+)", env).group(1).strip().strip('"').strip("'")
+base_url = re.search(r"NEXT_PUBLIC_SUPABASE_URL=(.+)", env).group(1).strip().strip('"').strip("'")
 ctx = ssl.create_default_context()
 ctx.check_hostname = False
 ctx.verify_mode = ssl.CERT_NONE
@@ -72,13 +72,9 @@ for c in to_fix:
 if not to_fix:
     print("   ✅ 沒有需要修正的！")
 else:
-    confirm = input(f"\n確認將以上 {len(to_fix)} 筆改為 bands？(y/N) ")
-    if confirm.lower() == 'y':
-        fixed = 0
-        for c in to_fix:
-            api("PATCH", f"/rest/v1/concerts?id=eq.{c['id']}", {"genre": "bands"})
-            print(f"   ✅ 已更新：{c['artist']}")
-            fixed += 1
-        print(f"\n🎸 完成！共修正 {fixed} 筆")
-    else:
-        print("已取消。")
+    fixed = 0
+    for c in to_fix:
+        api("PATCH", f"/rest/v1/concerts?id=eq.{c['id']}", {"genre": "bands"})
+        print(f"   ✅ 已更新：{c['artist']}")
+        fixed += 1
+    print(f"\n🎸 完成！共修正 {fixed} 筆")

@@ -103,6 +103,7 @@ export default function AlertsPage() {
   const [concerts, setConcerts] = useState<Concert[]>([])
   const [selectedConcert, setSelectedConcert] = useState<Concert | null>(null)
   const [loading, setLoading] = useState(true)
+  const [query, setQuery] = useState('')
   const [alertedPage, setAlertedPage] = useState(1)
   const [pendingPage, setPendingPage] = useState(1)
   const alertedRef = useRef<HTMLDivElement | null>(null)
@@ -126,8 +127,23 @@ export default function AlertsPage() {
     setLoading(false)
   }
 
-  const alertedConcerts = concerts.filter((c) => hasAlert(c.id))
-  const pendingConcerts = concerts.filter((c) => !hasAlert(c.id))
+  const filteredConcerts = query.trim()
+    ? concerts.filter((c) => {
+        const q = query.toLowerCase()
+        return (
+          c.artist.toLowerCase().includes(q) ||
+          c.tour_zh.toLowerCase().includes(q) ||
+          c.tour_en.toLowerCase().includes(q) ||
+          c.city_zh.toLowerCase().includes(q) ||
+          c.city_en.toLowerCase().includes(q) ||
+          c.venue_zh.toLowerCase().includes(q) ||
+          c.venue_en.toLowerCase().includes(q)
+        )
+      })
+    : concerts
+
+  const alertedConcerts = filteredConcerts.filter((c) => hasAlert(c.id))
+  const pendingConcerts = filteredConcerts.filter((c) => !hasAlert(c.id))
 
   const alertedPageConcerts = alertedConcerts.slice((alertedPage - 1) * PAGE_SIZE, alertedPage * PAGE_SIZE)
   const pendingPageConcerts = pendingConcerts.slice((pendingPage - 1) * PAGE_SIZE, pendingPage * PAGE_SIZE)
@@ -137,9 +153,42 @@ export default function AlertsPage() {
       <div className="pb-24 min-h-screen">
         <div className="p-4">
           <SectionLabel icon={<IconBell className="w-4 h-4" />} text={t('搶票提醒', 'Ticket Alerts')} />
-          <p className="text-sm mb-6" style={{ color: 'var(--muted)' }}>
+          <p className="text-sm mb-4" style={{ color: 'var(--muted)' }}>
             {t('設定提醒，將在開搶前 10 分鐘跳出通知', 'Get notified 10 minutes before ticket sales start')}
           </p>
+
+          {/* 搜尋列 */}
+          <div className="relative mb-6">
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => { setQuery(e.target.value); setAlertedPage(1); setPendingPage(1) }}
+              placeholder={t('搜尋歌手、場地、城市...', 'Search artist, venue, city...')}
+              className="w-full p-4 pl-12 rounded-2xl text-base outline-none transition-all focus:scale-[1.02]"
+              style={{
+                background: 'var(--surface)',
+                color: 'var(--text)',
+                border: '2px solid var(--faint)',
+              }}
+            />
+            <span className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: 'var(--muted)' }}>
+              <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="9" cy="9" r="6" />
+                <path d="M13.5 13.5L17.5 17.5" />
+              </svg>
+            </span>
+            {query && (
+              <button
+                onClick={() => { setQuery(''); setAlertedPage(1); setPendingPage(1) }}
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full"
+                style={{ background: 'var(--faint)', color: 'var(--muted)' }}
+              >
+                <svg viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3">
+                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </button>
+            )}
+          </div>
 
           {/* 已設定提醒 */}
           {alertedConcerts.length > 0 && (
@@ -201,9 +250,13 @@ export default function AlertsPage() {
             ) : pendingConcerts.length === 0 && alertedConcerts.length === 0 ? (
               <div className="text-center py-12">
                 <div className="flex justify-center mb-4" style={{ color: 'var(--muted)' }}>
-                <IconBell className="w-14 h-14" />
-              </div>
-                <p style={{ color: 'var(--muted)' }}>{t('目前沒有即將開賣的演出', 'No upcoming sales')}</p>
+                  <IconBell className="w-14 h-14" />
+                </div>
+                <p style={{ color: 'var(--muted)' }}>
+                  {query.trim()
+                    ? t(`找不到「${query}」相關的演出`, `No results for "${query}"`)
+                    : t('目前沒有即將開賣的演出', 'No upcoming sales')}
+                </p>
               </div>
             ) : pendingConcerts.length === 0 ? (
               <div className="text-center py-8" style={{ color: 'var(--muted)' }}>
