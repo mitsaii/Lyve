@@ -10,9 +10,15 @@ import { IconCalendar } from '@/components/ui/Icons'
 import { createClient } from '@/lib/supabase/client'
 import { deduplicateConcerts, getVisiblePageItems, parseFirstDate } from '@/lib/utils'
 
+// 無日期資訊的分組 key（使用非數字前綴，排序會排在所有月份後面）
+const TBA_MONTH_KEY = 'tba'
+
 // date_str → "YYYY/MM"（統一補零，避免 "2026/4/25" 與 "2026/04/25" 分到不同組）
-function toMonthKey(dateStr: string): string {
+// 若 date_str 空值或無法解析，回傳 TBA_MONTH_KEY（歸入「日期待公布」組）
+function toMonthKey(dateStr: string | null | undefined): string {
+  if (!dateStr) return TBA_MONTH_KEY
   const d = parseFirstDate(dateStr)
+  if (isNaN(d.getTime())) return TBA_MONTH_KEY
   const y = d.getFullYear()
   const m = String(d.getMonth() + 1).padStart(2, '0')
   return `${y}/${m}`
@@ -176,7 +182,7 @@ export default function CalendarPage() {
                   color: selectedMonth === month ? '#fff' : 'var(--text)',
                 }}
               >
-                {month}
+                {month === TBA_MONTH_KEY ? t('日期待公布', 'TBA') : month}
               </button>
             ))}
           </div>
@@ -212,7 +218,7 @@ export default function CalendarPage() {
                 {paginatedMonths.map((month) => (
                   <div key={month}>
                     <div className="text-sm font-bold mb-3 px-2" style={{ color: 'var(--accent)' }}>
-                      {month}
+                      {month === TBA_MONTH_KEY ? t('日期待公布', 'TBA') : month}
                     </div>
                     <div className="space-y-3">
                       {paginatedGrouped[month].map((concert) => (
