@@ -10,6 +10,7 @@ import { Header } from '@/components/layout/Header'
 import { TabBar } from '@/components/layout/TabBar'
 import { Footer } from '@/components/layout/Footer'
 import { ServiceWorkerRegistration } from '@/components/layout/ServiceWorkerRegistration'
+import SplashGate from '@/components/SplashGate'
 import { Analytics } from '@vercel/analytics/react'
 
 const notoSansTC = Noto_Sans_TC({
@@ -88,14 +89,16 @@ export default function RootLayout({
             <AuthProvider>
               <SavedProvider>
                 <AlertProvider>
-                  <div className="max-w-[480px] mx-auto min-h-screen" style={{ background: 'var(--bg)' }}>
-                    <Header />
-                    <div style={{ paddingTop: 'calc(7rem + env(safe-area-inset-top))', paddingBottom: 'calc(6rem + env(safe-area-inset-bottom))' }}>
-                      {children}
-                      <Footer />
+                  <SplashGate>
+                    <div className="max-w-[480px] mx-auto min-h-screen" style={{ background: 'var(--bg)' }}>
+                      <Header />
+                      <div style={{ paddingTop: 'calc(7rem + env(safe-area-inset-top))', paddingBottom: 'calc(6rem + env(safe-area-inset-bottom))' }}>
+                        {children}
+                        <Footer />
+                      </div>
+                      <TabBar />
                     </div>
-                    <TabBar />
-                  </div>
+                  </SplashGate>
                 </AlertProvider>
               </SavedProvider>
             </AuthProvider>
