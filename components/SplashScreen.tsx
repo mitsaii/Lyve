@@ -38,21 +38,20 @@ export default function SplashScreen({
       const ty = Math.sin((angle * Math.PI) / 180) * dist
       const color = colors[Math.floor(Math.random() * colors.length)]
 
-      Object.assign(el.style, {
-        position: 'absolute',
-        borderRadius: '50%',
-        width: `${size}px`,
-        height: `${size}px`,
-        background: color,
-        left: `calc(50% + ${(Math.random() - 0.5) * 60}px)`,
-        top: `calc(42% + ${(Math.random() - 0.5) * 40}px)`,
-        boxShadow: `0 0 ${size * 2}px ${color}`,
-        animation: `lyveSplashParticle ${0.8 + Math.random() * 0.7}s ${0.3 + Math.random() * 0.6}s ease-out forwards`,
-        '--tx': `${tx}px`,
-        '--ty': `${ty}px`,
-        '--s': `${0.3 + Math.random() * 0.7}`,
-        opacity: '0',
-      } as CSSStyleDeclaration & Record<string, string>)
+      const s = el.style as unknown as Record<string, string>
+      s.position = 'absolute'
+      s.borderRadius = '50%'
+      s.width = `${size}px`
+      s.height = `${size}px`
+      s.background = color
+      s.left = `calc(50% + ${(Math.random() - 0.5) * 60}px)`
+      s.top = `calc(42% + ${(Math.random() - 0.5) * 40}px)`
+      s.boxShadow = `0 0 ${size * 2}px ${color}`
+      s.animation = `lyveSplashParticle ${0.8 + Math.random() * 0.7}s ${0.3 + Math.random() * 0.6}s ease-out forwards`
+      s['--tx'] = `${tx}px`
+      s['--ty'] = `${ty}px`
+      s['--s'] = `${0.3 + Math.random() * 0.7}`
+      s.opacity = '0'
 
       container.appendChild(el)
     }
