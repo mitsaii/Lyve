@@ -9,6 +9,7 @@ import { statusLabel, genreLabel } from '@/lib/utils'
 import { IconPin, IconCalendar, IconTag, IconVenue, IconTicket, IconClock, IconHeart } from '../ui/Icons'
 import { ConcertAvatar } from './ConcertAvatar'
 import { isTicketingPlatform } from '@/lib/utils'
+import { shareConcertToInstagram } from '@/lib/shareInstagram'
 import { AlertPromptSheet } from './AlertPromptSheet'
 
 interface ConcertModalProps {
@@ -115,24 +116,11 @@ export function ConcertModal({ concert, onClose }: ConcertModalProps) {
   }
 
   const handleShareInstagram = async () => {
-    const text = `${buildShareText()}\n\n${shareUrl}`
-    // 手機：用系統原生分享選單（可選 IG 限時動態、IG 訊息等）
-    if (typeof navigator !== 'undefined' && navigator.share) {
-      try {
-        await navigator.share({ title: concert.artist, text, url: shareUrl })
-        return
-      } catch {
-        // 使用者取消分享，不做任何事
-        return
-      }
-    }
-    // 桌機 fallback：複製連結並給予反饋
-    try {
-      await navigator.clipboard.writeText(shareUrl)
+    // 產生限動圖片 → 系統分享選單 → 使用者選 IG 限動，圖片會自動當作限動背景
+    const result = await shareConcertToInstagram(concert, lang, shareUrl)
+    if (result.copied) {
       setIgCopied(true)
       setTimeout(() => setIgCopied(false), 2000)
-    } catch {
-      // clipboard 不可用時靜默失敗
     }
   }
 

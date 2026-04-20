@@ -13,6 +13,7 @@ import {
   IconTicket, IconClock, IconHeart,
 } from '@/components/ui/Icons'
 import { AlertPromptSheet } from '@/components/concerts/AlertPromptSheet'
+import { shareConcertToInstagram } from '@/lib/shareInstagram'
 
 interface Props {
   concert: Concert
@@ -81,21 +82,11 @@ export default function ConcertDetailClient({ concert }: Props) {
 
   const [igCopied, setIgCopied] = useState(false)
   const handleShareInstagram = async () => {
-    const text = `${buildShareText()}\n\n${shareUrl}`
-    if (typeof navigator !== 'undefined' && navigator.share) {
-      try {
-        await navigator.share({ title: concert.artist, text, url: shareUrl })
-        return
-      } catch {
-        // 使用者取消或不支援，fallback 到複製
-      }
-    }
-    try {
-      await navigator.clipboard.writeText(text)
+    // 產生限動圖片 → 系統分享選單 → 使用者選 IG 限動，圖片會自動當作限動背景
+    const result = await shareConcertToInstagram(concert, lang, shareUrl)
+    if (result.copied) {
       setIgCopied(true)
       setTimeout(() => setIgCopied(false), 2000)
-    } catch {
-      // clipboard 不可用時靜默失敗，不顯示「已複製」
     }
   }
 
