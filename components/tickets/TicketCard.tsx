@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import Image from 'next/image'
 import { UserTicket, TICKET_COLORS } from '@/types/ticket'
 import { useLang } from '@/contexts/LangContext'
@@ -11,15 +12,15 @@ interface TicketCardProps {
   onClick?: () => void
 }
 
-function getDateParts(dateStr: string) {
+function getDateParts(dateStr: string, lang: 'zh' | 'en') {
   const d = new Date(dateStr + 'T00:00:00')
   const monthsEn = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']
-  const monthsZh = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月']
+  const weekdaysEn = ['SUN','MON','TUE','WED','THU','FRI','SAT']
+  const weekdaysZh = ['日','一','二','三','四','五','六']
   return {
-    monthEn: monthsEn[d.getMonth()],
-    monthZh: monthsZh[d.getMonth()],
+    month: monthsEn[d.getMonth()],
     day: d.getDate(),
-    year: d.getFullYear(),
+    weekday: lang === 'zh' ? `週${weekdaysZh[d.getDay()]}` : weekdaysEn[d.getDay()],
     isPast: d < new Date(new Date().toDateString()),
   }
 }
@@ -27,7 +28,13 @@ function getDateParts(dateStr: string) {
 export function TicketCard({ ticket, onDelete, onClick }: TicketCardProps) {
   const { lang } = useLang()
   const theme = TICKET_COLORS[ticket.color]
-  const { monthEn, day, isPast } = getDateParts(ticket.dateStr)
+  const { month, day, weekday, isPast } = getDateParts(ticket.dateStr, lang)
+  const [expanded, setExpanded] = useState(false)
+
+  const handleClick = () => {
+    setExpanded(v => !v)
+    onClick?.()
+  }
 
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -36,108 +43,195 @@ export function TicketCard({ ticket, onDelete, onClick }: TicketCardProps) {
 
   return (
     <div
-      onClick={onClick}
-      className="relative flex rounded-2xl overflow-hidden cursor-pointer transition-transform active:scale-[0.98] hover:scale-[1.01]"
+      onClick={handleClick}
+      className="relative flex rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 ease-out"
       style={{
         background: theme.bg,
-        boxShadow: `0 4px 24px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.06)`,
-        minHeight: '100px',
+        boxShadow: expanded
+          ? `0 10px 32px rgba(0,0,0,0.5), 0 0 0 1.5px ${theme.border}66, inset 0 0 0 1px rgba(255,255,255,0.08)`
+          : `0 4px 24px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.06)`,
+        minHeight: expanded ? '220px' : '200px',
+        transform: expanded ? 'translateY(-2px)' : 'translateY(0)',
       }}
     >
       {/* ── 左半：封面圖 ── */}
-      <div className="relative flex-shrink-0 w-[90px]" style={{ background: 'rgba(0,0,0,0.2)' }}>
+      <div
+        className="relative flex-shrink-0"
+        style={{ width: '40%', background: 'rgba(0,0,0,0.2)' }}
+      >
         {ticket.imageUrl ? (
           <Image
             src={ticket.imageUrl}
             alt={ticket.concertName}
             fill
             className="object-cover"
-            sizes="90px"
+            sizes="(max-width: 480px) 40vw, 192px"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center" style={{ color: 'rgba(255,255,255,0.2)' }}>
-            <IconTicket className="w-8 h-8" />
+          <div
+            className="w-full h-full flex items-center justify-center"
+            style={{ color: 'rgba(255,255,255,0.2)' }}
+          >
+            <IconTicket className="w-10 h-10" />
           </div>
         )}
       </div>
 
-      {/* ── 虛線分隔 + 凹口 ── */}
-      <div className="relative flex-shrink-0 w-px flex flex-col items-center justify-center"
-           style={{ margin: '0 14px' }}>
-        {/* 上凹 */}
+      {/* ── 虛線分隔 + 上下凹口 ── */}
+      <div
+        className="relative flex-shrink-0 flex flex-col items-center justify-center"
+        style={{ width: 1, margin: '0 10px' }}
+      >
         <div
-          className="absolute -top-2 rounded-full"
-          style={{ width: 16, height: 16, background: 'var(--bg)', border: '1px solid rgba(255,255,255,0.08)', zIndex: 1 }}
+          className="absolute rounded-full"
+          style={{
+            top: -10,
+            width: 20,
+            height: 20,
+            background: 'var(--bg)',
+            zIndex: 2,
+          }}
         />
-        {/* 虛線 */}
         <div
           className="h-full"
           style={{
-            width: 1,
-            background: 'repeating-linear-gradient(to bottom, rgba(255,255,255,0.2) 0px, rgba(255,255,255,0.2) 4px, transparent 4px, transparent 8px)',
+            width: 1.5,
+            background: 'repeating-linear-gradient(to bottom, rgba(255,255,255,0.35) 0px, rgba(255,255,255,0.35) 5px, transparent 5px, transparent 10px)',
           }}
         />
-        {/* 下凹 */}
         <div
-          className="absolute -bottom-2 rounded-full"
-          style={{ width: 16, height: 16, background: 'var(--bg)', border: '1px solid rgba(255,255,255,0.08)', zIndex: 1 }}
+          className="absolute rounded-full"
+          style={{
+            bottom: -10,
+            width: 20,
+            height: 20,
+            background: 'var(--bg)',
+            zIndex: 2,
+          }}
         />
       </div>
 
-      {/* ── 中段：演出資訊 ── */}
-      <div className="flex-1 py-4 pr-2 min-w-0 flex flex-col justify-center gap-1">
-        <p className="font-bold text-sm leading-tight truncate" style={{ color: '#fff' }}>
-          {ticket.concertName}
-        </p>
-        <p className="text-xs font-medium truncate" style={{ color: 'rgba(255,255,255,0.6)' }}>
-          {ticket.artist}
-        </p>
-        {ticket.venue && (
-          <p className="text-xs truncate" style={{ color: 'rgba(255,255,255,0.4)' }}>
-            📍 {ticket.venue}
-          </p>
-        )}
+      {/* ── 右半：資訊 + 日期 ── */}
+      <div className="flex-1 flex min-w-0">
+        {/* 中段：演出資訊 */}
+        <div className="flex-1 py-4 pr-1 min-w-0 flex flex-col">
+          <div className="flex-1 min-w-0">
+            <p
+              className="font-bold text-base leading-tight"
+              style={{
+                color: '#fff',
+                display: '-webkit-box',
+                WebkitLineClamp: 3,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+              }}
+            >
+              {ticket.concertName}
+            </p>
 
-        {/* 狀態標籤 */}
-        <div className="mt-1 flex items-center gap-2">
-          {isPast ? (
+            {/* 藝人 pill */}
             <span
-              className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
-              style={{ background: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.5)' }}
+              className="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[11px] font-semibold"
+              style={{
+                background: 'rgba(255,255,255,0.14)',
+                color: 'rgba(255,255,255,0.9)',
+              }}
             >
-              {lang === 'zh' ? '已結束' : 'Ended'}
+              {ticket.artist}
             </span>
-          ) : (
+
+            {/* 場地 */}
+            {ticket.venue && (
+              <p
+                className="text-xs mt-1.5 truncate"
+                style={{ color: 'rgba(255,255,255,0.7)' }}
+              >
+                <span className="mr-0.5">📍</span>
+                {ticket.venue}
+              </p>
+            )}
+
+            {/* 備註（展開時顯示） */}
+            {expanded && ticket.notes && (
+              <p
+                className="text-[11px] mt-2 leading-snug"
+                style={{
+                  color: 'rgba(255,255,255,0.65)',
+                  display: '-webkit-box',
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: 'vertical',
+                  overflow: 'hidden',
+                }}
+              >
+                {ticket.notes}
+              </p>
+            )}
+          </div>
+
+          {/* 底部：狀態 + 刪除 */}
+          <div className="flex items-center justify-between mt-2">
             <span
-              className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
-              style={{ background: theme.border + '33', color: theme.border }}
+              className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full"
+              style={{
+                background: isPast ? 'rgba(255,255,255,0.14)' : theme.border + '33',
+                color: isPast ? 'rgba(255,255,255,0.7)' : theme.border,
+              }}
             >
-              {lang === 'zh' ? '即將到來' : 'Upcoming'}
+              <svg viewBox="0 0 12 12" className="w-2.5 h-2.5" fill="currentColor">
+                <circle cx="6" cy="6" r="6" opacity="0.35" />
+                <path d="M3.5 6l1.75 1.75L8.5 4.5" stroke="currentColor" strokeWidth="1.4" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              {isPast
+                ? (lang === 'zh' ? '已結束' : 'Ended')
+                : (lang === 'zh' ? '即將到來' : 'Upcoming')}
             </span>
+          </div>
+        </div>
+
+        {/* 右側：大日期 */}
+        <div
+          className="flex-shrink-0 flex flex-col items-center justify-between py-4 pr-3 pl-2"
+          style={{ minWidth: 66 }}
+        >
+          <div className="flex flex-col items-center">
+            <span
+              className="text-[10px] font-bold tracking-widest"
+              style={{ color: 'rgba(255,255,255,0.55)' }}
+            >
+              {month}
+            </span>
+            <span
+              className="text-[36px] font-black leading-[1]"
+              style={{ color: '#fff', letterSpacing: '-0.02em' }}
+            >
+              {day}
+            </span>
+            <span
+              className="text-[10px] font-bold tracking-widest mt-0.5"
+              style={{ color: 'rgba(255,255,255,0.55)' }}
+            >
+              {weekday}
+            </span>
+            {ticket.timeStr && (
+              <span
+                className="text-[11px] font-medium mt-1"
+                style={{ color: 'rgba(255,255,255,0.75)' }}
+              >
+                {ticket.timeStr}
+              </span>
+            )}
+          </div>
+
+          {onDelete && (
+            <button
+              onClick={handleDelete}
+              className="text-[11px] font-medium transition-opacity hover:opacity-100 opacity-60"
+              style={{ color: 'rgba(255,255,255,0.8)' }}
+            >
+              {lang === 'zh' ? '刪除' : 'Delete'}
+            </button>
           )}
         </div>
-      </div>
-
-      {/* ── 右側：大日期 ── */}
-      <div
-        className="flex-shrink-0 flex flex-col items-center justify-center px-4 py-4"
-        style={{ borderLeft: `1px solid rgba(255,255,255,0.06)`, minWidth: 64 }}
-      >
-        <span className="text-[10px] font-bold tracking-widest" style={{ color: 'rgba(255,255,255,0.45)' }}>
-          {monthEn}
-        </span>
-        <span className="text-3xl font-black leading-none" style={{ color: '#fff' }}>
-          {day}
-        </span>
-        {onDelete && (
-          <button
-            onClick={handleDelete}
-            className="mt-2 text-[10px] rounded-md px-1.5 py-0.5 transition-opacity hover:opacity-100 opacity-40"
-            style={{ background: 'rgba(255,255,255,0.1)', color: '#fff' }}
-          >
-            {lang === 'zh' ? '刪除' : 'Del'}
-          </button>
-        )}
       </div>
     </div>
   )

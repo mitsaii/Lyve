@@ -19,6 +19,7 @@ interface DbTicketRow {
   artist: string
   venue: string | null
   date_str: string
+  time_str: string | null
   image_url: string | null
   color: string
   notes: string | null
@@ -32,6 +33,7 @@ function rowToTicket(row: DbTicketRow): UserTicket {
     artist: row.artist,
     venue: row.venue ?? undefined,
     dateStr: row.date_str,
+    timeStr: row.time_str ?? undefined,
     imageUrl: row.image_url ?? undefined,
     color: (row.color as UserTicket['color']) || 'navy',
     notes: row.notes ?? undefined,
@@ -114,6 +116,7 @@ export function MyTicketsSection() {
                 artist: tk.artist,
                 venue: tk.venue ?? null,
                 date_str: tk.dateStr,
+                time_str: tk.timeStr ?? null,
                 image_url: tk.imageUrl ?? null,
                 color: tk.color,
                 notes: tk.notes ?? null,
@@ -150,6 +153,7 @@ export function MyTicketsSection() {
           artist: ticket.artist,
           venue: ticket.venue ?? null,
           date_str: ticket.dateStr,
+          time_str: ticket.timeStr ?? null,
           image_url: ticket.imageUrl ?? null,
           color: ticket.color,
           notes: ticket.notes ?? null,

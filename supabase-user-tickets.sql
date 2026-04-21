@@ -11,11 +11,15 @@ create table if not exists public.user_tickets (
   artist       text not null,
   venue        text,
   date_str     date not null,
+  time_str     text,               -- e.g. "18:00"
   image_url    text,               -- Supabase Storage URL or external URL
   color        text not null default 'navy',
   notes        text,
   created_at   timestamptz not null default now()
 );
+
+-- 已有資料表的人執行這行補上欄位（沒有會報錯的話表示已經加過）：
+-- alter table public.user_tickets add column if not exists time_str text;
 
 -- Row Level Security: users can only access their own tickets
 alter table public.user_tickets enable row level security;

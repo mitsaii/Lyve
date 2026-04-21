@@ -21,6 +21,7 @@ export function AddTicketModal({ onClose, onSave }: AddTicketModalProps) {
     artist: '',
     venue: '',
     dateStr: new Date().toISOString().split('T')[0],
+    timeStr: '',
     color: 'navy' as TicketColor,
     notes: '',
   })
@@ -53,6 +54,7 @@ export function AddTicketModal({ onClose, onSave }: AddTicketModalProps) {
       artist: form.artist.trim(),
       venue: form.venue.trim() || undefined,
       dateStr: form.dateStr,
+      timeStr: form.timeStr || undefined,
       imageUrl: imageUrl || undefined,
       color: form.color,
       notes: form.notes.trim() || undefined,
@@ -187,21 +189,23 @@ export function AddTicketModal({ onClose, onSave }: AddTicketModalProps) {
               />
             </div>
 
-            {/* 場地 + 日期 - 兩欄 */}
+            {/* 場地 */}
+            <div>
+              <label className="block text-xs font-semibold mb-1.5" style={{ color: 'var(--muted)' }}>
+                {t('場地（選填）', 'Venue (opt.)')}
+              </label>
+              <input
+                type="text"
+                value={form.venue}
+                onChange={e => setForm(f => ({ ...f, venue: e.target.value }))}
+                placeholder={t('e.g. 台北小巨蛋', 'e.g. Taipei Arena')}
+                className="w-full px-3 py-3 rounded-xl text-sm outline-none"
+                style={{ background: 'var(--faint)', color: 'var(--text)' }}
+              />
+            </div>
+
+            {/* 日期 + 時間 - 兩欄 */}
             <div className="flex gap-3">
-              <div className="flex-1">
-                <label className="block text-xs font-semibold mb-1.5" style={{ color: 'var(--muted)' }}>
-                  {t('場地（選填）', 'Venue (opt.)')}
-                </label>
-                <input
-                  type="text"
-                  value={form.venue}
-                  onChange={e => setForm(f => ({ ...f, venue: e.target.value }))}
-                  placeholder={t('e.g. 台北小巨蛋', 'e.g. Taipei Arena')}
-                  className="w-full px-3 py-3 rounded-xl text-sm outline-none"
-                  style={{ background: 'var(--faint)', color: 'var(--text)' }}
-                />
-              </div>
               <div className="flex-1">
                 <label className="block text-xs font-semibold mb-1.5" style={{ color: 'var(--muted)' }}>
                   {t('日期', 'Date')} <span style={{ color: 'var(--accent)' }}>*</span>
@@ -211,6 +215,18 @@ export function AddTicketModal({ onClose, onSave }: AddTicketModalProps) {
                   value={form.dateStr}
                   onChange={e => setForm(f => ({ ...f, dateStr: e.target.value }))}
                   required
+                  className="w-full px-3 py-3 rounded-xl text-sm outline-none"
+                  style={{ background: 'var(--faint)', color: 'var(--text)' }}
+                />
+              </div>
+              <div className="flex-1">
+                <label className="block text-xs font-semibold mb-1.5" style={{ color: 'var(--muted)' }}>
+                  {t('時間（選填）', 'Time (opt.)')}
+                </label>
+                <input
+                  type="time"
+                  value={form.timeStr}
+                  onChange={e => setForm(f => ({ ...f, timeStr: e.target.value }))}
                   className="w-full px-3 py-3 rounded-xl text-sm outline-none"
                   style={{ background: 'var(--faint)', color: 'var(--text)' }}
                 />

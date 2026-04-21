@@ -8,6 +8,7 @@ export interface UserTicket {
   artist: string
   venue?: string
   dateStr: string       // e.g. "2025-10-11"
+  timeStr?: string      // e.g. "18:00" (24h)
   imageUrl?: string     // base64 data URL or external URL
   color: TicketColor
   notes?: string
