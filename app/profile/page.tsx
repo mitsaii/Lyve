@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { Concert } from '@/types/concert'
 import { useLang } from '@/contexts/LangContext'
 import { useAuth } from '@/contexts/AuthContext'
@@ -9,9 +10,8 @@ import { useSaved } from '@/contexts/SavedContext'
 import { ConcertCard } from '@/components/concerts/ConcertCard'
 import { ConcertModal } from '@/components/concerts/ConcertModal'
 import { SectionLabel } from '@/components/ui/SectionLabel'
-import { IconHeart, IconMusic } from '@/components/ui/Icons'
+import { IconHeart, IconMusic, IconTicket } from '@/components/ui/Icons'
 import { createClient } from '@/lib/supabase/client'
-import { MyTicketsSection } from '@/components/tickets/MyTicketsSection'
 
 function GoogleIcon() {
   return (
@@ -26,10 +26,30 @@ function GoogleIcon() {
 
 export default function ProfilePage() {
   const { t } = useLang()
+  const router = useRouter()
   const { user, loading, signInWithGoogle, signOut } = useAuth()
   const { savedIds, savedSynced } = useSaved()
   const [concerts, setConcerts] = useState<Concert[]>([])
   const [selectedConcert, setSelectedConcert] = useState<Concert | null>(null)
+  const [ticketCount, setTicketCount] = useState(0)
+
+  // 從 Supabase 抓取門票數量
+  useEffect(() => {
+    if (!user) {
+      setTicketCount(0)
+      return
+    }
+    const supabase = createClient()
+    ;(async () => {
+      const { count, error } = await supabase
+        .from('user_tickets')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+      if (!error && typeof count === 'number') {
+        setTicketCount(count)
+      }
+    })()
+  }, [user])
 
   useEffect(() => {
     // 等 DB 同步完成後再判斷，避免登入後短暫顯示「空收藏」
@@ -149,8 +169,41 @@ export default function ProfilePage() {
             </button>
           </div>
 
-          {/* 我的門票 */}
-          <MyTicketsSection />
+          {/* 我的門票 入口 */}
+          <button
+            onClick={() => router.push('/tickets')}
+            className="w-full flex items-center gap-3 p-4 rounded-2xl transition-opacity hover:opacity-80 text-left"
+            style={{ background: 'var(--faint)' }}
+          >
+            <div
+              className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+              style={{ background: 'var(--accent)', color: '#fff' }}
+            >
+              <IconTicket className="w-5 h-5" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-sm" style={{ color: 'var(--text)' }}>
+                {t('我的門票', 'My Tickets')}
+              </p>
+              <p className="text-xs mt-0.5" style={{ color: 'var(--muted)' }}>
+                {ticketCount > 0
+                  ? t(`共 ${ticketCount} 張票根`, `${ticketCount} ticket${ticketCount === 1 ? '' : 's'}`)
+                  : t('收藏你的演唱會票根', 'Collect your concert stubs')}
+              </p>
+            </div>
+            <svg
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="w-4 h-4 flex-shrink-0"
+              style={{ color: 'var(--muted)' }}
+            >
+              <path d="M6 3l5 5-5 5" />
+            </svg>
+          </button>
 
           {/* 收藏的演出 */}
           <SectionLabel
