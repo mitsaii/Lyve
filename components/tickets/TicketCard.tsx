@@ -50,7 +50,7 @@ export function TicketCard({ ticket, onDelete, onClick }: TicketCardProps) {
         boxShadow: expanded
           ? `0 10px 32px rgba(0,0,0,0.5), 0 0 0 1.5px ${theme.border}66, inset 0 0 0 1px rgba(255,255,255,0.08)`
           : `0 4px 24px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.06)`,
-        minHeight: expanded ? '220px' : '200px',
+        minHeight: expanded ? '165px' : '150px',
         transform: expanded ? 'translateY(-2px)' : 'translateY(0)',
       }}
     >
