@@ -21,14 +21,13 @@ function getDateParts(dateStr: string, lang: 'zh' | 'en') {
     month: monthsEn[d.getMonth()],
     day: d.getDate(),
     weekday: lang === 'zh' ? `週${weekdaysZh[d.getDay()]}` : weekdaysEn[d.getDay()],
-    isPast: d < new Date(new Date().toDateString()),
   }
 }
 
 export function TicketCard({ ticket, onDelete, onClick }: TicketCardProps) {
   const { lang } = useLang()
   const theme = TICKET_COLORS[ticket.color]
-  const { month, day, weekday, isPast } = getDateParts(ticket.dateStr, lang)
+  const { month, day, weekday } = getDateParts(ticket.dateStr, lang)
   const [expanded, setExpanded] = useState(false)
 
   const handleClick = () => {
@@ -50,7 +49,7 @@ export function TicketCard({ ticket, onDelete, onClick }: TicketCardProps) {
         boxShadow: expanded
           ? `0 10px 32px rgba(0,0,0,0.5), 0 0 0 1.5px ${theme.border}66, inset 0 0 0 1px rgba(255,255,255,0.08)`
           : `0 4px 24px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.06)`,
-        minHeight: expanded ? '165px' : '150px',
+        minHeight: expanded ? '155px' : '140px',
         transform: expanded ? 'translateY(-2px)' : 'translateY(0)',
       }}
     >
@@ -168,24 +167,6 @@ export function TicketCard({ ticket, onDelete, onClick }: TicketCardProps) {
             )}
           </div>
 
-          {/* 底部：狀態 + 刪除 */}
-          <div className="flex items-center justify-between mt-2">
-            <span
-              className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full"
-              style={{
-                background: isPast ? 'rgba(255,255,255,0.14)' : theme.border + '33',
-                color: isPast ? 'rgba(255,255,255,0.7)' : theme.border,
-              }}
-            >
-              <svg viewBox="0 0 12 12" className="w-2.5 h-2.5" fill="currentColor">
-                <circle cx="6" cy="6" r="6" opacity="0.35" />
-                <path d="M3.5 6l1.75 1.75L8.5 4.5" stroke="currentColor" strokeWidth="1.4" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              {isPast
-                ? (lang === 'zh' ? '已結束' : 'Ended')
-                : (lang === 'zh' ? '即將到來' : 'Upcoming')}
-            </span>
-          </div>
         </div>
 
         {/* 右側：大日期 */}

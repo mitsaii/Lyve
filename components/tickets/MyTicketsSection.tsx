@@ -233,9 +233,6 @@ export function MyTicketsSection() {
     return aFuture ? da - db : db - da
   })
 
-  const ended = sorted.filter(tk => new Date(tk.dateStr) < new Date(new Date().toDateString()))
-  const upcoming = sorted.filter(tk => new Date(tk.dateStr) >= new Date(new Date().toDateString()))
-
   return (
     <>
       <div className="space-y-3">
@@ -290,38 +287,14 @@ export function MyTicketsSection() {
             </button>
           </div>
         ) : (
-          <div className="space-y-3">
-            {/* Upcoming */}
-            {upcoming.length > 0 && (
-              <div className="space-y-2.5">
-                {upcoming.map(ticket => (
-                  <TicketCard
-                    key={ticket.id}
-                    ticket={ticket}
-                    onDelete={handleDelete}
-                  />
-                ))}
-              </div>
-            )}
-
-            {/* Ended section */}
-            {ended.length > 0 && (
-              <div className="space-y-2.5">
-                {upcoming.length > 0 && (
-                  <p className="text-xs font-semibold px-1 pt-1" style={{ color: 'var(--muted)' }}>
-                    {t('已結束', 'Ended')} · {ended.length} {t('場', 'shows')}
-                  </p>
-                )}
-                {ended.map(ticket => (
-                  <div key={ticket.id} className="opacity-70">
-                    <TicketCard
-                      ticket={ticket}
-                      onDelete={handleDelete}
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
+          <div className="space-y-2.5">
+            {sorted.map(ticket => (
+              <TicketCard
+                key={ticket.id}
+                ticket={ticket}
+                onDelete={handleDelete}
+              />
+            ))}
           </div>
         )}
       </div>
