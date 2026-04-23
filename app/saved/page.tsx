@@ -30,14 +30,21 @@ export default function SavedPage() {
 
   useEffect(() => {
     if (!user) return
+    // savedSynced 確保 DB 同步完成後才判斷空集合，避免先閃一下「沒有收藏」
+    if (!savedSynced) {
+      setLoading(true)
+      return
+    }
+
+    let cancelled = false
 
     async function fetchSaved() {
       setLoading(true)
-      // savedSynced 確保 DB 同步完成後才判斷空集合，避免先閃一下「沒有收藏」
-      if (!savedSynced) return
       if (savedIds.size === 0) {
-        setSavedConcerts([])
-        setLoading(false)
+        if (!cancelled) {
+          setSavedConcerts([])
+          setLoading(false)
+        }
         return
       }
 
@@ -48,11 +55,20 @@ export default function SavedPage() {
         .in('id', Array.from(savedIds))
         .order('date_str', { ascending: true })
 
-      if (!error && data) setSavedConcerts(data as Concert[])
+      if (cancelled) return
+
+      if (error) {
+        console.error('[SavedPage] fetch failed:', error.message)
+        setSavedConcerts([])
+      } else if (data) {
+        setSavedConcerts(data as Concert[])
+      }
       setLoading(false)
     }
 
     fetchSaved()
+
+    return () => { cancelled = true }
   }, [user, savedIds, savedSynced])
 
   if (authLoading || (!user && !authLoading)) return null

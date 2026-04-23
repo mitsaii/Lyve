@@ -88,12 +88,17 @@ export function MyTicketsSection() {
 
     setSynced(false)
     const supabase = createClient()
+    // 避免 user 連續變化時，舊 fetch 回來覆蓋新狀態
+    let cancelled = false
+
     ;(async () => {
       const { data, error } = await supabase
         .from('user_tickets')
         .select('*')
         .eq('user_id', user.id)
         .order('date_str', { ascending: true })
+
+      if (cancelled) return
 
       if (error) {
         console.error('[MyTickets] fetch failed:', error.message)
@@ -124,6 +129,8 @@ export function MyTicketsSection() {
             )
             .select()
 
+          if (cancelled) return
+
           if (!migrateErr && migrated) {
             const migratedList = (migrated as DbTicketRow[]).map(rowToTicket)
             setTickets(migratedList)
@@ -131,7 +138,11 @@ export function MyTicketsSection() {
             setSynced(true)
             return
           }
+          // 遷移失敗：保留本地資料，避免 setTickets([]) / saveLocalTickets([]) 把使用者資料清掉
           console.error('[MyTickets] migrate failed:', migrateErr?.message)
+          setTickets(legacyLocal)
+          setSynced(true)
+          return
         }
       }
 
@@ -139,6 +150,8 @@ export function MyTicketsSection() {
       saveLocalTickets(dbList)
       setSynced(true)
     })()
+
+    return () => { cancelled = true }
   }, [user])
 
   const handleSave = async (ticket: UserTicket) => {
