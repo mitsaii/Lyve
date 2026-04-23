@@ -31,6 +31,7 @@ export function statusLabel(status: Status, lang: Lang): string {
     pending:  { zh: '待公告', en: 'Coming Soon' },
     free:     { zh: '免費', en: 'Free' },
     ended:    { zh: '已結束', en: 'Ended' },
+    sold_out: { zh: '已售完', en: 'Sold Out' },
   }
   return labels[status][lang]
 }
@@ -41,6 +42,7 @@ export function tagColor(status: Status): string {
     pending:  '#a78bfa',        // purple — 場地待定
     free:     '#f59e0b',        // amber  — 免費活動
     ended:    'var(--muted)',   // gray   — 演唱會日期已過（自動）
+    sold_out: '#ef4444',        // red    — 已售完
   }
   return colors[status]
 }
