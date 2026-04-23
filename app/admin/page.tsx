@@ -10,7 +10,7 @@ const EMPTY_FORM: Partial<Concert> = {
   artist: '', emoji: '🎤', genre: 'cpop', tour_zh: '', tour_en: '',
   venue_zh: '', venue_en: '', city_zh: '台北', city_en: 'Taipei',
   date_str: '', price_zh: '', price_en: '', platform: '', platform_url: '',
-  status: 'pending', is_hot: false, grad_css: null, image_url: '',
+  status: 'selling', is_hot: false, grad_css: null, image_url: '',
   sale_start_at: '',
 }
 
@@ -203,12 +203,12 @@ export default function AdminPage() {
                   <select
                     className="w-full px-3 py-2 rounded-lg text-sm outline-none"
                     style={{ background: 'var(--faint)', color: 'var(--text)' }}
-                    value={editing.status ?? 'pending'}
+                    value={editing.status ?? 'selling'}
                     onChange={e => setEditing(prev => ({ ...prev, status: e.target.value as Status }))}
                   >
-                    <option value="pending">待公告</option>
                     <option value="selling">熱賣中</option>
-                    <option value="sold_out">已售完（票真的賣完）</option>
+                    <option value="pending">待公告</option>
+                    <option value="free">免費</option>
                     <option value="ended">已結束（日期已過）</option>
                   </select>
                 </div>

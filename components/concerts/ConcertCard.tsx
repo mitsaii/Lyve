@@ -41,7 +41,7 @@ export function ConcertCard({ concert, onClick }: ConcertCardProps) {
     <>
     <div
       onClick={onClick}
-      className="p-4 rounded-2xl cursor-pointer transition-all hover:scale-[1.02] fade-up"
+      className="p-4 rounded-2xl cursor-pointer transition-all hover:scale-[1.02] fade-up card-bordered"
       style={{
         background: 'var(--card)',
         boxShadow: 'var(--shadow)',
@@ -91,7 +91,7 @@ export function ConcertCard({ concert, onClick }: ConcertCardProps) {
             <IconHeart filled={saved} className="w-4 h-4" />
           </button>
           <button
-            className="px-4 py-1.5 rounded-lg text-sm font-medium"
+            className="px-4 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap"
             style={{ background: 'var(--accent)', color: '#fff' }}
           >
             {t('詳情', 'Details')}

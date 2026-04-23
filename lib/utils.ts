@@ -4,10 +4,18 @@ import type { Status, Genre, Lang, Concert } from '@/types/concert'
  * Deduplicate concerts by artist + date_str.
  * Different scrapers may produce the same concert with slightly different tour_zh,
  * bypassing the DB unique constraint. Prefer the record with sale_start_at set.
+ *
+ * 重要：必須以穩定順序處理，否則 Postgres 相同 sort key 會回傳隨機順序，
+ * 導致不同頁面（首頁 / /alerts / /saved）dedup 選到不同重複，造成
+ * 「首頁收藏/開啟提醒 → 切到 /alerts 鈴鐵沒亮」這類 id 對不起來的 bug。
  */
 export function deduplicateConcerts(concerts: Concert[]): Concert[] {
+  // 先以 id 排序，確保相同資料集在任何頁面 dedup 出來的勝出者一致
+  const sorted = [...concerts].sort((a, b) =>
+    String(a.id).localeCompare(String(b.id))
+  )
   const seen = new Map<string, Concert>()
-  for (const c of concerts) {
+  for (const c of sorted) {
     const key = `${c.artist}|${c.date_str}`
     const existing = seen.get(key)
     if (!existing || (!existing.sale_start_at && c.sale_start_at)) {
@@ -21,7 +29,7 @@ export function statusLabel(status: Status, lang: Lang): string {
   const labels: Record<Status, { zh: string; en: string }> = {
     selling:  { zh: '熱賣中', en: 'On Sale' },
     pending:  { zh: '待公告', en: 'Coming Soon' },
-    sold_out: { zh: '已售完', en: 'Sold Out' },
+    free:     { zh: '免費', en: 'Free' },
     ended:    { zh: '已結束', en: 'Ended' },
   }
   return labels[status][lang]
@@ -30,9 +38,9 @@ export function statusLabel(status: Status, lang: Lang): string {
 export function tagColor(status: Status): string {
   const colors: Record<Status, string> = {
     selling:  'var(--accent3)', // green
-    pending:  '#a78bfa',        // purple
-    sold_out: '#f87171',        // red  — 票真的賣完（手動標記）
-    ended:    'var(--muted)',   // gray — 演唱會日期已過（自動）
+    pending:  '#a78bfa',        // purple — 場地待定
+    free:     '#f59e0b',        // amber  — 免費活動
+    ended:    'var(--muted)',   // gray   — 演唱會日期已過（自動）
   }
   return colors[status]
 }

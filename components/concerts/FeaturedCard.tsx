@@ -15,7 +15,7 @@ export function FeaturedCard({ concert, onClick }: FeaturedCardProps) {
   return (
     <div
       onClick={onClick}
-      className="min-w-[280px] w-[280px] rounded-2xl cursor-pointer overflow-hidden relative active:opacity-80 transition-opacity"
+      className="min-w-[280px] w-[280px] rounded-2xl cursor-pointer overflow-hidden relative active:opacity-80 transition-opacity card-bordered"
       style={{
         boxShadow: 'var(--shadow)',
         height: '200px'

@@ -53,10 +53,12 @@ export function Header() {
         {!isHomePage && (
           <button
             onClick={() => router.back()}
-            className="px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap"
-            style={{ background: 'var(--faint)', color: 'var(--text)' }}
+            className="flex items-center justify-center w-8 h-8 transition-opacity hover:opacity-70"
+            aria-label={t('返回', 'Back')}
           >
-            ← {t('返回', 'Back')}
+            <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6" stroke="#8B5CF6" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M15 19l-7-7 7-7" />
+            </svg>
           </button>
         )}
         <button onClick={() => router.push('/')} className="flex items-center">

@@ -7,10 +7,7 @@ import { parseLastDate } from '@/lib/utils'
  *
  * 規則：
  *  - 若 sale_start_at <= now()  AND status === 'pending'   → 更新為 'selling'
- *  - 若 date_str 的最後日期 < today AND status !== 'ended'
- *                             AND status !== 'sold_out'    → 更新為 'ended'
- *
- * 注意：sold_out 表示票真的賣完（手動標記），ended 表示演唱會日期已過（自動）。
+ *  - 若 date_str 的最後日期 < today AND status !== 'ended' → 更新為 'ended'
  *
  * 由 Vercel Cron Job（每小時執行一次）觸發。
  */
@@ -43,11 +40,11 @@ export async function GET(req: NextRequest) {
 
   // 2. 演唱會日期已過 → ended（使用 date_str 最後日期比較）
   //    date_str 格式: "2026/04/25–26" 或 "2026/04/25"
-  //    sold_out 是手動標記（票真的賣完），不應被自動覆蓋
+  //    free 是手動標記（免費活動），不應被自動覆蓋
   const { data: allActive, error: e2 } = await supabase
     .from('concerts')
     .select('id, artist, date_str, status')
-    .not('status', 'in', '("ended","sold_out")')
+    .not('status', 'eq', 'ended')
 
   if (e2) {
     results.push(`fetch active error: ${e2.message}`)

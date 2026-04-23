@@ -67,18 +67,27 @@ export default function CalendarPage() {
   }
 
   // 城市選項（從資料動態產生，固定排序）
+  // city_zh 可能含 "/" 分隔多城市（如 "高雄/台北"），需拆分後再建集合
   const CITY_ORDER = useMemo(() => ['台北', '新北', '桃園', '台中', '高雄'], [])
   const availableCities = useMemo(() => {
-    const citySet = new Set(concerts.map((c) => c.city_zh).filter(Boolean))
+    const citySet = new Set(
+      concerts.flatMap((c) =>
+        c.city_zh ? c.city_zh.split('/').map((s) => s.trim()).filter(Boolean) : []
+      )
+    )
     const ordered = CITY_ORDER.filter((c) => citySet.has(c))
     const rest = [...citySet].filter((c) => !CITY_ORDER.includes(c)).sort()
     return [...ordered, ...rest]
   }, [concerts, CITY_ORDER])
 
-  // 套用城市篩選
+  // 套用城市篩選（支援 city_zh 含 "/" 的跨城市場次）
   const cityFilteredConcerts = useMemo(() => {
     if (selectedCity === 'all') return concerts
-    return concerts.filter((c) => c.city_zh === selectedCity)
+    return concerts.filter((c) =>
+      c.city_zh
+        ? c.city_zh.split('/').map((s) => s.trim()).includes(selectedCity)
+        : false
+    )
   }, [concerts, selectedCity])
 
   // 分組演出 (依月份，已套用城市篩選)

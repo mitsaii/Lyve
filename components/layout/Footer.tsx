@@ -149,10 +149,6 @@ export function Footer() {
           <GradientLink href="/about">
             {t('關於我們', 'About')}
           </GradientLink>
-          <span style={{ color: 'var(--faint)', fontSize: '10px' }}>·</span>
-          <GradientLink href="https://www.threads.com/@lyve__________?igshid=NTc4MTIwNjQ2YQ==" external>
-            Threads
-          </GradientLink>
         </div>
 
         {/* 分隔線 */}

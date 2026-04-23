@@ -1,7 +1,7 @@
 // types/concert.ts
 
 export type Genre = 'all' | 'cpop' | 'bands' | 'hiphop' | 'kpop' | 'jpop' | 'western' | 'festival'
-export type Status = 'selling' | 'pending' | 'sold_out' | 'ended'
+export type Status = 'selling' | 'pending' | 'free' | 'ended'
 export type Lang = 'zh' | 'en'
 export type Theme = 'dark' | 'light'
 export type ConcertId = string

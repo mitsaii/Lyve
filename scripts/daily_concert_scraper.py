@@ -9,7 +9,12 @@
   2.  UDN 售票網            — tickets.udnfunlife.com            ✅ 直接可爬（JS 渲染時降級）
   3.  年代售票 ERAticket     — ticket.com.tw                    ✅ 直接可爬
   4.  寬宏售票 Kham          — kham.com.tw                      ✅ 直接可爬
-  5.  iNDIEVOX             — indievox.com/activity             ✅ 直接可爬
+  4b. 遠大售票 Ticket Plus   — ticketplus.com.tw/eventlist.html ⚠️  React SPA（og: meta 爬取）
+  5.  iNDIEVOX             — indievox.com/activity             ✅ 直接可爬（含免費偵測）
+
+  ── 免費活動平台 ──────────────────────────────────────────────────────────────
+  5b. Accupass 活動通       — accupass.com/event/search?range=free ✅ 直接可爬（免費音樂）
+  ✗  KKTIX                — api.kktix.com 需 OAuth 授權，暫不支援
 
   ── 新聞 / Live Nation（補充來源）───────────────────────────────────────────
   6.  kpopn.com listing    — K-pop 演唱會最新消息
@@ -37,7 +42,7 @@
   ✗ Klook      — 403 Forbidden
   ✗ KKday      — 403 Forbidden
   ✗ OpenTix    — 404
-  ✗ TicketPlus — 頁面內容由 JS 動態載入
+  ✓ TicketPlus — 已改用 og: meta 爬取（React SPA，eventlist 需 JS 渲染，detail page og: 可取）
 
 Output:
   logs/daily_YYYYMMDD.log   — 執行日誌
@@ -109,7 +114,7 @@ BAD_TITLE_SUBSTRINGS = [
     "節目資訊", "節目清單", "節目列表",
     "活動資訊", "活動列表", "演出資訊", "演出列表", "演出節目",
     "節目與票券", "節目總表", "節目表", "最新節目",
-    "關於LEGACY", "寬宏售票系統",
+    "關於LEGACY", "寬宏售票系統", "Ticket Plus遠大售票系統", "遠大售票系統",
 ]
 # 季度型標題(如 "2026-27 節目清單與時間"、"2025/26 Season")通常是場館年度頁
 _BAD_TITLE_REGEXES = [
@@ -1955,6 +1960,153 @@ def _parse_kham_detail(url: str, html: str) -> dict | None:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# NEW Source: 遠大售票 Ticket Plus — ticketplus.com.tw
+# ─────────────────────────────────────────────────────────────────────────────
+
+def scrape_ticketplus() -> list[dict]:
+    """
+    爬取 Ticket Plus 遠大售票系統活動列表。
+      列表頁: https://ticketplus.com.tw/eventlist.html  （React SPA；activity ID 嵌於 HTML/JSON）
+      活動頁: https://ticketplus.com.tw/activity/{32-char hex}
+
+    策略：
+      1. 抓 eventlist.html，從原始 HTML 或 __NEXT_DATA__ / window.__initialState 等
+         embedded JSON 中找出所有 activity ID（32 位 hex）。
+      2. 若 eventlist 失敗或零 ID，改抓首頁並同樣掃描。
+      3. 對每個 activity 頁抓 og:title / og:image 等 meta tag（Next.js SSR 會輸出這些）。
+    """
+    log("── [遠大售票 Ticket Plus] 開始掃描...")
+    results: list[dict] = []
+    BASE = "https://ticketplus.com.tw"
+
+    # ── Step 1: 收集 activity ID ──────────────────────────────────────────────
+    activity_ids: list[str] = []
+
+    for list_url in [
+        f"{BASE}/eventlist.html",
+        f"{BASE}/",
+    ]:
+        html = fetch(list_url, timeout=25, referer=BASE + "/")
+        if not html:
+            continue
+
+        # 從 href="/activity/xxx" 或 "activity/xxx" 直接抓
+        ids = re.findall(r'/activity/([0-9a-f]{32})', html)
+        # 也找純 32-char hex（可能在 JSON 裡）
+        if not ids:
+            ids = re.findall(r'"([0-9a-f]{32})"', html)
+
+        activity_ids = list(dict.fromkeys(ids))
+        if activity_ids:
+            log(f"  從 {list_url} 找到 {len(activity_ids)} 個 activity ID")
+            break
+
+    if not activity_ids:
+        log("  ⚠️  eventlist 頁面可能需要完整 JS 渲染，未找到 activity ID")
+        return results
+
+    # ── Step 2: 抓各活動詳情頁 ───────────────────────────────────────────────
+    for aid in activity_ids[:25]:
+        time.sleep(1.2)
+        url = f"{BASE}/activity/{aid}"
+        detail_html = fetch(url, timeout=20, referer=f"{BASE}/eventlist.html")
+        if not detail_html:
+            continue
+        parsed = _parse_ticketplus_detail(url, detail_html)
+        if parsed:
+            results.append(parsed)
+
+    log(f"  → 找到 {len(results)} 個活動")
+    return results
+
+
+def _parse_ticketplus_detail(url: str, html: str) -> dict | None:
+    text = clean(strip_tags(html))
+
+    # ── 日期 ──────────────────────────────────────────────────────────────────
+    dates = parse_dates(text)
+    if not dates:
+        return None
+    date_str = next((d for d in dates if is_future_date(d)), None)
+    if not date_str:
+        return None
+
+    # ── 台灣演唱會關鍵字 ──────────────────────────────────────────────────────
+    has_tw = any(k in text.lower() for k in TW_KEYWORDS)
+    has_concert = any(k in text.lower() for k in CONCERT_KEYWORDS)
+    if not (has_tw and has_concert):
+        return None
+
+    # ── 標題（og:title → <title>；去掉「Ticket Plus」後綴）───────────────────
+    title = ""
+    og_title_m = re.search(
+        r'<meta[^>]+property=["\']og:title["\'][^>]+content=["\']([^"\']+)["\']', html)
+    if not og_title_m:
+        og_title_m = re.search(
+            r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:title["\']', html)
+    if og_title_m:
+        title = clean(html_lib.unescape(og_title_m.group(1)))
+    if not title:
+        title_m = re.search(r'<title[^>]*>(.*?)</title>', html, re.DOTALL)
+        title = clean(strip_tags(title_m.group(1))) if title_m else ""
+    # 去掉 "Ticket Plus | " 或 " - 遠大售票系統" 等包裝
+    title = re.sub(r'\s*[-|｜]\s*(?:Ticket\s*Plus|遠大售票(?:系統)?).*$', '',
+                   title, flags=re.IGNORECASE).strip()
+    title = re.sub(r'^(?:Ticket\s*Plus|遠大售票(?:系統)?)\s*[|｜\-]\s*', '',
+                   title, flags=re.IGNORECASE).strip()
+
+    if not title or is_bad_title(title):
+        return None
+
+    # ── 海報圖 ────────────────────────────────────────────────────────────────
+    og_img_m = re.search(
+        r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)["\']', html)
+    if not og_img_m:
+        og_img_m = re.search(
+            r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']', html)
+    image_url = og_img_m.group(1) if og_img_m else None
+
+    # ── 場館 ──────────────────────────────────────────────────────────────────
+    venues = re.findall(
+        r'(?:台北|臺北|高雄|台中|林口|新北|桃園)[^\s，,。\n]{0,30}'
+        r'(?:巨蛋|小巨蛋|大巨蛋|體育館|場館|劇場|音樂中心|展覽館|藝文中心|文化中心)',
+        text,
+    )
+    raw_venue = venues[0] if venues else ""
+    city_zh, city_en, venue_zh, venue_en = resolve_venue(raw_venue, text)
+
+    # ── 票價 ─────────────────────────────────────────────────────────────────
+    prices = re.findall(r'NT\$\s?[\d,]+', text)
+    price_str = prices[0].strip()[:40] if prices else "票價待公布"
+
+    # ── 表演者 ────────────────────────────────────────────────────────────────
+    artist_m = re.match(
+        r'^(.+?)\s+(?=.*(?:演唱會|巡演|Concert|Tour|LIVE|音樂會))',
+        title, re.IGNORECASE,
+    )
+    artist = (artist_m.group(1).strip()
+              if artist_m
+              else (_extract_artist_from_title(title) or title[:40]))
+    genre = classify_genre(artist, text[:400])
+
+    return {
+        "artist":       artist,
+        "date_str":     date_str,
+        "city_zh":      city_zh,   "city_en":  city_en,
+        "venue_zh":     venue_zh,  "venue_en": venue_en,
+        "tour_zh":      title[:60], "tour_en": title[:60],
+        "price_zh":     price_str,
+        "price_en":     price_str if re.search(r'[a-zA-Z]', price_str) else "TBA",
+        "platform":     "遠大售票 Ticket Plus",
+        "platform_url": url,
+        "genre":        genre,
+        "image_url":    image_url,
+        "sale_start_at": parse_sale_start(text),
+        "source":       "ticketplus",
+    }
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # NEW Source: iNDIEVOX — indievox.com (獨立音樂/Live House 票券)
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -2002,6 +2154,32 @@ def scrape_indievox() -> list[dict]:
     return results
 
 
+def _detect_free_event(text: str) -> tuple[bool, str, str]:
+    """從頁面文字判斷是否為免費活動。
+    回傳 (is_free, price_zh, price_en)。
+    """
+    # 明確免費訊號
+    free_patterns = [
+        r'免費(?:入場|參加|觀賞|聆聽|報名|索票|活動)?',
+        r'FREE\s*(?:ADMISSION|ENTRY|EVENT|SHOW)?',
+        r'(?:NT\$|NTD|TWD)\s*0(?:[^.\d]|$)',
+        r'票價[：:]\s*0',
+        r'無票價',
+        r'不(?:需|用)(?:購票|買票|售票)',
+    ]
+    for pat in free_patterns:
+        if re.search(pat, text, re.IGNORECASE):
+            return True, "免費", "Free"
+
+    # 有明確票價 → 非免費
+    if re.search(r'NT\$\s*[1-9][\d,]+', text):
+        prices = re.findall(r"NT\$\s?[\d,]+(?:[^元\n]{0,30})?", text)
+        price_str = prices[0].strip()[:40] if prices else "票價待公布"
+        return False, price_str, price_str
+
+    return False, "票價待公布", "TBA"
+
+
 def _parse_indievox_event(url: str, html: str) -> dict | None:
     text = clean(strip_tags(html))
 
@@ -2034,16 +2212,20 @@ def _parse_indievox_event(url: str, html: str) -> dict | None:
                 ).strip()
                 artist = _extract_artist_from_title(name) or name[:40]
                 genre = classify_genre(artist, text[:400])
+                is_free, price_zh, price_en = _detect_free_event(text)
+                status = "free" if is_free else "selling"
                 return {
                     "artist": artist, "date_str": date_str,
                     "city_zh": city_zh, "city_en": city_en,
                     "venue_zh": venue_zh, "venue_en": venue_en,
                     "tour_zh": name[:60], "tour_en": name[:60],
-                    "price_zh": "票價待公布", "price_en": "TBA",
+                    "price_zh": price_zh, "price_en": price_en,
+                    "status": status,
                     "platform": "iNDIEVOX",
                     "platform_url": url,
                     "genre": genre, "image_url": image_url,
-                    "sale_start_at": parse_sale_start(text), "source": "indievox",
+                    "sale_start_at": None if is_free else parse_sale_start(text),
+                    "source": "indievox",
                 }
         except (json.JSONDecodeError, KeyError):
             continue
@@ -2078,17 +2260,231 @@ def _parse_indievox_event(url: str, html: str) -> dict | None:
     artist = _extract_artist_from_title(title) or title[:40]
     city_zh, city_en, venue_zh, venue_en = resolve_venue(raw_venue, text)
     genre = classify_genre(artist, text[:400])
+    is_free, price_zh, price_en = _detect_free_event(text)
+    status = "free" if is_free else "selling"
 
     return {
         "artist": artist, "date_str": date_str,
         "city_zh": city_zh, "city_en": city_en,
         "venue_zh": venue_zh, "venue_en": venue_en,
         "tour_zh": title[:60], "tour_en": title[:60],
-        "price_zh": "票價待公布", "price_en": "TBA",
+        "price_zh": price_zh, "price_en": price_en,
+        "status": status,
         "platform": "iNDIEVOX",
         "platform_url": url,
         "genre": genre, "image_url": image_url,
-        "sale_start_at": parse_sale_start(text), "source": "indievox",
+        "sale_start_at": None if is_free else parse_sale_start(text),
+        "source": "indievox",
+    }
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# NEW Source: Accupass 活動通 — 免費音樂活動
+# ─────────────────────────────────────────────────────────────────────────────
+
+def scrape_accupass_free() -> list[dict]:
+    """
+    爬取 Accupass 活動通的免費音樂活動。
+    使用 range=free 參數過濾，搭配 music 類別。
+    URL 範例: https://www.accupass.com/event/search?q=音樂&range=free
+    備用 URL:  https://www.accupass.com/event/search?q=演唱會&range=free
+    """
+    log("── [Accupass] 開始掃描免費音樂活動...")
+    results: list[dict] = []
+
+    _BASE = "https://www.accupass.com"
+    _SEARCH_URLS = [
+        f"{_BASE}/event/search?q=%E9%9F%B3%E6%A8%82&range=free",   # 音樂
+        f"{_BASE}/event/search?q=%E6%BC%94%E5%94%B1%E6%9C%83&range=free",  # 演唱會
+        f"{_BASE}/event/search?q=%E7%8D%A8%E7%AB%8B%E9%9F%B3%E6%A8%82&range=free",  # 獨立音樂
+    ]
+
+    seen_urls: set[str] = set()
+
+    for search_url in _SEARCH_URLS:
+        time.sleep(1.5)
+        html = fetch(search_url, timeout=25, referer=_BASE + "/")
+        if not html:
+            log(f"  ✗ 無法取得: {search_url}")
+            continue
+
+        # 嘗試從頁面中擷取 JSON 資料（Accupass 常在頁面嵌入 JSON 活動列表）
+        json_matches = re.findall(
+            r'"events"\s*:\s*(\[.*?\])',
+            html, re.DOTALL
+        )
+        if not json_matches:
+            # 備用：從 window.__INITIAL_STATE__ 或類似結構取資料
+            json_matches = re.findall(
+                r'window\.__(?:INITIAL_STATE|data)__\s*=\s*(\{.*?\});',
+                html, re.DOTALL
+            )
+
+        # 若有 JSON，解析活動連結
+        event_links = []
+        for m in json_matches:
+            try:
+                obj = json.loads(m)
+                # 遞迴找 url / link 欄位
+                def _extract_links(o: Any) -> list[str]:
+                    links = []
+                    if isinstance(o, dict):
+                        for k, v in o.items():
+                            if k in ("url", "link", "href", "eventUrl") and isinstance(v, str) and "accupass" in v:
+                                links.append(v)
+                            else:
+                                links.extend(_extract_links(v))
+                    elif isinstance(o, list):
+                        for item in o:
+                            links.extend(_extract_links(item))
+                    return links
+                event_links.extend(_extract_links(obj))
+            except (json.JSONDecodeError, ValueError):
+                pass
+
+        # 備用：直接從 HTML 抓活動頁連結
+        if not event_links:
+            event_links = re.findall(
+                r'href=["\'](' + re.escape(_BASE) + r'/event/\d+[^"\']*)["\']',
+                html
+            )
+            if not event_links:
+                event_links = [
+                    _BASE + path
+                    for path in re.findall(r'href=["\'](/event/\d+[^"\']*)["\']', html)
+                ]
+
+        log(f"  找到 {len(event_links)} 個活動連結（來源: {search_url.split('?')[1][:20]}）")
+
+        for link in event_links[:15]:
+            # 清理並去重
+            link = link.split("?")[0].rstrip("/")
+            if link in seen_urls:
+                continue
+            seen_urls.add(link)
+
+            time.sleep(1.2)
+            detail_html = fetch(link, referer=search_url)
+            if not detail_html:
+                continue
+
+            parsed = _parse_accupass_event(link, detail_html)
+            if parsed:
+                results.append(parsed)
+
+    log(f"  → 找到 {len(results)} 個免費活動")
+    return results
+
+
+def _parse_accupass_event(url: str, html: str) -> dict | None:
+    """解析單一 Accupass 活動頁面。"""
+    text = clean(strip_tags(html))
+
+    # 只保留音樂相關活動
+    music_keywords = [
+        "音樂", "演唱", "concert", "live", "樂團", "歌手", "singer",
+        "hip.?hop", "jazz", "搖滾", "民謠", "indie", "band", "dj",
+        "festival", "音樂祭", "展演",
+    ]
+    if not any(re.search(kw, text[:500], re.IGNORECASE) for kw in music_keywords):
+        return None
+
+    # JSON-LD
+    for block in re.findall(r'<script[^>]*type=["\']application/ld\+json["\'][^>]*>(.*?)</script>', html, re.DOTALL):
+        try:
+            data = json.loads(block)
+            if isinstance(data, list):
+                data = data[0]
+            if data.get("@type") in ("MusicEvent", "Event"):
+                name = data.get("name", "").strip()
+                if not name:
+                    continue
+                start = data.get("startDate", "")
+                dates = parse_dates(start or text)
+                if not dates:
+                    continue
+                date_str = next((d for d in dates if is_future_date(d)), None)
+                if not date_str:
+                    continue
+
+                location = data.get("location", {})
+                raw_venue = location.get("name", "") if isinstance(location, dict) else ""
+                city_zh, city_en, venue_zh, venue_en = resolve_venue(raw_venue, text)
+
+                og_img = re.search(r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)["\']', html)
+                if not og_img:
+                    og_img = re.search(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']', html)
+                image_url = og_img.group(1) if og_img else None
+
+                artist = _extract_artist_from_title(name) or name[:40]
+                genre = classify_genre(artist, text[:400])
+                # Accupass 免費活動爬蟲來源即為免費活動
+                is_free, price_zh, price_en = _detect_free_event(text)
+                # 若偵測不到明確免費但來自免費篩選頁，仍標為 free
+                if not is_free:
+                    is_free = True
+                    price_zh, price_en = "免費", "Free"
+
+                return {
+                    "artist": artist, "date_str": date_str,
+                    "city_zh": city_zh, "city_en": city_en,
+                    "venue_zh": venue_zh, "venue_en": venue_en,
+                    "tour_zh": name[:60], "tour_en": name[:60],
+                    "price_zh": price_zh, "price_en": price_en,
+                    "status": "free",
+                    "platform": "Accupass 活動通",
+                    "platform_url": url,
+                    "genre": genre, "image_url": image_url,
+                    "sale_start_at": None,
+                    "source": "accupass",
+                }
+        except (json.JSONDecodeError, KeyError):
+            continue
+
+    # HTML fallback
+    dates = parse_dates(text)
+    if not dates:
+        return None
+    date_str = next((d for d in dates if is_future_date(d)), None)
+    if not date_str:
+        return None
+
+    og_title = re.search(r'<meta[^>]+property=["\']og:title["\'][^>]+content=["\']([^"\']+)["\']', html)
+    title = clean(html_lib.unescape(og_title.group(1))) if og_title else ""
+    if not title:
+        t_m = re.search(r'<title[^>]*>(.*?)</title>', html, re.DOTALL)
+        title = clean(strip_tags(t_m.group(1))) if t_m else ""
+    title = re.sub(r'\s*[-|]\s*[Aa]ccupass.*$', '', title).strip()
+    if not title:
+        return None
+
+    og_img = re.search(r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)["\']', html)
+    if not og_img:
+        og_img = re.search(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']', html)
+    image_url = og_img.group(1) if og_img else None
+
+    artist = _extract_artist_from_title(title) or title[:40]
+    venues = re.findall(
+        r'(?:台北|臺北|高雄|台中|林口|新北)[^\s，,。\n]{0,30}'
+        r'(?:Live\s*House|藝文|音樂|展演|劇場|廣場|park|公園)',
+        text, re.IGNORECASE,
+    )
+    raw_venue = venues[0] if venues else ""
+    city_zh, city_en, venue_zh, venue_en = resolve_venue(raw_venue, text)
+    genre = classify_genre(artist, text[:400])
+
+    return {
+        "artist": artist, "date_str": date_str,
+        "city_zh": city_zh, "city_en": city_en,
+        "venue_zh": venue_zh, "venue_en": venue_en,
+        "tour_zh": title[:60], "tour_en": title[:60],
+        "price_zh": "免費", "price_en": "Free",
+        "status": "free",
+        "platform": "Accupass 活動通",
+        "platform_url": url,
+        "genre": genre, "image_url": image_url,
+        "sale_start_at": None,
+        "source": "accupass",
     }
 
 
@@ -3297,9 +3693,21 @@ def main() -> None:
         log(f"  ✗ 寬宏售票 爬取失敗: {e}")
 
     try:
+        raw += scrape_ticketplus()
+    except Exception as e:
+        log(f"  ✗ 遠大售票 爬取失敗: {e}")
+
+    try:
         raw += scrape_indievox()
     except Exception as e:
         log(f"  ✗ iNDIEVOX 爬取失敗: {e}")
+
+    # ── 免費活動平台 ──────────────────────────────────────────────────────────
+    # KKTIX: 有官方 API (api.kktix.com) 但需 OAuth 授權，暫不支援直接爬取
+    try:
+        raw += scrape_accupass_free()
+    except Exception as e:
+        log(f"  ✗ Accupass 免費活動 爬取失敗: {e}")
 
     # ── 指標性大型場館 ────────────────────────────────────────────────────────
     try:
