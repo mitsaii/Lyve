@@ -39,7 +39,7 @@ body {
   color: var(--text);
   font-family: var(--font-noto-sans), 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
   transition: var(--transition);
-  padding-bottom: env(safe-area-inset-bottom);
+
 }
 
 * {

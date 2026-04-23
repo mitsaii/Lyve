@@ -92,7 +92,7 @@ export default function RootLayout({
                   <SplashGate>
                     <div className="max-w-[480px] mx-auto min-h-screen" style={{ background: 'var(--bg)' }}>
                       <Header />
-                      <div style={{ paddingTop: 'calc(7rem + env(safe-area-inset-top))', paddingBottom: 'calc(6rem + env(safe-area-inset-bottom))' }}>
+                      <div style={{ paddingTop: 'calc(7rem + env(safe-area-inset-top))' }}>
                         {children}
                         <Footer />
                       </div>

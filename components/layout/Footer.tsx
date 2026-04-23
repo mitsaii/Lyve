@@ -89,7 +89,7 @@ export function Footer() {
           ? 'linear-gradient(170deg, #0c0c12 0%, #16101e 100%)'
           : 'linear-gradient(170deg, #fff5f7 0%, #f0eeff 100%)',
         borderTop: `1px solid var(--faint)`,
-        paddingBottom: 'calc(5.5rem + env(safe-area-inset-bottom))',
+        paddingBottom: 'calc(6rem + env(safe-area-inset-bottom))',
       }}
     >
       {/* 裝飾彩虹線 */}
