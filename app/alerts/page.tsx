@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { Concert } from '@/types/concert'
 import { useLang } from '@/contexts/LangContext'
 import { useAlert } from '@/contexts/AlertContext'
@@ -99,7 +99,9 @@ function Pagination({
 
 export default function AlertsPage() {
   const { t } = useLang()
-  const { toggleAlert, hasAlert } = useAlert()
+  const { alertIds, toggleAlert } = useAlert()
+  // rawConcerts = 未 dedup 的原始清單（用來把 alertIds 對應到 artist|date_str）
+  const [rawConcerts, setRawConcerts] = useState<Concert[]>([])
   const [concerts, setConcerts] = useState<Concert[]>([])
   const [selectedConcert, setSelectedConcert] = useState<Concert | null>(null)
   const [loading, setLoading] = useState(true)
@@ -122,9 +124,42 @@ export default function AlertsPage() {
       .order('date_str', { ascending: true })
 
     if (!error && data) {
-      setConcerts(deduplicateConcerts(data as Concert[]))
+      const list = data as Concert[]
+      setRawConcerts(list)
+      setConcerts(deduplicateConcerts(list))
     }
     setLoading(false)
+  }
+
+  // 把 alertIds 擴展為 artist|date_str keys，避免 dedup 把當初加入提醒的那筆
+  // 擠掉後，畫面上看到的是同一場的重複記錄、導致鈴鐺不亮（現存使用者的資料修復）
+  const alertedKeys = useMemo(() => {
+    const keys = new Set<string>()
+    for (const c of rawConcerts) {
+      if (alertIds.has(c.id)) keys.add(`${c.artist}|${c.date_str}`)
+    }
+    return keys
+  }, [rawConcerts, alertIds])
+
+  const isAlerted = (c: Concert): boolean =>
+    alertIds.has(c.id) || alertedKeys.has(`${c.artist}|${c.date_str}`)
+
+  // 找出此演唱會「實際對應到的已提醒 id」。若目前畫面上的 c 是 dedup 後
+  // 的勝出者、但使用者當初加提醒的是同一場的另一筆（落選 dup），
+  // 要 toggle 掉那個 orphan id，不然會變成兩筆同時有提醒。
+  const findAlertedId = (c: Concert): string => {
+    if (alertIds.has(c.id)) return c.id
+    for (const raw of rawConcerts) {
+      if (
+        raw.id !== c.id &&
+        alertIds.has(raw.id) &&
+        raw.artist === c.artist &&
+        raw.date_str === c.date_str
+      ) {
+        return raw.id
+      }
+    }
+    return c.id
   }
 
   const filteredConcerts = query.trim()
@@ -142,8 +177,8 @@ export default function AlertsPage() {
       })
     : concerts
 
-  const alertedConcerts = filteredConcerts.filter((c) => hasAlert(c.id))
-  const pendingConcerts = filteredConcerts.filter((c) => !hasAlert(c.id))
+  const alertedConcerts = filteredConcerts.filter((c) => isAlerted(c))
+  const pendingConcerts = filteredConcerts.filter((c) => !isAlerted(c))
 
   const alertedPageConcerts = alertedConcerts.slice((alertedPage - 1) * PAGE_SIZE, alertedPage * PAGE_SIZE)
   const pendingPageConcerts = pendingConcerts.slice((pendingPage - 1) * PAGE_SIZE, pendingPage * PAGE_SIZE)
@@ -212,7 +247,7 @@ export default function AlertsPage() {
                     key={concert.id}
                     concert={concert}
                     alerted
-                    onToggle={() => toggleAlert(concert.id)}
+                    onToggle={() => toggleAlert(findAlertedId(concert))}
                     onClick={() => setSelectedConcert(concert)}
                   />
                 ))}
