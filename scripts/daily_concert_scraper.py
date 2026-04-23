@@ -102,6 +102,36 @@ CONCERT_KEYWORDS = [
     "演唱會", "巡演", "巡迴", "開唱", "concert", "tour", "live", "show",
 ]
 
+# ── 壞標題黑名單 ──────────────────────────────────────────────────────────────
+# 爬蟲抓到 listing / 分類頁時,<title> 或 og:title 常是頁面本身而非單場活動名稱。
+# 命中以下 pattern 的一律視為髒資料,不寫入 DB。
+BAD_TITLE_SUBSTRINGS = [
+    "節目資訊", "節目清單", "節目列表",
+    "活動資訊", "活動列表", "演出資訊", "演出列表", "演出節目",
+    "節目與票券", "節目總表", "節目表", "最新節目",
+    "關於LEGACY", "寬宏售票系統",
+]
+# 季度型標題(如 "2026-27 節目清單與時間"、"2025/26 Season")通常是場館年度頁
+_BAD_TITLE_REGEXES = [
+    re.compile(r"^\s*20\d{2}[-/]\d{2}\s*(?:season|節目)", re.IGNORECASE),
+    re.compile(r"function\s*\(\s*w\s*,\s*d\s*,\s*s\s*,\s*l\s*,\s*i\s*\)"),  # GTM JS
+    re.compile(r"w\s*\[\s*l\s*\]\s*=\s*w\s*\[\s*l\s*\]"),                  # GTM JS
+]
+
+
+def is_bad_title(title: str) -> bool:
+    """判斷 title / artist 欄位是否為 listing 頁或 JS 片段等髒資料。"""
+    if not title:
+        return True
+    t = title.strip()
+    for s in BAD_TITLE_SUBSTRINGS:
+        if s in t:
+            return True
+    for rx in _BAD_TITLE_REGEXES:
+        if rx.search(t):
+            return True
+    return False
+
 # ── Genre detection ───────────────────────────────────────────────────────────
 _KPOP = {
     "blackpink", "bts", "twice", "exo", "nct", "stray kids", "ive", "aespa",
@@ -118,11 +148,22 @@ _JPOP = {
     "mrs. green apple", "sumika", "kenshi yonezu", "hikaru utada", "aimyon",
     "aimer", "yorushika", "zutomayo", "kirinji", "chilli beans",
     "sekai no owari",
+    # 日本動漫/聲優歌手
+    "lisa", "水樹奈奈", "may'n", "nakashima", "中島美嘉", "misia", "mizuki nana",
+    "nano", "fripside", "garnidelia", "kalafina",
 }
 _CPOP = {
     "林俊傑", "jj lin", "張惠妹", "a-mei", "周杰倫", "jay chou", "蔡依林", "jolin tsai",
     "張學友", "jacky cheung", "王力宏", "leehom", "孫燕姿", "stefanie sun",
     "林宥嘉", "楊乃文", "陳奕迅", "eason chan", "leo王", "熊仔", "陳珊妮",
+    # 台灣創作/流行歌手
+    "鄭興", "艾薇", "葵剛", "白吉勝", "陳德修", "後站人", "伯爵先生",
+    "丁噹", "della", "陳大衛",
+}
+_KPOP_EXTRA = {
+    # 韓國歌手/演員（補充 _KPOP 沒有的）
+    "李昇基", "이승기", "李洪基", "이홍기", "ftisland", "kangin", "강인",
+    "cnblue", "woodz",
 }
 _BANDS = {
     # 台灣樂團
@@ -133,6 +174,10 @@ _BANDS = {
     "魚丁糸", "滅火器", "fire ex", "旺福", "wonfu", "閃靈", "chthonic",
     "橘子海", "tan lines", "山嵐", "hyper crush", "leo37", "生祥樂隊",
     "甜約翰", "deca joins", "熱狗", "有你真好", "芒果醬",
+    # 台灣獨立樂團（新增）
+    "我是機車少女", "野巢", "be酷", "icyball", "冰球樂團", "emptyor",
+    "男子漢樂團", "倒車入庫", "number 18", "resono", "beyond cure", "腦體馬戲團",
+    "麋先生", "mixer",
     # 西洋樂團
     "coldplay", "arctic monkeys", "radiohead", "oasis", "the 1975",
     "kings of leon", "imagine dragons", "linkin park", "green day",
@@ -311,12 +356,13 @@ def classify_genre(artist: str, text: str = "") -> str:
     combined = (artist + " " + text).lower()
     if any(k in combined for k in _FESTIVAL_KW):
         return "festival"
-    if any(k in combined for k in _KPOP):
-        return "kpop"
+    # 判斷順序：樂團 > jpop > kpop，避免台灣樂團被誤判為 kpop
+    if any(k in combined for k in _BANDS) or "樂團" in artist:
+        return "bands"
     if any(k in combined for k in _JPOP):
         return "jpop"
-    if any(k in combined for k in _BANDS):
-        return "bands"
+    if any(k in combined for k in _KPOP) or any(k in combined for k in _KPOP_EXTRA):
+        return "kpop"
     if any(k in combined for k in _CPOP):
         return "cpop"
     # Heuristics: all-Chinese artist name → cpop; ends in common JP patterns → jpop
@@ -2891,6 +2937,11 @@ def _parse_venue_event_page(url: str, html: str, platform: str, domain: str,
     if not title:
         return None
 
+    # Reject listing / category pages where <title> is "節目資訊 | 2026-27 節目清單與時間" 等
+    if is_bad_title(title):
+        log(f"  ⚠ 略過 listing 頁 (title={title[:40]!r}): {url}")
+        return None
+
     # Venue
     venues = re.findall(
         r'(?:台北|臺北|高雄|台中|林口|新北|桃園)[^\s，,。\n]{0,30}'
@@ -2967,6 +3018,10 @@ def normalize_concerts(raw: list[dict]) -> list[dict]:
     out: list[dict] = []
     for c in raw:
         if not c.get("artist") or not c.get("date_str"):
+            continue
+        # Safety net: reject listing-page / JS-snippet titles from any scraper source
+        if is_bad_title(c.get("artist", "")) or is_bad_title(c.get("tour_zh", "")):
+            log(f"  ⚠ 丟棄髒資料: artist={c.get('artist')!r} tour={c.get('tour_zh')!r}")
             continue
         key = _dedup_key(c)
         if key in seen:

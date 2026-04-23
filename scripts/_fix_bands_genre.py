@@ -23,6 +23,10 @@ _BANDS = {
     "大象體操", "elephant gym", "老王樂隊", "宇宙人", "cosmos people",
     "魚丁糸", "滅火器", "fire ex", "旺福", "wonfu", "閃靈", "chthonic",
     "橘子海", "tan lines", "山嵐", "生祥樂隊", "甜約翰", "deca joins",
+    # 台灣獨立樂團（新增）
+    "我是機車少女", "野巢", "be酷", "icyball", "冰球樂團", "emptyor",
+    "男子漢樂團", "倒車入庫", "number 18", "resono", "beyond cure", "腦體馬戲團",
+    "麋先生", "mixer",
     # 西洋樂團
     "coldplay", "arctic monkeys", "radiohead", "oasis", "the 1975",
     "kings of leon", "imagine dragons", "linkin park", "green day",

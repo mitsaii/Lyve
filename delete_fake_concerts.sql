@@ -33,6 +33,19 @@ DELETE FROM concerts
 WHERE platform_url = 'https://www.colatour.com.tw/webDM/taiwan/theme/concert/hot.html'
   AND (tour_zh IS NULL OR tour_zh = '' OR tour_zh = artist);
 
+-- ⑥ 刪除爬蟲抓到場館/網站「節目資訊列表頁」當成單一活動的壞資料
+-- 典型樣態: 標題為「節目資訊 | 2026-27 節目清單與時間」、「節目資訊」等
+-- 這些是 listing/分類頁被誤當成活動詳情頁爬取
+DELETE FROM concerts
+WHERE artist IN ('節目資訊', '節目清單', '節目列表', '活動資訊', '活動列表', '演出資訊', '演出列表')
+   OR tour_zh IN ('節目資訊', '節目清單', '節目列表', '活動資訊', '活動列表', '演出資訊', '演出列表')
+   OR artist LIKE '節目資訊%'
+   OR tour_zh LIKE '節目資訊%'
+   OR artist LIKE '%節目清單與時間%'
+   OR tour_zh LIKE '%節目清單與時間%'
+   OR artist LIKE '20__-__ 節目%'    -- 2026-27 節目...、2025-26 節目...
+   OR tour_zh LIKE '20__-__ 節目%';
+
 -- 確認清理結果
 SELECT COUNT(*) AS remaining_fake FROM concerts
 WHERE platform_url IN (
@@ -45,4 +58,8 @@ OR artist LIKE '%function%'
 OR tour_zh LIKE '%function%'
 OR artist IN ('寬宏售票系統', '寬宏售票', 'Kham')
 OR artist LIKE '%關於LEGACY%'
-OR artist LIKE '%演出節目%';
+OR artist LIKE '%演出節目%'
+OR artist LIKE '節目資訊%'
+OR tour_zh LIKE '節目資訊%'
+OR artist LIKE '%節目清單%'
+OR tour_zh LIKE '%節目清單%';
