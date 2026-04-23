@@ -206,7 +206,7 @@ export function ConcertModal({ concert, onClose }: ConcertModalProps) {
                 value: concert.platform,
               },
               {
-                icon: <IconClock className="w-5 h-5" />,
+                icon: null,
                 label: t('搶票時間', 'Ticket Sale Time'),
                 value: ticketSaleTime,
               },
@@ -216,7 +216,9 @@ export function ConcertModal({ concert, onClose }: ConcertModalProps) {
                 className="p-4 rounded-xl flex items-center gap-3"
                 style={{ background: 'var(--faint)' }}
               >
-                <span className="flex-shrink-0" style={{ color: 'var(--accent)' }}>{row.icon}</span>
+                {row.icon && (
+                  <span className="flex-shrink-0" style={{ color: 'var(--accent)' }}>{row.icon}</span>
+                )}
                 <div className="flex-1">
                   <div className="text-xs mb-1" style={{ color: 'var(--muted)' }}>
                     {row.label}
