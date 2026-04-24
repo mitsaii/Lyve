@@ -1,10 +1,14 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { Post, Comment } from '@/types/post'
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/contexts/AuthContext'
 import { useLang } from '@/contexts/LangContext'
+
+// 模組層建立一次，避免 useEffect 依賴警告
+const supabase = createClient()
 
 interface PostCardProps {
   post: Post
@@ -31,7 +35,6 @@ function timeAgo(dateStr: string, lang: 'zh' | 'en'): string {
 export function PostCard({ post }: PostCardProps) {
   const { user } = useAuth()
   const { t, lang } = useLang()
-  const supabase = createClient()
 
   const [liked, setLiked] = useState(false)
   const [likesCount, setLikesCount] = useState(post.likes_count)
@@ -43,6 +46,7 @@ export function PostCard({ post }: PostCardProps) {
   const [expanded, setExpanded] = useState(false)
 
   // 檢查是否已愛心
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!user) return
     supabase
@@ -117,10 +121,12 @@ export function PostCard({ post }: PostCardProps) {
       {/* 圖片 */}
       {post.image_url && (
         <div className="relative w-full" style={{ height: '200px' }}>
-          <img
+          <Image
             src={post.image_url}
             alt={post.title}
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
+            sizes="(max-width: 480px) 100vw, 480px"
           />
           {/* AI 標籤 */}
           {post.is_ai_generated && (

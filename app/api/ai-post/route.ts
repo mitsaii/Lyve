@@ -45,7 +45,7 @@ async function callClaude(prompt: string): Promise<string> {
   return json.content?.[0]?.text ?? ''
 }
 
-export async function POST(req: NextRequest) {
+export async function POST(_req: NextRequest) {
   try {
     // 取得近期演唱會資料
     const concerts = await getRecentConcerts()

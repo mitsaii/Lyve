@@ -1,16 +1,17 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Post } from '@/types/post'
 import { createClient } from '@/lib/supabase/client'
 import { useLang } from '@/contexts/LangContext'
 import { PostCard } from '@/components/feed/PostCard'
 
 const PAGE_SIZE = 10
+// 模組層建立一次，避免每次 render 重建（解決 useCallback 依賴警告）
+const supabase = createClient()
 
 export default function FeedPage() {
   const { t } = useLang()
-  const supabase = createClient()
 
   const [posts, setPosts] = useState<Post[]>([])
   const [loading, setLoading] = useState(true)
@@ -20,8 +21,11 @@ export default function FeedPage() {
   const [generating, setGenerating] = useState(false)
   const [genSuccess, setGenSuccess] = useState<string | null>(null)
 
-  const fetchPosts = useCallback(async (reset = false) => {
-    const from = reset ? 0 : posts.length
+  // 用 ref 追蹤目前已載入的數量，避免 stale closure
+  const postsLenRef = useRef(0)
+
+  const fetchPosts = async (reset = false) => {
+    const from = reset ? 0 : postsLenRef.current
     if (!reset) setLoadingMore(true)
     else setLoading(true)
 
@@ -39,16 +43,20 @@ export default function FeedPage() {
 
     if (!error && data) {
       const newPosts = data as Post[]
-      setPosts(prev => reset ? newPosts : [...prev, ...newPosts])
+      setPosts(prev => {
+        const next = reset ? newPosts : [...prev, ...newPosts]
+        postsLenRef.current = next.length
+        return next
+      })
       setHasMore(newPosts.length === PAGE_SIZE)
     }
     setLoading(false)
     setLoadingMore(false)
-  }, [filter, posts.length])
+  }
 
-  useEffect(() => {
-    fetchPosts(true)
-  }, [filter])
+  // filter 變更時重新載入
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { fetchPosts(true) }, [filter])
 
   // 呼叫 AI 自動發文
   const triggerAiPost = async () => {
@@ -152,7 +160,6 @@ export default function FeedPage() {
       {/* 貼文列表 */}
       <div className="px-4 py-4 flex flex-col gap-4">
         {loading ? (
-          // Skeleton cards
           Array.from({ length: 3 }).map((_, i) => (
             <div
               key={i}
