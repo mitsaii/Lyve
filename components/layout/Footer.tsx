@@ -149,6 +149,9 @@ export function Footer() {
           <GradientLink href="/about">
             {t('關於我們', 'About')}
           </GradientLink>
+          <GradientLink href="/weekend">
+            {t('周邊', 'Nearby')}
+          </GradientLink>
         </div>
 
         {/* 分隔線 */}

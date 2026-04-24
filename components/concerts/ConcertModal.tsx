@@ -6,10 +6,10 @@ import { useLang } from '@/contexts/LangContext'
 import { useSaved } from '@/contexts/SavedContext'
 import { StatusTag } from '../ui/StatusTag'
 import { statusLabel, genreLabel } from '@/lib/utils'
-import { IconPin, IconCalendar, IconTag, IconVenue, IconTicket, IconClock, IconHeart } from '../ui/Icons'
+import { IconPin, IconCalendar, IconTag, IconVenue, IconTicket, IconHeart } from '../ui/Icons'
 import { ConcertAvatar } from './ConcertAvatar'
 import { isTicketingPlatform } from '@/lib/utils'
-import { shareConcertToInstagram } from '@/lib/shareInstagram'
+import { downloadStoryImage, openInstagramDirect } from '@/lib/shareInstagram'
 import { AlertPromptSheet } from './AlertPromptSheet'
 
 interface ConcertModalProps {
@@ -22,7 +22,8 @@ export function ConcertModal({ concert, onClose }: ConcertModalProps) {
   const { isSaved, toggleSave } = useSaved()
   const [showAlertPrompt, setShowAlertPrompt] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
-  const [igCopied, setIgCopied] = useState(false)
+  const [showIgSheet, setShowIgSheet] = useState(false)
+  const [igDownloaded, setIgDownloaded] = useState(false)
 
   useEffect(() => {
     if (concert) {
@@ -115,12 +116,16 @@ export function ConcertModal({ concert, onClose }: ConcertModalProps) {
     window.open(`https://www.threads.com/intent/post?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer')
   }
 
-  const handleShareInstagram = async () => {
-    // 產生限動圖片 → 系統分享選單 → 使用者選 IG 限動，圖片會自動當作限動背景
-    const result = await shareConcertToInstagram(concert, lang, shareUrl)
-    if (result.copied) {
-      setIgCopied(true)
-      setTimeout(() => setIgCopied(false), 2000)
+  const handleIgStory = async () => {
+    setShowIgSheet(false)
+    await openInstagramDirect(concert, lang, shareUrl, 'story')
+  }
+
+  const handleIgDownload = async () => {
+    const ok = await downloadStoryImage(concert, lang)
+    if (ok) {
+      setIgDownloaded(true)
+      setTimeout(() => setIgDownloaded(false), 2500)
     }
   }
 
@@ -284,34 +289,81 @@ export function ConcertModal({ concert, onClose }: ConcertModalProps) {
             </button>
             {/* Instagram */}
             <button
-              onClick={handleShareInstagram}
+              onClick={() => setShowIgSheet(true)}
               className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-medium transition-all hover:scale-[1.02]"
               style={{
-                background: igCopied
-                  ? 'var(--faint)'
-                  : 'linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)',
-                color: igCopied ? 'var(--text)' : '#fff',
+                background: 'linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)',
+                color: '#fff',
               }}
             >
-              {igCopied ? (
-                <>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-4 h-4">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                  </svg>
-                  {t('已複製', 'Copied')}
-                </>
-              ) : (
-                <>
-                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
-                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z" />
-                  </svg>
-                  IG
-                </>
-              )}
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z" />
+              </svg>
+              IG
             </button>
           </div>
         </div>
       </div>
+
+      {/* IG 分享選單 */}
+      {showIgSheet && (
+        <>
+          <div
+            className="fixed inset-0 z-[60]"
+            style={{ background: 'rgba(0,0,0,0.4)' }}
+            onClick={() => setShowIgSheet(false)}
+          />
+          <div
+            className="fixed inset-x-0 bottom-0 z-[70] slide-up"
+          >
+            <div
+              className="max-w-[480px] mx-auto rounded-t-3xl p-6"
+              style={{ background: 'var(--surface)' }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-center mb-4">
+                <div className="w-12 h-1 rounded-full" style={{ background: 'var(--muted)' }} />
+              </div>
+              <p className="text-sm font-semibold text-center mb-4" style={{ color: 'var(--muted)' }}>
+                {t('分享到 Instagram', 'Share to Instagram')}
+              </p>
+              <div className="flex flex-col gap-3">
+                {/* 限時動態 */}
+                <button
+                  onClick={handleIgStory}
+                  className="flex items-center gap-3 w-full px-4 py-3.5 rounded-2xl text-sm font-medium transition-all hover:scale-[1.01] active:scale-[0.99]"
+                  style={{
+                    background: 'linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)',
+                    color: '#fff',
+                  }}
+                >
+                  <span className="text-lg">📸</span>
+                  <div className="text-left">
+                    <div className="font-semibold">{t('開啟限時動態', 'Open Stories')}</div>
+                    <div className="text-xs opacity-80">{t('直接跳到 IG 限時動態相機', 'Jump straight to IG Story camera')}</div>
+                  </div>
+                </button>
+                {/* 儲存圖片 */}
+                <button
+                  onClick={handleIgDownload}
+                  className="flex items-center gap-3 w-full px-4 py-3.5 rounded-2xl text-sm font-medium transition-all hover:scale-[1.01] active:scale-[0.99]"
+                  style={{ background: 'var(--faint)', color: 'var(--text)' }}
+                >
+                  <span className="text-lg">{igDownloaded ? '✅' : '💾'}</span>
+                  <div className="text-left">
+                    <div className="font-semibold">
+                      {igDownloaded ? t('已儲存！', 'Saved!') : t('儲存限動圖片', 'Save Story Image')}
+                    </div>
+                    <div className="text-xs" style={{ color: 'var(--muted)' }}>
+                      {t('下載精美圖片，自己貼到 IG', 'Download the image to share yourself')}
+                    </div>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
 
       {showAlertPrompt && (
         <AlertPromptSheet

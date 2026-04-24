@@ -15,10 +15,13 @@ const IconHome = ({ active }: { active: boolean }) => (
   </svg>
 )
 
-const IconNearby = ({ active }: { active: boolean }) => (
+const IconFeed = ({ active }: { active: boolean }) => (
   <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth={active ? 2 : 1.6} strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill={active ? 'var(--accent)' : 'none'} />
-    <circle cx="12" cy="9" r="2.5" fill={active ? '#fff' : 'none'} stroke={active ? 'none' : 'currentColor'} strokeWidth={1.6} />
+    <rect x="3" y="3" width="18" height="14" rx="2.5" fill={active ? 'var(--accent)' : 'none'} />
+    <path d="M3 8h18" />
+    <circle cx="7" cy="19" r="1.2" fill="currentColor" stroke="none" />
+    <circle cx="12" cy="19" r="1.2" fill="currentColor" stroke="none" />
+    <circle cx="17" cy="19" r="1.2" fill="currentColor" stroke="none" />
   </svg>
 )
 
@@ -56,20 +59,22 @@ export function TabBar() {
 
   const tabs = [
     { key: 'home', path: '/', label: t('首頁', 'Home'), Icon: IconHome },
-    { key: 'weekend', path: '/weekend', label: t('周邊', 'Nearby'), Icon: IconNearby },
+    { key: 'feed', path: '/feed', label: t('動態', 'Feed'), Icon: IconFeed },
     { key: 'calendar', path: '/calendar', label: t('月曆', 'Calendar'), Icon: IconCalendar },
     { key: 'alerts', path: '/alerts', label: t('提醒', 'Alerts'), Icon: IconBell },
     { key: 'profile', path: '/profile', label: t('個人', 'Profile'), Icon: IconPerson },
   ]
 
   return (
-    <nav 
-      className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around px-2 py-1 backdrop-blur-md"
-      style={{ 
-        background: 'var(--nav-bg)', 
+    <nav
+      className="fixed bottom-0 z-40 flex items-center justify-around px-2 py-1 backdrop-blur-md"
+      style={{
+        background: 'var(--nav-bg)',
         borderTop: '1px solid var(--faint)',
+        width: '100%',
         maxWidth: '480px',
-        margin: '0 auto',
+        left: '50%',
+        transform: 'translateX(-50%)',
         paddingBottom: 'calc(env(safe-area-inset-bottom) + 0.35rem)'
       }}
     >

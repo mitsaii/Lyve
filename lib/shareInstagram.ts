@@ -176,6 +176,66 @@ export interface ShareResult {
   copied: boolean
 }
 
+/** 下載限動圖片到裝置 */
+export async function downloadStoryImage(
+  concert: Concert,
+  lang: Lang,
+): Promise<boolean> {
+  try {
+    const blob = await renderStoryImage(concert, lang)
+    if (!blob) return false
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `${concert.artist}-story.png`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+    return true
+  } catch {
+    return false
+  }
+}
+
+/**
+ * 直接開啟 IG App（手機）或複製連結（桌機）
+ * mode: 'story' → 跳 IG 限時動態相機；'app' → 跳 IG 首頁
+ */
+export async function openInstagramDirect(
+  concert: Concert,
+  lang: Lang,
+  shareUrl: string,
+  mode: 'story' | 'app' = 'story',
+): Promise<ShareResult> {
+  const text = [
+    `🎤 ${concert.artist}`,
+    lang === 'zh' ? concert.tour_zh : concert.tour_en,
+    `📍 ${lang === 'zh' ? concert.venue_zh : concert.venue_en} · ${lang === 'zh' ? concert.city_zh : concert.city_en}`,
+    `📅 ${concert.date_str}`,
+    '',
+    shareUrl,
+  ].filter(Boolean).join('\n')
+
+  // 複製文字到剪貼簿
+  try {
+    await navigator.clipboard.writeText(text)
+  } catch { /* 忽略 */ }
+
+  if (typeof window !== 'undefined') {
+    const ua = navigator.userAgent || ''
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(ua)
+    if (isMobile) {
+      const scheme = mode === 'story' ? 'instagram://story-camera' : 'instagram://'
+      window.location.href = scheme
+      return { ok: true, copied: true }
+    }
+  }
+
+  // 桌機：複製連結
+  return { ok: false, copied: true }
+}
+
 /**
  * 把演唱會分享到 IG 限時動態（手機）
  *  1. 嘗試以圖片走系統分享選單（iOS/Android 上 IG 限動會自動載入圖片）

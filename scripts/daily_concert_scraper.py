@@ -772,8 +772,12 @@ def scrape_tixcraft() -> list[dict]:
         city_zh, city_en, venue_zh, venue_en = resolve_venue(raw_venue, raw_title)
         genre = classify_genre(artist, raw_title + " " + raw_venue)
 
-        # Prices: Tixcraft listing doesn't show price, individual page needs auth
-        # Note: detail pages return 401 — sale_start_at will be filled by KKTIX or other sources
+        # 嘗試從個別活動頁面取得開賣時間（限速 0.4s，最多處理前 25 筆）
+        sale_start = None
+        if len(results) < 25:
+            time.sleep(0.4)
+            sale_start = _fetch_tixcraft_sale_start(link_path)
+
         results.append({
             "artist":       artist,
             "date_str":     date_str,
@@ -789,7 +793,7 @@ def scrape_tixcraft() -> list[dict]:
             "platform_url": "https://tixcraft.com" + link_path,
             "genre":        genre,
             "image_url":    image_url,
-            "sale_start_at": None,
+            "sale_start_at": sale_start,
             "source":       "tixcraft",
         })
 
@@ -2164,20 +2168,67 @@ def _detect_free_event(text: str) -> tuple[bool, str, str]:
         r'FREE\s*(?:ADMISSION|ENTRY|EVENT|SHOW)?',
         r'(?:NT\$|NTD|TWD)\s*0(?:[^.\d]|$)',
         r'票價[：:]\s*0',
-        r'無票價',
+        r'無(?:需|須|需要)(?:購票|買票|票券)',
         r'不(?:需|用)(?:購票|買票|售票)',
     ]
     for pat in free_patterns:
         if re.search(pat, text, re.IGNORECASE):
             return True, "免費", "Free"
 
-    # 有明確票價 → 非免費
+    # 有明確票價 → 非免費（支援多種格式）
+    # 格式1: NT$ 800 / NT$800
     if re.search(r'NT\$\s*[1-9][\d,]+', text):
         prices = re.findall(r"NT\$\s?[\d,]+(?:[^元\n]{0,30})?", text)
         price_str = prices[0].strip()[:40] if prices else "票價待公布"
         return False, price_str, price_str
 
+    # 格式2: $800 / $ 800（無 NT 前綴，iNDIEVOX 常見）
+    if re.search(r'\$\s*[1-9][\d,]+', text):
+        prices = re.findall(r'\$\s*[\d,]+(?:[^元\n]{0,20})?', text)
+        price_str = "NT$" + prices[0].strip()[1:].strip()  # 補上 NT 前綴
+        return False, price_str[:40], price_str[:40]
+
+    # 格式3: 800元 / 1,200元（純數字+元）
+    if re.search(r'[1-9][\d,]{2,}\s*元', text):
+        prices = re.findall(r'[1-9][\d,]{2,}\s*元', text)
+        price_nums = [p.strip() for p in prices]
+        if price_nums:
+            price_str = "NT$" + " / ".join(p.replace("元", "").strip() for p in price_nums[:3])
+            return False, price_str[:40], price_str[:40]
+
+    # 格式4: 票價 800 / 票價：800
+    m = re.search(r'票價[：:\s]*([1-9][\d,]+)', text)
+    if m:
+        price_str = f"NT${m.group(1)}"
+        return False, price_str, price_str
+
     return False, "票價待公布", "TBA"
+
+
+def _extract_price_from_jsonld(data: dict) -> str | None:
+    """從 JSON-LD schema.org Event/MusicEvent 的 offers 欄位提取票價。"""
+    offers = data.get("offers")
+    if not offers:
+        return None
+    if isinstance(offers, dict):
+        offers = [offers]
+    if not isinstance(offers, list):
+        return None
+    prices = []
+    for offer in offers:
+        price = offer.get("price") or offer.get("lowPrice")
+        currency = offer.get("priceCurrency", "TWD")
+        if price and str(price) != "0":
+            try:
+                p = int(float(str(price).replace(",", "")))
+                prices.append(p)
+            except (ValueError, TypeError):
+                pass
+    if not prices:
+        return None
+    if len(prices) == 1:
+        return f"NT${prices[0]:,}"
+    return "NT$" + " / ".join(f"{p:,}" for p in sorted(set(prices), reverse=True))
 
 
 def _parse_indievox_event(url: str, html: str) -> dict | None:
@@ -2212,8 +2263,15 @@ def _parse_indievox_event(url: str, html: str) -> dict | None:
                 ).strip()
                 artist = _extract_artist_from_title(name) or name[:40]
                 genre = classify_genre(artist, text[:400])
-                is_free, price_zh, price_en = _detect_free_event(text)
-                status = "free" if is_free else "selling"
+                # 優先從 JSON-LD offers 取票價，再 fallback 到頁面文字
+                jsonld_price = _extract_price_from_jsonld(data)
+                if jsonld_price:
+                    is_free = False
+                    price_zh = price_en = jsonld_price
+                    status = "selling"
+                else:
+                    is_free, price_zh, price_en = _detect_free_event(text)
+                    status = "free" if is_free else "selling"
                 return {
                     "artist": artist, "date_str": date_str,
                     "city_zh": city_zh, "city_en": city_en,
@@ -2708,7 +2766,8 @@ def scrape_legacy() -> list[dict]:
                 "platform": "Legacy",
                 "platform_url": ticket_url,
                 "genre": genre, "image_url": None,
-                "sale_start_at": None, "source": "legacy",
+                "sale_start_at": parse_sale_start(clean(strip_tags(html))),
+                "source": "legacy",
             })
 
         if len(results) == 0 and offset == 0:
@@ -3377,6 +3436,60 @@ def _parse_venue_event_page(url: str, html: str, platform: str, domain: str,
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Source N: rockintaiwan.com — 搖滾台灣（開賣公告） ✅
+# ─────────────────────────────────────────────────────────────────────────────
+
+_ROCKINTAIWAN_QUERIES = [
+    "site:rockintaiwan.com 開賣 2026",
+    "site:rockintaiwan.com 售票 演唱會 2026",
+]
+
+
+def scrape_rockintaiwan() -> list[dict]:
+    """
+    透過 DuckDuckGo 搜尋 rockintaiwan.com 的演唱會開賣公告，
+    使用既有的 _parse_generic_article() 解析每篇文章。
+    rockintaiwan 文章通常包含「開賣時間：YYYY/MM/DD HH:MM」格式。
+    """
+    log("── [搖滾台灣 rockintaiwan.com] 開始搜尋...")
+    candidate_urls: set[str] = set()
+
+    for query in _ROCKINTAIWAN_QUERIES:
+        ddg_url = (
+            "https://html.duckduckgo.com/html/?q="
+            + urllib.parse.quote(query)
+            + "&kl=tw-tzh"
+        )
+        html = fetch(ddg_url, timeout=20)
+        if not html:
+            time.sleep(2.0)
+            continue
+
+        for m in re.finditer(r'<a[^>]+class="result__a"[^>]+href="([^"]+)"', html):
+            href = html_lib.unescape(m.group(1))
+            uddg_m = re.search(r"uddg=([^&]+)", href)
+            if uddg_m:
+                href = urllib.parse.unquote(uddg_m.group(1))
+            if "rockintaiwan.com" in href:
+                candidate_urls.add(href)
+
+        time.sleep(2.5)
+
+    log(f"  → 找到 {len(candidate_urls)} 個候選連結")
+    results: list[dict] = []
+
+    for url in list(candidate_urls)[:12]:
+        time.sleep(1.5)
+        parsed = _parse_generic_article(url)
+        if parsed:
+            parsed["source"] = "rockintaiwan"
+            results.append(parsed)
+
+    log(f"  → 解析出 {len(results)} 個活動")
+    return results
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Normalize & deduplicate
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -3433,7 +3546,8 @@ def normalize_concerts(raw: list[dict]) -> list[dict]:
             try:
                 sale_date = date.fromisoformat(sale_start_at[:10])
                 today = date.today()
-                # 1. 開賣日早於今天 → 已過期，對搶票提醒無用
+                # 1. 開賣日早於今天 → 已過期，不覆蓋 DB（保留 None 讓 upsert 跳過）
+                #    注意：只是不送新值，DB 若已有舊值則靠 REST API 跳過機制保留
                 if sale_date < today:
                     sale_start_at = None
                 else:
@@ -3445,6 +3559,7 @@ def normalize_concerts(raw: list[dict]) -> list[dict]:
                                             int(concert_date_m.group(2)),
                                             int(concert_date_m.group(3)))
                         if sale_date > concert_date:
+                            log(f"  ⚠ 開賣日 {sale_date} > 演唱會日 {concert_date}，捨棄（year 推算錯誤）")
                             sale_start_at = None
             except (ValueError, TypeError):
                 sale_start_at = None
@@ -3472,6 +3587,76 @@ def normalize_concerts(raw: list[dict]) -> list[dict]:
             "source":        c.get("source", "auto"),
         })
     return out
+
+
+def enrich_missing_sale_times(concerts: list[dict]) -> list[dict]:
+    """
+    對尚無開賣時間的演唱會，透過 DuckDuckGo 搜尋結果摘要補強 sale_start_at。
+    直接解析 DDG 搜尋頁面上的 snippet 文字（不另外造訪個別連結），
+    速度快且不會觸碰 KKTIX/Cloudflare 防護。
+    最多補強 20 筆，避免過多請求。
+    """
+    missing = [c for c in concerts if not c.get("sale_start_at")]
+    if not missing:
+        log("  → 所有活動已有開賣時間，跳過補強")
+        return concerts
+
+    log(f"\n── [開賣時間補強] 共 {len(missing)} 個活動缺開賣時間，透過 DuckDuckGo 補強...")
+    enriched = 0
+
+    for c in missing[:20]:
+        artist = c.get("artist", "").strip()
+        if not artist or len(artist) < 2:
+            continue
+
+        query = f'"{artist}" 台灣 開賣 2026 kktix OR tixcraft'
+        ddg_url = (
+            "https://html.duckduckgo.com/html/?q="
+            + urllib.parse.quote(query)
+            + "&kl=tw-tzh"
+        )
+        html = fetch(ddg_url, timeout=15, retries=1)
+        if not html:
+            time.sleep(2.5)
+            continue
+
+        # 擷取所有搜尋結果摘要（DDG HTML lite 使用 class="result__snippet"）
+        snippets = re.findall(
+            r'class="result__snippet"[^>]*>(.*?)</(?:a|span|div)>',
+            html, re.DOTALL,
+        )
+        snippet_text = " ".join(clean(strip_tags(s)) for s in snippets)
+
+        sale_start = parse_sale_start(snippet_text)
+        if sale_start:
+            # 驗證：開賣日不能晚於演唱會日期（year 推算保護）
+            try:
+                sale_date = date.fromisoformat(sale_start[:10])
+                concert_date_m = re.search(
+                    r'(20\d{2})[/\-](\d{1,2})[/\-](\d{1,2})', c.get("date_str", "")
+                )
+                if concert_date_m:
+                    concert_date = date(
+                        int(concert_date_m.group(1)),
+                        int(concert_date_m.group(2)),
+                        int(concert_date_m.group(3)),
+                    )
+                    if sale_date > concert_date:
+                        time.sleep(2.0)
+                        continue
+            except (ValueError, TypeError):
+                time.sleep(2.0)
+                continue
+
+            c["sale_start_at"] = sale_start
+            c["is_hot"] = _is_hot_from_sale_start(sale_start)
+            enriched += 1
+            log(f"  ✓ {artist}: {sale_start}")
+
+        time.sleep(2.5)  # 友善請求速率
+
+    log(f"  → 補強成功 {enriched} / {min(len(missing), 20)} 筆")
+    return concerts
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -3559,7 +3744,8 @@ def supabase_upsert(concerts: list[dict], supabase_url: str, api_key: str) -> bo
             "is_hot":        c.get("is_hot", False),
             "grad_css":      c["grad_css"],
             "image_url":     c.get("image_url"),
-            "sale_start_at": c.get("sale_start_at"),  # ISO 8601 or None
+            # 只在有值時才帶入，避免 merge-duplicates 用 null 覆蓋 DB 已有的開賣時間
+            **({"sale_start_at": c["sale_start_at"]} if c.get("sale_start_at") else {}),
         }
         payload.append(row)
 
@@ -3751,10 +3937,18 @@ def main() -> None:
     except Exception as e:
         log(f"  ✗ 河岸留言 爬取失敗: {e}")
 
+    try:
+        raw += scrape_rockintaiwan()
+    except Exception as e:
+        log(f"  ✗ 搖滾台灣 爬取失敗: {e}")
+
     log(f"\n共收集 {len(raw)} 筆原始資料（含重複）")
 
     concerts = normalize_concerts(raw)
     log(f"去重後剩 {len(concerts)} 筆")
+
+    # ── 補強缺少開賣時間的演唱會 ───────────────────────────────────────────────
+    concerts = enrich_missing_sale_times(concerts)
 
     # ── Write JSON audit trail ──────────────────────────────────────────────
     json_out = DATA_DIR / f"daily_{TODAY_STR}.json"

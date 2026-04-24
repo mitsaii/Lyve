@@ -7,6 +7,10 @@
     {
       "path": "/api/cron/update-status",
       "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/ai-post",
+      "schedule": "0 10 * * *"
     }
   ]
 }

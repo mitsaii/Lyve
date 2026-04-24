@@ -134,7 +134,7 @@ export default function CalendarPage() {
     <>
       <div className="pb-24 min-h-screen">
         <div className="p-4">
-          <SectionLabel icon={<IconCalendar className="w-4 h-4" />} text={t('演出日曆', 'Concert Calendar')} />
+          <SectionLabel icon={<IconCalendar className="w-4 h-4" />} text={t('演出月曆', 'Concert Calendar')} />
 
           {/* 城市篩選下拉 */}
           <div className="mb-4">

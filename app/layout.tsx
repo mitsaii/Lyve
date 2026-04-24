@@ -90,9 +90,9 @@ export default function RootLayout({
               <SavedProvider>
                 <AlertProvider>
                   <SplashGate>
-                    <div className="max-w-[480px] mx-auto min-h-screen" style={{ background: 'var(--bg)' }}>
+                    <div className="app-shell">
                       <Header />
-                      <div style={{ paddingTop: 'calc(7rem + env(safe-area-inset-top))' }}>
+                      <div style={{ paddingTop: 'calc(60px + env(safe-area-inset-top))' }}>
                         {children}
                         <Footer />
                       </div>

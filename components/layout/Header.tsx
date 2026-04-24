@@ -40,15 +40,20 @@ export function Header() {
 
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md transition-transform duration-300"
+      className="fixed top-0 z-50 backdrop-blur-md transition-transform duration-300"
       style={{
         background: 'var(--header-bg)',
-        transform: isVisible ? 'translateY(0)' : 'translateY(-100%)',
         paddingTop: 'env(safe-area-inset-top)',
+        width: '100%',
+        maxWidth: '480px',
+        left: '50%',
+        transform: isVisible
+          ? 'translateX(-50%) translateY(0)'
+          : 'translateX(-50%) translateY(-100%)',
       }}
     >
       {/* 內容限制在 480px 欄位內，logo 置左 */}
-      <div className="max-w-[480px] mx-auto px-4 py-3 flex items-center justify-between">
+      <div className="max-w-[480px] mx-auto px-4 py-2 flex items-center justify-between">
       <div className="flex items-center gap-3">
         {!isHomePage && (
           <button
@@ -65,8 +70,8 @@ export function Header() {
           <Image
             src={theme === 'dark' ? '/lyve-logo-dark.png' : '/lyve-logo.png'}
             alt="Lyve"
-            width={160}
-            height={64}
+            width={110}
+            height={44}
             className="object-contain cursor-pointer hover:opacity-80 transition-opacity"
             style={{
               mixBlendMode: theme === 'dark' ? 'normal' : 'multiply'

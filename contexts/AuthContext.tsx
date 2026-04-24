@@ -58,6 +58,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       options: {
         redirectTo: `${siteUrl}/auth/callback`,
         skipBrowserRedirect: true,
+        queryParams: {
+          prompt: 'select_account',
+        },
       },
     })
 

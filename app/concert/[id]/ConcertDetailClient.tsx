@@ -13,7 +13,7 @@ import {
   IconTicket, IconClock, IconHeart,
 } from '@/components/ui/Icons'
 import { AlertPromptSheet } from '@/components/concerts/AlertPromptSheet'
-import { shareConcertToInstagram } from '@/lib/shareInstagram'
+import { downloadStoryImage, openInstagramDirect } from '@/lib/shareInstagram'
 
 interface Props {
   concert: Concert
@@ -80,13 +80,19 @@ export default function ConcertDetailClient({ concert }: Props) {
     window.open(`https://www.threads.com/intent/post?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer')
   }
 
-  const [igCopied, setIgCopied] = useState(false)
-  const handleShareInstagram = async () => {
-    // 產生限動圖片 → 系統分享選單 → 使用者選 IG 限動，圖片會自動當作限動背景
-    const result = await shareConcertToInstagram(concert, lang, shareUrl)
-    if (result.copied) {
-      setIgCopied(true)
-      setTimeout(() => setIgCopied(false), 2000)
+  const [showIgSheet, setShowIgSheet] = useState(false)
+  const [igDownloaded, setIgDownloaded] = useState(false)
+
+  const handleIgStory = async () => {
+    setShowIgSheet(false)
+    await openInstagramDirect(concert, lang, shareUrl, 'story')
+  }
+
+  const handleIgDownload = async () => {
+    const ok = await downloadStoryImage(concert, lang)
+    if (ok) {
+      setIgDownloaded(true)
+      setTimeout(() => setIgDownloaded(false), 2500)
     }
   }
 
@@ -274,32 +280,75 @@ export default function ConcertDetailClient({ concert }: Props) {
         </button>
         {/* Instagram */}
         <button
-          onClick={handleShareInstagram}
+          onClick={() => setShowIgSheet(true)}
           className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-medium transition-all hover:scale-[1.02]"
           style={{
-            background: igCopied
-              ? '#22c55e'
-              : 'linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)',
+            background: 'linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)',
             color: '#fff',
           }}
         >
-          {igCopied ? (
-            <>
-              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
-                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
-              </svg>
-              {t('已複製！', 'Copied!')}
-            </>
-          ) : (
-            <>
-              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z" />
-              </svg>
-              IG
-            </>
-          )}
+          <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z" />
+          </svg>
+          IG
         </button>
       </div>
+
+      {/* IG 分享選單 */}
+      {showIgSheet && (
+        <>
+          <div
+            className="fixed inset-0 z-[60]"
+            style={{ background: 'rgba(0,0,0,0.4)' }}
+            onClick={() => setShowIgSheet(false)}
+          />
+          <div className="fixed inset-x-0 bottom-0 z-[70] slide-up">
+            <div
+              className="max-w-[480px] mx-auto rounded-t-3xl p-6"
+              style={{ background: 'var(--surface)' }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-center mb-4">
+                <div className="w-12 h-1 rounded-full" style={{ background: 'var(--muted)' }} />
+              </div>
+              <p className="text-sm font-semibold text-center mb-4" style={{ color: 'var(--muted)' }}>
+                {t('分享到 Instagram', 'Share to Instagram')}
+              </p>
+              <div className="flex flex-col gap-3">
+                <button
+                  onClick={handleIgStory}
+                  className="flex items-center gap-3 w-full px-4 py-3.5 rounded-2xl text-sm font-medium transition-all hover:scale-[1.01] active:scale-[0.99]"
+                  style={{
+                    background: 'linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)',
+                    color: '#fff',
+                  }}
+                >
+                  <span className="text-lg">📸</span>
+                  <div className="text-left">
+                    <div className="font-semibold">{t('開啟限時動態', 'Open Stories')}</div>
+                    <div className="text-xs opacity-80">{t('直接跳到 IG 限時動態相機', 'Jump straight to IG Story camera')}</div>
+                  </div>
+                </button>
+                <button
+                  onClick={handleIgDownload}
+                  className="flex items-center gap-3 w-full px-4 py-3.5 rounded-2xl text-sm font-medium transition-all hover:scale-[1.01] active:scale-[0.99]"
+                  style={{ background: 'var(--faint)', color: 'var(--text)' }}
+                >
+                  <span className="text-lg">{igDownloaded ? '✅' : '💾'}</span>
+                  <div className="text-left">
+                    <div className="font-semibold">
+                      {igDownloaded ? t('已儲存！', 'Saved!') : t('儲存限動圖片', 'Save Story Image')}
+                    </div>
+                    <div className="text-xs" style={{ color: 'var(--muted)' }}>
+                      {t('下載精美圖片，自己貼到 IG', 'Download the image to share yourself')}
+                    </div>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* 提醒按鈕（待開賣才顯示） */}
       {concert.status === 'pending' && (

@@ -124,3 +124,41 @@ body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* ───── App Shell RWD ───── */
+.app-shell {
+  width: 100%;
+  max-width: 480px;
+  min-height: 100svh;
+  margin: 0 auto;
+  position: relative;
+  background: var(--bg);
+}
+
+/* 在桌機/平板置中顯示，外圍加淡色背景 */
+@media (min-width: 481px) {
+  body {
+    background: var(--surface);
+  }
+  .app-shell {
+    box-shadow: 0 0 0 1px var(--faint), var(--shadow);
+  }
+}
+
+/* ───── 全站 RWD 字體縮放 ───── */
+html {
+  font-size: 16px;
+}
+
+/* 在超小螢幕 (<360px) 略縮字體 */
+@media (max-width: 359px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+/* ───── 圖片 RWD ───── */
+img {
+  max-width: 100%;
+  height: auto;
+}

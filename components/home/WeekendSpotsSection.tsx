@@ -25,10 +25,9 @@ export function WeekendSpotsSection() {
             <h2 className="text-xl font-bold flex items-center gap-2">
               {/* compass */}
               <span className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#f472b6,#8b5cf6)' }}>
-                <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="8" cy="8" r="6.5" />
-                  <path d="M8 3v1M8 12v1M3 8h1M12 8h1" />
-                  <path d="M10.5 5.5L8.8 8.8 5.5 10.5 7.2 7.2Z" fill="white" stroke="none" />
+                <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M2.5 4.5h11l-1.2 7.5H3.7L2.5 4.5Z" />
+                  <path d="M5.5 4.5c0-1.4 1.1-2.5 2.5-2.5s2.5 1.1 2.5 2.5" />
                 </svg>
               </span>
               {t('周邊資訊店', 'Nearby Info')}
