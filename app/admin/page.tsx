@@ -19,7 +19,7 @@ const EMPTY_FORM: Partial<Concert> = {
 
 type AdminTab = 'concerts' | 'feed'
 
-const EMPTY_POST = { title: '', content: '', artist: '', image_url: '', tags: '' }
+const EMPTY_POST = { title: '', content: '', image_url: '' }
 
 export default function AdminPage() {
   const { user, loading } = useAuth()
@@ -62,13 +62,10 @@ export default function AdminPage() {
     if (!postForm.title.trim() || !postForm.content.trim()) return
     setPostSaving(true)
     setFeedMsg(null)
-    const tags = postForm.tags.split(/[,，\s]+/).map(t => t.replace(/^#/, '').trim()).filter(Boolean)
     const { error } = await supabase.from('posts').insert({
       title: postForm.title.trim(),
       content: postForm.content.trim(),
-      artist: postForm.artist.trim() || null,
       image_url: postForm.image_url.trim() || null,
-      tags,
       is_ai_generated: false,
     })
     if (error) {
@@ -252,9 +249,7 @@ export default function AdminPage() {
             {[
               { key: 'title', label: '標題 *', placeholder: '吸睛標題...', multiline: false },
               { key: 'content', label: '內文 *', placeholder: '貼文內容...', multiline: true },
-              { key: 'artist', label: '藝人（選填）', placeholder: 'BLACKPINK', multiline: false },
               { key: 'image_url', label: '圖片網址（選填）', placeholder: 'https://...', multiline: false },
-              { key: 'tags', label: 'Hashtag（逗號分隔）', placeholder: 'kpop, 台北, blackpink', multiline: false },
             ].map(({ key, label, placeholder, multiline }) => (
               <div key={key}>
                 <label className="block text-xs mb-1" style={{ color: 'var(--muted)' }}>{label}</label>

@@ -165,15 +165,6 @@ export function PostCard({ post }: PostCardProps) {
               )}
             </span>
           </div>
-          {/* artist 標籤 */}
-          {post.artist && (
-            <span
-              className="ml-auto text-[10px] font-medium px-2 py-0.5 rounded-full"
-              style={{ background: 'var(--faint)', color: 'var(--accent2)' }}
-            >
-              {post.artist}
-            </span>
-          )}
         </div>
 
         {/* 標題 */}
@@ -196,20 +187,6 @@ export function PostCard({ post }: PostCardProps) {
         </p>
 
         {/* 標籤 */}
-        {post.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5">
-            {post.tags.map(tag => (
-              <span
-                key={tag}
-                className="text-[10px] px-1.5 py-0.5 rounded-full"
-                style={{ background: 'var(--faint)', color: 'var(--accent)' }}
-              >
-                #{tag}
-              </span>
-            ))}
-          </div>
-        )}
-
         {/* 互動列 */}
         <div
           className="flex items-center gap-4 pt-1"
