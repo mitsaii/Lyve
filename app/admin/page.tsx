@@ -3,8 +3,11 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { Concert, Genre, Status } from '@/types/concert'
+import { Post } from '@/types/post'
+import { createClient } from '@/lib/supabase/client'
 
 const ADMIN_EMAIL = 'mitsai0701@gmail.com'
+const supabase = createClient()
 
 const EMPTY_FORM: Partial<Concert> = {
   artist: '', emoji: '🎤', genre: 'cpop', tour_zh: '', tour_en: '',
@@ -14,19 +17,95 @@ const EMPTY_FORM: Partial<Concert> = {
   sale_start_at: '',
 }
 
+type AdminTab = 'concerts' | 'feed'
+
+const EMPTY_POST = { title: '', content: '', artist: '', image_url: '', tags: '' }
+
 export default function AdminPage() {
   const { user, loading } = useAuth()
+
+  // concerts tab
   const [concerts, setConcerts] = useState<Concert[]>([])
   const [editing, setEditing] = useState<Partial<Concert> | null>(null)
   const [isNew, setIsNew] = useState(false)
   const [saving, setSaving] = useState(false)
   const [filter, setFilter] = useState('')
 
+  // feed tab
+  const [activeTab, setActiveTab] = useState<AdminTab>('concerts')
+  const [posts, setPosts] = useState<Post[]>([])
+  const [postForm, setPostForm] = useState(EMPTY_POST)
+  const [postSaving, setPostSaving] = useState(false)
+  const [aiGenerating, setAiGenerating] = useState(false)
+  const [feedMsg, setFeedMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null)
+
   const isAdmin = user?.email === ADMIN_EMAIL
 
   useEffect(() => {
     if (isAdmin) fetchConcerts()
   }, [isAdmin])
+
+  useEffect(() => {
+    if (isAdmin && activeTab === 'feed') fetchPosts()
+  }, [isAdmin, activeTab])
+
+  async function fetchPosts() {
+    const { data } = await supabase
+      .from('posts')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(30)
+    if (data) setPosts(data as Post[])
+  }
+
+  async function handleManualPost() {
+    if (!postForm.title.trim() || !postForm.content.trim()) return
+    setPostSaving(true)
+    setFeedMsg(null)
+    const tags = postForm.tags.split(/[,，\s]+/).map(t => t.replace(/^#/, '').trim()).filter(Boolean)
+    const { error } = await supabase.from('posts').insert({
+      title: postForm.title.trim(),
+      content: postForm.content.trim(),
+      artist: postForm.artist.trim() || null,
+      image_url: postForm.image_url.trim() || null,
+      tags,
+      is_ai_generated: false,
+    })
+    if (error) {
+      setFeedMsg({ type: 'err', text: '發文失敗：' + error.message })
+    } else {
+      setFeedMsg({ type: 'ok', text: '✓ 發文成功！' })
+      setPostForm(EMPTY_POST)
+      fetchPosts()
+    }
+    setPostSaving(false)
+    setTimeout(() => setFeedMsg(null), 4000)
+  }
+
+  async function handleAiPost() {
+    setAiGenerating(true)
+    setFeedMsg(null)
+    try {
+      const res = await fetch('/api/ai-post', { method: 'POST' })
+      const data = await res.json()
+      if (res.ok) {
+        setFeedMsg({ type: 'ok', text: `✦ AI 發文成功：${data.title}` })
+        fetchPosts()
+      } else {
+        setFeedMsg({ type: 'err', text: 'AI 發文失敗：' + (data.error || '未知錯誤') })
+      }
+    } catch {
+      setFeedMsg({ type: 'err', text: '網路錯誤，請稍後再試' })
+    }
+    setAiGenerating(false)
+    setTimeout(() => setFeedMsg(null), 6000)
+  }
+
+  async function handleDeletePost(id: string) {
+    if (!confirm('確定刪除這篇貼文？')) return
+    await supabase.from('posts').delete().eq('id', id)
+    fetchPosts()
+  }
 
   async function fetchConcerts() {
     const res = await fetch('/api/admin/concerts')
@@ -87,20 +166,176 @@ export default function AdminPage() {
   )
 
   return (
-    <div className="px-4 py-4">
-      <div className="flex items-center justify-between mb-6">
+    <div className="px-4 py-4 pb-32">
+      <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold" style={{ color: 'var(--text)' }}>
           🔧 Admin
         </h1>
-        <button
-          onClick={() => { setEditing({ ...EMPTY_FORM }); setIsNew(true) }}
-          className="px-4 py-2 rounded-xl text-sm font-bold text-white"
-          style={{ background: 'var(--accent)' }}
-        >
-          + 新增
-        </button>
+        {activeTab === 'concerts' && (
+          <button
+            onClick={() => { setEditing({ ...EMPTY_FORM }); setIsNew(true) }}
+            className="px-4 py-2 rounded-xl text-sm font-bold text-white"
+            style={{ background: 'var(--accent)' }}
+          >
+            + 新增
+          </button>
+        )}
       </div>
 
+      {/* Tab 切換 */}
+      <div className="flex gap-2 mb-5">
+        {(['concerts', 'feed'] as AdminTab[]).map(tab => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className="px-4 py-2 rounded-xl text-sm font-semibold transition-all"
+            style={{
+              background: activeTab === tab ? 'var(--accent)' : 'var(--surface)',
+              color: activeTab === tab ? '#fff' : 'var(--muted)',
+              border: activeTab === tab ? 'none' : '1px solid var(--faint)',
+            }}
+          >
+            {tab === 'concerts' ? '🎤 演唱會' : '✦ 動態'}
+          </button>
+        ))}
+      </div>
+
+      {/* ── 動態 Tab ── */}
+      {activeTab === 'feed' && (
+        <div className="flex flex-col gap-5">
+          {/* 訊息提示 */}
+          {feedMsg && (
+            <div
+              className="px-4 py-3 rounded-xl text-sm font-medium text-center"
+              style={{
+                background: feedMsg.type === 'ok' ? 'var(--accent)' : '#ff4d4d33',
+                color: feedMsg.type === 'ok' ? '#fff' : '#ff4d4d',
+              }}
+            >
+              {feedMsg.text}
+            </div>
+          )}
+
+          {/* AI 發文 */}
+          <div
+            className="rounded-2xl p-4 flex flex-col gap-3"
+            style={{ background: 'var(--surface)', border: '1px solid var(--faint)' }}
+          >
+            <div className="flex items-center gap-2">
+              <span className="text-base">✦</span>
+              <h2 className="text-sm font-bold" style={{ color: 'var(--text)' }}>AI 自動追星發文</h2>
+            </div>
+            <p className="text-xs" style={{ color: 'var(--muted)' }}>
+              Claude 會自動從資料庫選一場近期演唱會，生成追星文章後發佈到動態。
+            </p>
+            <button
+              onClick={handleAiPost}
+              disabled={aiGenerating}
+              className="w-full py-3 rounded-xl text-sm font-bold text-white transition-all active:scale-95 disabled:opacity-60"
+              style={{
+                background: aiGenerating
+                  ? 'var(--faint)'
+                  : 'linear-gradient(90deg, var(--accent), var(--accent2))',
+                color: aiGenerating ? 'var(--muted)' : '#fff',
+              }}
+            >
+              {aiGenerating ? '✦ 生成中...' : '✦ 立即 AI 發文'}
+            </button>
+          </div>
+
+          {/* 手動發文 */}
+          <div
+            className="rounded-2xl p-4 flex flex-col gap-3"
+            style={{ background: 'var(--surface)', border: '1px solid var(--faint)' }}
+          >
+            <h2 className="text-sm font-bold" style={{ color: 'var(--text)' }}>✏️ 手動發文</h2>
+            {[
+              { key: 'title', label: '標題 *', placeholder: '吸睛標題...', multiline: false },
+              { key: 'content', label: '內文 *', placeholder: '貼文內容...', multiline: true },
+              { key: 'artist', label: '藝人（選填）', placeholder: 'BLACKPINK', multiline: false },
+              { key: 'image_url', label: '圖片網址（選填）', placeholder: 'https://...', multiline: false },
+              { key: 'tags', label: 'Hashtag（逗號分隔）', placeholder: 'kpop, 台北, blackpink', multiline: false },
+            ].map(({ key, label, placeholder, multiline }) => (
+              <div key={key}>
+                <label className="block text-xs mb-1" style={{ color: 'var(--muted)' }}>{label}</label>
+                {multiline ? (
+                  <textarea
+                    rows={4}
+                    className="w-full px-3 py-2 rounded-lg text-sm outline-none resize-none"
+                    style={{ background: 'var(--faint)', color: 'var(--text)', border: '1px solid transparent' }}
+                    placeholder={placeholder}
+                    value={(postForm as Record<string, string>)[key]}
+                    onChange={e => setPostForm(p => ({ ...p, [key]: e.target.value }))}
+                  />
+                ) : (
+                  <input
+                    type="text"
+                    className="w-full px-3 py-2 rounded-lg text-sm outline-none"
+                    style={{ background: 'var(--faint)', color: 'var(--text)', border: '1px solid transparent' }}
+                    placeholder={placeholder}
+                    value={(postForm as Record<string, string>)[key]}
+                    onChange={e => setPostForm(p => ({ ...p, [key]: e.target.value }))}
+                  />
+                )}
+              </div>
+            ))}
+            <button
+              onClick={handleManualPost}
+              disabled={postSaving || !postForm.title.trim() || !postForm.content.trim()}
+              className="w-full py-3 rounded-xl text-sm font-bold text-white transition-all disabled:opacity-50"
+              style={{ background: 'var(--accent)' }}
+            >
+              {postSaving ? '發文中...' : '發佈貼文'}
+            </button>
+          </div>
+
+          {/* 已發貼文列表 */}
+          <div>
+            <h2 className="text-sm font-bold mb-3" style={{ color: 'var(--text)' }}>📋 已發貼文</h2>
+            <div className="flex flex-col gap-2">
+              {posts.length === 0 ? (
+                <p className="text-xs text-center py-6" style={{ color: 'var(--muted)' }}>還沒有貼文</p>
+              ) : posts.map(post => (
+                <div
+                  key={post.id}
+                  className="flex items-start gap-3 p-3 rounded-xl"
+                  style={{ background: 'var(--surface)', border: '1px solid var(--faint)' }}
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                      {post.is_ai_generated && (
+                        <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold"
+                          style={{ background: 'var(--accent)', color: '#fff' }}>
+                          ✦ AI
+                        </span>
+                      )}
+                      <span className="text-xs font-semibold truncate" style={{ color: 'var(--text)' }}>
+                        {post.title}
+                      </span>
+                    </div>
+                    <p className="text-[11px] truncate" style={{ color: 'var(--muted)' }}>
+                      {post.content}
+                    </p>
+                    <p className="text-[10px] mt-0.5" style={{ color: 'var(--faint)' }}>
+                      ❤️ {post.likes_count} · 💬 {post.comments_count}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => handleDeletePost(post.id)}
+                    className="px-2 py-1 rounded-lg text-xs shrink-0"
+                    style={{ background: '#ff4d4d22', color: '#ff4d4d' }}
+                  >
+                    刪除
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── 演唱會 Tab ── */}
+      {activeTab === 'concerts' && <>
       {/* 搜尋 */}
       <input
         className="w-full px-4 py-3 rounded-xl mb-4 text-sm outline-none"
@@ -265,6 +500,7 @@ export default function AdminPage() {
           </div>
         </>
       )}
+      </>}
     </div>
   )
 }

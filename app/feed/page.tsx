@@ -18,8 +18,6 @@ export default function FeedPage() {
   const [loadingMore, setLoadingMore] = useState(false)
   const [hasMore, setHasMore] = useState(true)
   const [filter, setFilter] = useState<'all' | 'ai'>('all')
-  const [generating, setGenerating] = useState(false)
-  const [genSuccess, setGenSuccess] = useState<string | null>(null)
 
   // 用 ref 追蹤目前已載入的數量，避免 stale closure
   const postsLenRef = useRef(0)
@@ -58,25 +56,6 @@ export default function FeedPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { fetchPosts(true) }, [filter])
 
-  // 呼叫 AI 自動發文
-  const triggerAiPost = async () => {
-    setGenerating(true)
-    setGenSuccess(null)
-    try {
-      const res = await fetch('/api/ai-post', { method: 'POST' })
-      if (res.ok) {
-        const data = await res.json()
-        setGenSuccess(data.title || t('發文成功！', 'Posted!'))
-        fetchPosts(true)
-      }
-    } catch {
-      // silently fail
-    } finally {
-      setGenerating(false)
-      setTimeout(() => setGenSuccess(null), 4000)
-    }
-  }
-
   return (
     <div className="pb-28 min-h-screen">
       {/* Header */}
@@ -101,42 +80,7 @@ export default function FeedPage() {
               {t('最新追星動態', 'Latest fan updates')}
             </p>
           </div>
-
-          {/* AI 發文按鈕（平台專用） */}
-          <button
-            onClick={triggerAiPost}
-            disabled={generating}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all active:scale-95 disabled:opacity-60"
-            style={{
-              background: generating
-                ? 'var(--faint)'
-                : 'linear-gradient(90deg, var(--accent), var(--accent2))',
-              color: generating ? 'var(--muted)' : '#fff',
-            }}
-          >
-            {generating ? (
-              <>
-                <span className="animate-spin text-sm">✦</span>
-                {t('生成中...', 'Generating...')}
-              </>
-            ) : (
-              <>
-                <span>✦</span>
-                {t('AI 發文', 'AI Post')}
-              </>
-            )}
-          </button>
         </div>
-
-        {/* 成功提示 */}
-        {genSuccess && (
-          <div
-            className="text-xs px-3 py-2 rounded-xl text-center font-medium"
-            style={{ background: 'var(--accent)', color: '#fff' }}
-          >
-            ✓ {genSuccess}
-          </div>
-        )}
 
         {/* 篩選 chips */}
         <div className="flex gap-2">
