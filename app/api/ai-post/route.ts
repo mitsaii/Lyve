@@ -45,7 +45,7 @@ async function callClaude(prompt: string): Promise<string> {
   return json.content?.[0]?.text ?? ''
 }
 
-export async function POST(_req: NextRequest) {
+async function generateAndPost() {
   try {
     // 取得近期演唱會資料
     const concerts = await getRecentConcerts()
@@ -120,6 +120,10 @@ export async function POST(_req: NextRequest) {
   }
 }
 
+export async function POST() {
+  return generateAndPost()
+}
+
 // GET：用於 cron job 定期呼叫
 export async function GET(req: NextRequest) {
   const authHeader = req.headers.get('authorization')
@@ -129,5 +133,5 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  return POST(req)
+  return generateAndPost()
 }
