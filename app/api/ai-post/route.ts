@@ -1,10 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { createServerClient } from '@/lib/supabase/server'
+
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? ''
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
+
+async function verifyAdmin(): Promise<boolean> {
+  try {
+    const ssr = await createServerClient()
+    const { data: { user } } = await ssr.auth.getUser()
+    return !!user?.email && user.email === ADMIN_EMAIL
+  } catch {
+    return false
+  }
+}
 
 async function getRecentConcerts() {
   const { data } = await supabase
@@ -15,31 +28,30 @@ async function getRecentConcerts() {
   return data || []
 }
 
-async function callClaude(prompt: string): Promise<string> {
-  const apiKey = process.env.ANTHROPIC_API_KEY
-  if (!apiKey) throw new Error('尚未設定 ANTHROPIC_API_KEY，請至 Vercel 環境變數新增')
+// 使用 Google Gemini API（免費額度）
+async function callGemini(prompt: string): Promise<string> {
+  const apiKey = process.env.GEMINI_API_KEY
+  if (!apiKey) throw new Error('尚未設定 GEMINI_API_KEY，請至 Vercel 環境變數新增')
 
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-    },
-    body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 500,
-      messages: [{ role: 'user', content: prompt }],
-    }),
-  })
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { maxOutputTokens: 500, temperature: 0.9 },
+      }),
+    }
+  )
 
   if (!res.ok) {
     const err = await res.text()
-    throw new Error(`Anthropic API 錯誤 ${res.status}：${err}`)
+    throw new Error(`Gemini API 錯誤 ${res.status}：${err}`)
   }
 
   const json = await res.json()
-  return json.content?.[0]?.text ?? ''
+  return json.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
 }
 
 async function generateAndPost() {
@@ -62,7 +74,7 @@ async function generateAndPost() {
 
 [100-150字的熱情內文，鼓勵粉絲、讚美藝人，可用 1-2 個 emoji]`
 
-    const rawText = await callClaude(prompt)
+    const rawText = await callGemini(prompt)
 
     const lines = rawText.trim().split('\n')
     const titleLine = lines.find((l: string) => l.startsWith('標題：'))
@@ -95,12 +107,14 @@ async function generateAndPost() {
 }
 
 export async function POST() {
+  if (!(await verifyAdmin())) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
   return generateAndPost()
 }
 
 export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get('authorization')
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (req.headers.get('authorization') !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
   return generateAndPost()

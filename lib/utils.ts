@@ -77,16 +77,21 @@ export function formatDate(dateStr: string, lang: Lang): string {
   })
 }
 
+/**
+ * 把 "YYYY/MM/DD" 或 "YYYY-MM-DD" 解析為 Asia/Taipei 當天 00:00 的 Date。
+ * 直接 new Date("YYYY-MM-DD") 會被當成 UTC 0 點，等於台灣早上 8 點，
+ * 倒數 / 篩選會因此差 8 小時，所以這裡明確指定 +08:00。
+ */
+function taipeiMidnight(ymd: string): Date {
+  return new Date(`${ymd.replace(/\//g, '-')}T00:00:00+08:00`)
+}
+
 export function calcCountdown(targetDate: string) {
-  // 處理日期範圍格式 (如 '2026/04/25–26' 或 '2026/03/20-22')
-  // 提取第一天的日期
-  let dateStr = targetDate.split('–')[0].split('-')[0].trim()
-  
-  // 將 YYYY/MM/DD 格式轉換為標準格式
-  dateStr = dateStr.replace(/\//g, '-')
-  
+  // 處理日期範圍格式 (如 '2026/04/25–26' 或 '2026/03/20-22')，提取第一天
+  const dateStr = targetDate.split('–')[0].split('-')[0].trim()
+
   const now = new Date().getTime()
-  const target = new Date(dateStr).getTime()
+  const target = taipeiMidnight(dateStr).getTime()
   const diff = target - now
 
   if (diff <= 0) {
@@ -102,15 +107,17 @@ export function calcCountdown(targetDate: string) {
 }
 
 /**
- * 解析 date_str 的第一天（處理範圍格式如 '2026/04/25–26' 或 '2026/04/25-26'）
+ * 解析 date_str 的第一天（處理範圍格式如 '2026/04/25–26' 或 '2026/04/25-26'）。
+ * 回傳該日 Asia/Taipei 00:00 的 Date。
  */
 export function parseFirstDate(dateStr: string): Date {
   const firstPart = dateStr.split('–')[0].split('-')[0].trim()
-  return new Date(firstPart.replace(/\//g, '-'))
+  return taipeiMidnight(firstPart)
 }
 
 /**
- * 解析 date_str 的最後一天（用於判斷演唱會是否已結束）
+ * 解析 date_str 的最後一天（用於判斷演唱會是否已結束）。
+ * 回傳該日 Asia/Taipei 00:00 的 Date。
  */
 export function parseLastDate(dateStr: string): Date {
   const parts = dateStr.split(/[–-]/)
@@ -122,7 +129,7 @@ export function parseLastDate(dateStr: string): Date {
   } else {
     lastStr = parts[0].trim()
   }
-  return new Date(lastStr.replace(/\//g, '-'))
+  return taipeiMidnight(lastStr)
 }
 
 /**

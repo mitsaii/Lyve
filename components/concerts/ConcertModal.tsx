@@ -26,13 +26,12 @@ export function ConcertModal({ concert, onClose }: ConcertModalProps) {
   const [igDownloaded, setIgDownloaded] = useState(false)
 
   useEffect(() => {
-    if (concert) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = 'auto'
-    }
+    if (!concert) return
+    // 保存進場前的值，離場時還原（避免疊多層 modal 時把外層的 hidden 也清掉）
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
     return () => {
-      document.body.style.overflow = 'auto'
+      document.body.style.overflow = prev
     }
   }, [concert])
 

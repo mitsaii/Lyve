@@ -1,9 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { createServerClient } from '@/lib/supabase/server'
 
 // 儲存/刪除 Web Push 訂閱
 export async function POST(req: NextRequest) {
   try {
+    // 必須登入才能訂閱／退訂（避免匿名濫發、亂刪別人的訂閱）
+    const ssr = await createServerClient()
+    const { data: { user } } = await ssr.auth.getUser()
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const { subscription, concertId, action } = await req.json()
 
     if (!subscription?.endpoint || !concertId) {

@@ -180,6 +180,17 @@ export default function AlertsPage() {
   const alertedConcerts = filteredConcerts.filter((c) => isAlerted(c))
   const pendingConcerts = filteredConcerts.filter((c) => !isAlerted(c))
 
+  // 列表縮短時把當前頁 clamp 回有效範圍（避免取消提醒後卡在空頁）
+  useEffect(() => {
+    const max = Math.max(1, Math.ceil(alertedConcerts.length / PAGE_SIZE))
+    if (alertedPage > max) setAlertedPage(max)
+  }, [alertedConcerts.length, alertedPage])
+
+  useEffect(() => {
+    const max = Math.max(1, Math.ceil(pendingConcerts.length / PAGE_SIZE))
+    if (pendingPage > max) setPendingPage(max)
+  }, [pendingConcerts.length, pendingPage])
+
   const alertedPageConcerts = alertedConcerts.slice((alertedPage - 1) * PAGE_SIZE, alertedPage * PAGE_SIZE)
   const pendingPageConcerts = pendingConcerts.slice((pendingPage - 1) * PAGE_SIZE, pendingPage * PAGE_SIZE)
 

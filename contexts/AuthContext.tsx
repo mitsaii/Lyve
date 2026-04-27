@@ -27,14 +27,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const supabase = createClient()
+    let cancelled = false
 
     supabase.auth.getSession()
       .then(({ data: { session } }) => {
+        if (cancelled) return
         setSession(session)
         setUser(session?.user ?? null)
         setLoading(false)
       })
       .catch((err) => {
+        if (cancelled) return
         console.error('[Auth] getSession failed:', err)
         setLoading(false)
       })
@@ -42,12 +45,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (cancelled) return
       setSession(session)
       setUser(session?.user ?? null)
       setLoading(false)
     })
 
-    return () => subscription.unsubscribe()
+    return () => {
+      cancelled = true
+      subscription.unsubscribe()
+    }
   }, [])
 
   const signInWithGoogle = async () => {

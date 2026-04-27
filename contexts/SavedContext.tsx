@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, useRef, ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/contexts/AuthContext'
@@ -25,6 +25,8 @@ export function SavedProvider({ children }: { children: ReactNode }) {
   const [savedSynced, setSavedSynced] = useState(false)
   const { user } = useAuth()
   const router = useRouter()
+  // 連點防護：同 concertId in-flight 期間後續 toggle 忽略
+  const togglingRef = useRef<Set<ConcertId>>(new Set())
 
   // 當登入狀態改變時，從資料庫同步收藏
   useEffect(() => {
@@ -34,6 +36,7 @@ export function SavedProvider({ children }: { children: ReactNode }) {
       return
     }
 
+    let cancelled = false  // 避免快速切換 user 時舊 fetch 覆蓋新狀態
     setSavedSynced(false)
     const supabase = createClient()
     ;(async () => {
@@ -41,6 +44,7 @@ export function SavedProvider({ children }: { children: ReactNode }) {
         const { data, error } = await supabase
           .from('saved_concerts')
           .select('concert_id')
+        if (cancelled) return
         if (error) {
           console.error('[SavedContext] fetch failed:', error.message)
         }
@@ -48,11 +52,14 @@ export function SavedProvider({ children }: { children: ReactNode }) {
           setSavedIds(new Set<ConcertId>(data.map((item) => item.concert_id as ConcertId)))
         }
       } catch (err) {
+        if (cancelled) return
         console.error('[SavedContext] unexpected error:', err)
       } finally {
-        setSavedSynced(true)  // 確保不論成功或失敗都不會卡在 loading 狀態
+        if (!cancelled) setSavedSynced(true)  // 確保不論成功或失敗都不會卡在 loading 狀態
       }
     })()
+
+    return () => { cancelled = true }
   }, [user])
 
   const toggleSave = async (concertId: ConcertId): Promise<boolean> => {
@@ -62,41 +69,49 @@ export function SavedProvider({ children }: { children: ReactNode }) {
       return false
     }
 
-    const supabase = createClient()
-    const isAdding = !savedIds.has(concertId)
+    // 連點防護：同 concertId 還在處理時忽略後續點擊
+    if (togglingRef.current.has(concertId)) return savedIds.has(concertId)
+    togglingRef.current.add(concertId)
 
-    // 樂觀更新 UI（先更新，失敗再回滾）
-    setSavedIds((prev) => {
-      const next = new Set(prev)
-      isAdding ? next.add(concertId) : next.delete(concertId)
-      return next
-    })
+    try {
+      const supabase = createClient()
+      const isAdding = !savedIds.has(concertId)
 
-    if (!isAdding) {
-      const { error } = await supabase
-        .from('saved_concerts')
-        .delete()
-        .eq('user_id', user.id)
-        .eq('concert_id', concertId)
-      if (error) {
-        console.error('[SavedContext] delete failed:', error.message)
-        // 回滾
-        setSavedIds((prev) => { const next = new Set(prev); next.add(concertId); return next })
-        return false
+      // 樂觀更新 UI（先更新，失敗再回滾）
+      setSavedIds((prev) => {
+        const next = new Set(prev)
+        isAdding ? next.add(concertId) : next.delete(concertId)
+        return next
+      })
+
+      if (!isAdding) {
+        const { error } = await supabase
+          .from('saved_concerts')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('concert_id', concertId)
+        if (error) {
+          console.error('[SavedContext] delete failed:', error.message)
+          // 回滾
+          setSavedIds((prev) => { const next = new Set(prev); next.add(concertId); return next })
+          return false
+        }
+      } else {
+        const { error } = await supabase
+          .from('saved_concerts')
+          .insert({ user_id: user.id, concert_id: concertId })
+        if (error) {
+          console.error('[SavedContext] insert failed:', error.message)
+          // 回滾
+          setSavedIds((prev) => { const next = new Set(prev); next.delete(concertId); return next })
+          return false
+        }
       }
-    } else {
-      const { error } = await supabase
-        .from('saved_concerts')
-        .insert({ user_id: user.id, concert_id: concertId })
-      if (error) {
-        console.error('[SavedContext] insert failed:', error.message)
-        // 回滾
-        setSavedIds((prev) => { const next = new Set(prev); next.delete(concertId); return next })
-        return false
-      }
+
+      return isAdding
+    } finally {
+      togglingRef.current.delete(concertId)
     }
-
-    return isAdding
   }
 
   const isSaved = (concertId: ConcertId) => savedIds.has(concertId)

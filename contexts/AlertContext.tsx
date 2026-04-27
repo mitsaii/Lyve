@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, useRef, ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Concert, ConcertId } from '@/types/concert'
@@ -87,6 +87,8 @@ export function AlertProvider({ children }: { children: ReactNode }) {
   const [pushPermission, setPushPermission] = useState<NotificationPermission | 'unsupported'>('unsupported')
   const { user } = useAuth()
   const router = useRouter()
+  // 同 concertId 的 toggle 在前一個還沒結束時，後續點擊忽略，避免 UI 與 DB 對不齊
+  const togglingRef = useRef<Set<ConcertId>>(new Set())
 
   const parseSaleDateTime = (concert: Concert): Date | null => {
     if (!concert.sale_start_at) return null
@@ -150,34 +152,42 @@ export function AlertProvider({ children }: { children: ReactNode }) {
       return
     }
 
-    const isAdding = !alertIds.has(concertId)
-    setAlertIds((prev) => {
-      const next = new Set(prev)
-      if (next.has(concertId)) {
-        next.delete(concertId)
-      } else {
-        next.add(concertId)
-      }
-      localStorage.setItem(alertsKey(user.id), JSON.stringify([...next]))
-      return next
-    })
+    // 連點防護：同一個 concertId 還在處理中時，後續點擊直接忽略
+    if (togglingRef.current.has(concertId)) return
+    togglingRef.current.add(concertId)
 
-    if (isAdding) {
-      if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
-        const perm = await Notification.requestPermission()
-        setPushPermission(perm)
-        if (perm !== 'granted') return
+    try {
+      const isAdding = !alertIds.has(concertId)
+      setAlertIds((prev) => {
+        const next = new Set(prev)
+        if (next.has(concertId)) {
+          next.delete(concertId)
+        } else {
+          next.add(concertId)
+        }
+        localStorage.setItem(alertsKey(user.id), JSON.stringify([...next]))
+        return next
+      })
+
+      if (isAdding) {
+        if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
+          const perm = await Notification.requestPermission()
+          setPushPermission(perm)
+          if (perm !== 'granted') return
+        }
+        await subscribePush(concertId)
+      } else {
+        try {
+          const key = remindedKey(user.id)
+          const rawReminded = localStorage.getItem(key)
+          const remindedIds = new Set<ConcertId>(rawReminded ? JSON.parse(rawReminded) : [])
+          remindedIds.delete(concertId)
+          localStorage.setItem(key, JSON.stringify([...remindedIds]))
+        } catch {}
+        await unsubscribePush(concertId)
       }
-      await subscribePush(concertId)
-    } else {
-      try {
-        const key = remindedKey(user.id)
-        const rawReminded = localStorage.getItem(key)
-        const remindedIds = new Set<ConcertId>(rawReminded ? JSON.parse(rawReminded) : [])
-        remindedIds.delete(concertId)
-        localStorage.setItem(key, JSON.stringify([...remindedIds]))
-      } catch {}
-      await unsubscribePush(concertId)
+    } finally {
+      togglingRef.current.delete(concertId)
     }
   }
 
@@ -209,17 +219,19 @@ export function AlertProvider({ children }: { children: ReactNode }) {
       const now = Date.now()
       let changed = false
       for (const concert of data as Concert[]) {
+        if (!mounted) return
         if (remindedIds.has(concert.id)) continue
         const saleAt = parseSaleDateTime(concert)
         if (!saleAt) continue
         const reminderAtMs = saleAt.getTime() - REMINDER_OFFSET_MS
         if (now >= reminderAtMs && now <= saleAt.getTime() + 5 * 60 * 1000) {
           await triggerLocalNotification(concert)
+          if (!mounted) return
           remindedIds.add(concert.id)
           changed = true
         }
       }
-      if (changed) localStorage.setItem(rKey, JSON.stringify([...remindedIds]))
+      if (mounted && changed) localStorage.setItem(rKey, JSON.stringify([...remindedIds]))
     }
 
     checkAlerts()

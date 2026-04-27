@@ -49,16 +49,19 @@ export async function GET(req: NextRequest) {
   if (e2) {
     results.push(`fetch active error: ${e2.message}`)
   } else {
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
+    // 用 Asia/Taipei 算「今日 0 點」，避免 Vercel UTC 與台灣 8 小時時差導致演唱會晚 8 小時才被標 ended
+    const taipeiTodayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Taipei' }) // YYYY-MM-DD
+    const today = new Date(`${taipeiTodayStr}T00:00:00+08:00`)
 
     const expiredIds: string[] = []
 
     for (const c of allActive ?? []) {
       try {
-        const concertDate = parseLastDate(c.date_str as string)
-        concertDate.setHours(23, 59, 59, 999)
-        if (concertDate < today) {
+        // parseLastDate 已回傳 Taipei 0 點，直接與 today 比較
+        const concertEndDay = parseLastDate(c.date_str as string)
+        if (Number.isNaN(concertEndDay.getTime())) continue
+        // today 已超過演唱會末日 → ended
+        if (today.getTime() > concertEndDay.getTime()) {
           expiredIds.push(c.id)
         }
       } catch {
