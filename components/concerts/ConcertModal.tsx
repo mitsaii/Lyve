@@ -9,7 +9,7 @@ import { statusLabel, genreLabel } from '@/lib/utils'
 import { IconPin, IconCalendar, IconTag, IconVenue, IconTicket, IconHeart } from '../ui/Icons'
 import { ConcertAvatar } from './ConcertAvatar'
 import { isTicketingPlatform } from '@/lib/utils'
-import { downloadStoryImage, openInstagramDirect } from '@/lib/shareInstagram'
+import { downloadStoryImage, shareConcertToInstagram } from '@/lib/shareInstagram'
 import { AlertPromptSheet } from './AlertPromptSheet'
 
 interface ConcertModalProps {
@@ -41,7 +41,7 @@ export function ConcertModal({ concert, onClose }: ConcertModalProps) {
 
   // 搶票時間顯示
   const formatSaleTime = () => {
-    if (concert.status === 'ended') return t('⚫ 演唱會已結束', '⚫ Event Ended')
+    // ended 狀態不在此攔截，繼續走下方邏輯顯示搶票時間
     if (concert.sale_start_at) {
       const d = new Date(concert.sale_start_at)
       // 防禦：sale_start_at 格式錯誤時 d 為 Invalid Date
@@ -117,7 +117,7 @@ export function ConcertModal({ concert, onClose }: ConcertModalProps) {
 
   const handleIgStory = async () => {
     setShowIgSheet(false)
-    await openInstagramDirect(concert, lang, shareUrl, 'story')
+    await shareConcertToInstagram(concert, lang, shareUrl)
   }
 
   const handleIgDownload = async () => {
@@ -336,10 +336,10 @@ export function ConcertModal({ concert, onClose }: ConcertModalProps) {
                     color: '#fff',
                   }}
                 >
-                  <span className="text-lg">📸</span>
+                  <span className="text-lg">🖼️</span>
                   <div className="text-left">
-                    <div className="font-semibold">{t('開啟限時動態', 'Open Stories')}</div>
-                    <div className="text-xs opacity-80">{t('直接跳到 IG 限時動態相機', 'Jump straight to IG Story camera')}</div>
+                    <div className="font-semibold">{t('分享圖片到限時動態', 'Share Image to Stories')}</div>
+                    <div className="text-xs opacity-80">{t('一鍵將演唱會圖片分享到 IG 限動', 'Share concert image directly to IG Stories')}</div>
                   </div>
                 </button>
                 {/* 儲存圖片 */}

@@ -47,8 +47,8 @@ export default function ConcertDetailClient({ concert }: Props) {
   const ticketSaleTime = (() => {
     if (concert.status === 'selling') return t('🟢 已開賣', '🟢 On Sale Now')
     if (concert.status === 'free') return t('🟡 免費入場', '🟡 Free Admission')
-    if (concert.status === 'ended') return t('⚫ 演唱會已結束', '⚫ Event Ended')
-    // pending
+    // ended 狀態不在此攔截，繼續走下方邏輯顯示搶票時間
+    // pending / ended
     if (concert.sale_start_at) {
       const d = new Date(concert.sale_start_at)
       if (isNaN(d.getTime())) return t('⏳ 待公布', '⏳ TBA')

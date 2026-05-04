@@ -1,10 +1,11 @@
 'use client'
 
 import { useState, useEffect, useRef, useMemo } from 'react'
-import { Concert } from '@/types/concert'
+import { Concert, Genre } from '@/types/concert'
 import { useLang } from '@/contexts/LangContext'
 import { ConcertCard } from '@/components/concerts/ConcertCard'
 import { ConcertModal } from '@/components/concerts/ConcertModal'
+import { GenreChips } from '@/components/concerts/GenreChips'
 import { SectionLabel } from '@/components/ui/SectionLabel'
 import { IconCalendar } from '@/components/ui/Icons'
 import { createClient } from '@/lib/supabase/client'
@@ -32,6 +33,7 @@ export default function CalendarPage() {
   const [selectedConcert, setSelectedConcert] = useState<Concert | null>(null)
   const [selectedMonth, setSelectedMonth] = useState<string>('all')
   const [selectedCity, setSelectedCity] = useState<string>('all')
+  const [selectedGenre, setSelectedGenre] = useState<Genre>('all')
   const [currentPage, setCurrentPage] = useState(1)
   const listRef = useRef<HTMLDivElement | null>(null)
   const hasMountedPaginationRef = useRef(false)
@@ -52,7 +54,7 @@ export default function CalendarPage() {
   // 切換篩選時重置頁碼
   useEffect(() => {
     setCurrentPage(1)
-  }, [selectedMonth, selectedCity])
+  }, [selectedMonth, selectedCity, selectedGenre])
 
   const fetchConcerts = async () => {
     const supabase = createClient()
@@ -90,16 +92,22 @@ export default function CalendarPage() {
     )
   }, [concerts, selectedCity])
 
-  // 分組演出 (依月份，已套用城市篩選)
+  // 套用音樂風格篩選
+  const genreFilteredConcerts = useMemo(() => {
+    if (selectedGenre === 'all') return cityFilteredConcerts
+    return cityFilteredConcerts.filter((c) => c.genre === selectedGenre)
+  }, [cityFilteredConcerts, selectedGenre])
+
+  // 分組演出 (依月份，已套用城市＋風格篩選)
   const groupedConcerts = useMemo(() => {
     const groups: Record<string, Concert[]> = {}
-    cityFilteredConcerts.forEach((concert) => {
+    genreFilteredConcerts.forEach((concert) => {
       const month = toMonthKey(concert.date_str)
       if (!groups[month]) groups[month] = []
       groups[month].push(concert)
     })
     return groups
-  }, [cityFilteredConcerts])
+  }, [genreFilteredConcerts])
 
   const months = useMemo(() => Object.keys(groupedConcerts).sort(), [groupedConcerts])
   const displayedMonths = selectedMonth === 'all' ? months : months.filter((m) => m === selectedMonth)
@@ -163,6 +171,11 @@ export default function CalendarPage() {
                 ▾
               </span>
             </div>
+          </div>
+
+          {/* 音樂風格篩選 */}
+          <div className="mb-4 scrollbar-hide">
+            <GenreChips selected={selectedGenre} onSelect={setSelectedGenre} />
           </div>
 
           {/* 月份篩選 */}

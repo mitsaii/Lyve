@@ -34,7 +34,7 @@ async function callGemini(prompt: string): Promise<string> {
   if (!apiKey) throw new Error('尚未設定 GEMINI_API_KEY，請至 Vercel 環境變數新增')
 
   const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

@@ -938,3 +938,1749 @@
 📊 今日統計: 138 筆 | 🔥 搶票提醒 1 筆 | 🎫 有開賣時間 2 筆 | 🖼️ 有圖片 57 筆
 [09:52:52] ============================================================
 [09:52:52] 完成！
+[00:00:04] ============================================================
+[00:00:04] Taiwan Concert Daily Scraper — 2026-04-18
+[00:00:04] ============================================================
+[00:00:04] ── [Tixcraft 拓元] 開始掃描...
+[00:00:05]   → 找到 41 個活動
+[00:00:05] ── [UDN 售票網] 開始掃描...
+[00:00:06]   UDN product links found: 0
+[00:00:06]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[00:00:06] ── [年代售票 ERAticket] 開始掃描...
+[00:00:07]   找到 21 個 Product ID
+[00:00:34]   → 找到 15 個活動
+[00:00:34] ── [kpopn.com] 開始掃描...
+[00:00:43]   → 找到 0 篇台灣演唱會文章
+[00:00:43] ── [livenation.com.tw] 開始掃描...
+[00:00:50]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[00:00:50]   ✗ livenation 無法取得，嘗試備用網址...
+[00:00:55]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[00:00:55] ── [DuckDuckGo] 開始搜尋...
+[00:01:24]   → 收集到 3 個候選連結
+[00:01:30]   ✗ fetch failed: https://tixcraft.com/ — HTTP Error 401: Unauthorized
+[00:01:35]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_ive — HTTP Error 401: Unauthorized
+[00:01:40]   → 解析出 1 個活動
+[00:01:40] ── [可樂旅遊 Colatour] 開始掃描...
+[00:01:40]   → 找到 43 個活動
+[00:01:40] ── [Bandsintown] 開始掃描台北場次...
+[00:01:43]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[00:01:43]   ✗ Bandsintown 無法取得
+[00:01:43] ── [LIVE王 FB] 開始掃描...
+[00:01:47]   ✗ fetch failed: https://mbasic.facebook.com/LIVEKINGisLife/posts/pfbid0rqzJZwF1N5QHbw2SoKbPGn8cs — HTTP Error 400: Bad Request
+[00:01:48]   ✗ LIVE王 FB 被重定向至登入頁，跳過
+[00:01:48] ── [寬宏售票 Kham] 開始掃描...
+[00:01:48]   找到 40 個 Product ID
+[00:02:17]   → 找到 0 個活動
+[00:02:17] ── [iNDIEVOX] 開始掃描...
+[00:02:24]   找到 19 個活動連結
+[00:03:01]   → 找到 11 個活動
+[00:03:01] ── [北流 tmc.taipei] 開始掃描...
+[00:03:01]   找到 12 個活動連結
+[00:03:16]   → 找到 3 個活動
+[00:03:16] ── [高流 kpmc.com.tw] 開始掃描...
+[00:03:17]   找到 1 個活動連結
+[00:03:19]   → 找到 0 個活動
+[00:03:19] ── [Legacy] 開始掃描...
+[00:03:24]   → 找到 26 個活動
+[00:03:24] ── [The Wall] 開始掃描...
+[00:03:28]   ✗ fetch failed: https://www.thewall.tw/shows/ — HTTP Error 526: <none>
+[00:03:34]   ✗ fetch failed: https://thewall.tw/ — HTTP Error 526: <none>
+[00:03:34]   → thewall.tw 無法取得，嘗試 KKTIX 場館頁...
+[00:03:37]   ✗ fetch failed: https://kktix.com/venues/thewall — HTTP Error 403: Forbidden
+[00:03:37]   ✗ The Wall 所有來源皆無法取得，暫時跳過
+[00:03:37] ── [PIPE Live Music] 開始掃描...
+[00:03:40]   ✗ fetch failed: https://www.pipemusic.com.tw/event — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[00:03:43]   ✗ fetch failed: https://pipemusic.com.tw/ — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[00:03:43]   → pipemusic.com.tw 無法取得，嘗試 mbasic Facebook...
+[00:03:44]   ✗ PIPE FB 被重定向至登入頁，跳過
+[00:03:44] ── [NUZONE] 開始掃描...
+[00:03:47]   → 找到 1 個活動
+[00:03:47] ── [Zepp New Taipei] 開始掃描...
+[00:03:52]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/schedule/ — HTTP Error 404: Not Found
+[00:03:56]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/ — HTTP Error 404: Not Found
+[00:03:56]   ✗ Zepp New Taipei 無法取得
+[00:03:56] ── [河岸留言 Riverside] 開始掃描...
+[00:03:59]   → 找到 1 個活動
+[00:03:59] 
+共收集 142 筆原始資料（含重複）
+[00:03:59] 去重後剩 141 筆
+[00:03:59] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260418.json
+[00:03:59] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260418.sql
+[00:03:59] 
+自動寫入 Supabase (141 筆)...
+[00:04:00]   ✓ Supabase upsert OK (201) — 141 筆
+[00:04:00] 
+清理超過 7 天的過期演唱會...
+[00:04:00]   ✓ 清理過期演唱會完成 (HTTP 204)，截止日: 2026/04/11
+[00:04:00] 
+📊 今日統計: 141 筆 | 🔥 搶票提醒 2 筆 | 🎫 有開賣時間 2 筆 | 🖼️ 有圖片 58 筆
+[00:04:00] ============================================================
+[00:04:00] 完成！
+[00:00:06] ============================================================
+[00:00:06] Taiwan Concert Daily Scraper — 2026-04-19
+[00:00:06] ============================================================
+[00:00:06] ── [Tixcraft 拓元] 開始掃描...
+[00:00:06]   → 找到 39 個活動
+[00:00:06] ── [UDN 售票網] 開始掃描...
+[00:00:07]   UDN product links found: 0
+[00:00:07]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[00:00:07] ── [年代售票 ERAticket] 開始掃描...
+[00:00:08]   找到 21 個 Product ID
+[00:00:35]   → 找到 15 個活動
+[00:00:35] ── [kpopn.com] 開始掃描...
+[00:00:48]   → 找到 0 篇台灣演唱會文章
+[00:00:48] ── [livenation.com.tw] 開始掃描...
+[00:00:54]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[00:00:54]   ✗ livenation 無法取得，嘗試備用網址...
+[00:01:00]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[00:01:00] ── [DuckDuckGo] 開始搜尋...
+[00:01:20]   → 收集到 3 個候選連結
+[00:01:33]   ✗ fetch failed: https://tixcraft.com/ — HTTP Error 401: Unauthorized
+[00:01:33]   → 解析出 2 個活動
+[00:01:33] ── [可樂旅遊 Colatour] 開始掃描...
+[00:01:33]   → 找到 43 個活動
+[00:01:33] ── [Bandsintown] 開始掃描台北場次...
+[00:01:36]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[00:01:36]   ✗ Bandsintown 無法取得
+[00:01:36] ── [LIVE王 FB] 開始掃描...
+[00:01:41]   ✗ LIVE王 FB 被重定向至登入頁，跳過
+[00:01:41] ── [寬宏售票 Kham] 開始掃描...
+[00:01:42]   找到 40 個 Product ID
+[00:02:11]   → 找到 0 個活動
+[00:02:11] ── [iNDIEVOX] 開始掃描...
+[00:02:12]   找到 15 個活動連結
+[00:02:40]   → 找到 9 個活動
+[00:02:40] ── [北流 tmc.taipei] 開始掃描...
+[00:02:41]   找到 12 個活動連結
+[00:02:56]   → 找到 3 個活動
+[00:02:56] ── [高流 kpmc.com.tw] 開始掃描...
+[00:02:58]   找到 1 個活動連結
+[00:03:00]   → 找到 0 個活動
+[00:03:00] ── [Legacy] 開始掃描...
+[00:03:04]   → 找到 26 個活動
+[00:03:04] ── [The Wall] 開始掃描...
+[00:03:10]   ✗ fetch failed: https://www.thewall.tw/shows/ — HTTP Error 526: <none>
+[00:03:16]   ✗ fetch failed: https://thewall.tw/ — HTTP Error 526: <none>
+[00:03:16]   → thewall.tw 無法取得，嘗試 KKTIX 場館頁...
+[00:03:19]   ✗ fetch failed: https://kktix.com/venues/thewall — HTTP Error 403: Forbidden
+[00:03:19]   ✗ The Wall 所有來源皆無法取得，暫時跳過
+[00:03:19] ── [PIPE Live Music] 開始掃描...
+[00:03:23]   ✗ fetch failed: https://www.pipemusic.com.tw/event — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[00:03:26]   ✗ fetch failed: https://pipemusic.com.tw/ — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[00:03:26]   → pipemusic.com.tw 無法取得，嘗試 mbasic Facebook...
+[00:03:27]   ✗ PIPE FB 被重定向至登入頁，跳過
+[00:03:27] ── [NUZONE] 開始掃描...
+[00:03:30]   → 找到 1 個活動
+[00:03:30] ── [Zepp New Taipei] 開始掃描...
+[00:03:35]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/schedule/ — HTTP Error 404: Not Found
+[00:03:40]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/ — HTTP Error 404: Not Found
+[00:03:40]   ✗ Zepp New Taipei 無法取得
+[00:03:40] ── [河岸留言 Riverside] 開始掃描...
+[00:03:41]   → 找到 1 個活動
+[00:03:42] 
+共收集 139 筆原始資料（含重複）
+[00:03:42] 去重後剩 138 筆
+[00:03:42] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260419.json
+[00:03:42] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260419.sql
+[00:03:42] 
+自動寫入 Supabase (138 筆)...
+[00:03:42]   ✓ Supabase upsert OK (201) — 138 筆
+[00:03:42] 
+清理超過 7 天的過期演唱會...
+[00:03:43]   ✓ 清理過期演唱會完成 (HTTP 204)，截止日: 2026/04/12
+[00:03:43] 
+📊 今日統計: 138 筆 | 🔥 搶票提醒 2 筆 | 🎫 有開賣時間 3 筆 | 🖼️ 有圖片 56 筆
+[00:03:43] ============================================================
+[00:03:43] 完成！
+[00:00:05] ============================================================
+[00:00:05] Taiwan Concert Daily Scraper — 2026-04-20
+[00:00:05] ============================================================
+[00:00:05] ── [Tixcraft 拓元] 開始掃描...
+[00:00:06]   → 找到 39 個活動
+[00:00:06] ── [UDN 售票網] 開始掃描...
+[00:00:07]   UDN product links found: 0
+[00:00:07]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[00:00:07] ── [年代售票 ERAticket] 開始掃描...
+[00:00:07]   找到 22 個 Product ID
+[00:00:35]   → 找到 15 個活動
+[00:00:35] ── [kpopn.com] 開始掃描...
+[00:00:48]   → 找到 0 篇台灣演唱會文章
+[00:00:48] ── [livenation.com.tw] 開始掃描...
+[00:00:54]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[00:00:54]   ✗ livenation 無法取得，嘗試備用網址...
+[00:01:00]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[00:01:00] ── [DuckDuckGo] 開始搜尋...
+[00:01:20]   → 收集到 3 個候選連結
+[00:01:26]   ✗ fetch failed: https://tixcraft.com/ — HTTP Error 401: Unauthorized
+[00:01:31]   → 解析出 2 個活動
+[00:01:31] ── [可樂旅遊 Colatour] 開始掃描...
+[00:01:31]   → 找到 43 個活動
+[00:01:31] ── [Bandsintown] 開始掃描台北場次...
+[00:01:37]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[00:01:37]   ✗ Bandsintown 無法取得
+[00:01:37] ── [LIVE王 FB] 開始掃描...
+[00:01:41]   ✗ fetch failed: https://mbasic.facebook.com/LIVEKINGisLife/posts/pfbid0rqzJZwF1N5QHbw2SoKbPGn8cs — HTTP Error 400: Bad Request
+[00:01:46]   ✗ LIVE王 FB 被重定向至登入頁，跳過
+[00:01:46] ── [寬宏售票 Kham] 開始掃描...
+[00:01:46]   找到 40 個 Product ID
+[00:02:15]   → 找到 0 個活動
+[00:02:15] ── [iNDIEVOX] 開始掃描...
+[00:02:16]   找到 17 個活動連結
+[00:02:48]   → 找到 12 個活動
+[00:02:48] ── [北流 tmc.taipei] 開始掃描...
+[00:02:49]   找到 12 個活動連結
+[00:03:04]   → 找到 3 個活動
+[00:03:04] ── [高流 kpmc.com.tw] 開始掃描...
+[00:03:06]   找到 1 個活動連結
+[00:03:08]   → 找到 0 個活動
+[00:03:08] ── [Legacy] 開始掃描...
+[00:03:14]   → 找到 26 個活動
+[00:03:14] ── [The Wall] 開始掃描...
+[00:03:20]   ✗ fetch failed: https://www.thewall.tw/shows/ — HTTP Error 526: <none>
+[00:03:26]   ✗ fetch failed: https://thewall.tw/ — HTTP Error 526: <none>
+[00:03:26]   → thewall.tw 無法取得，嘗試 KKTIX 場館頁...
+[00:03:29]   ✗ fetch failed: https://kktix.com/venues/thewall — HTTP Error 403: Forbidden
+[00:03:29]   ✗ The Wall 所有來源皆無法取得，暫時跳過
+[00:03:29] ── [PIPE Live Music] 開始掃描...
+[00:03:32]   ✗ fetch failed: https://www.pipemusic.com.tw/event — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[00:03:35]   ✗ fetch failed: https://pipemusic.com.tw/ — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[00:03:35]   → pipemusic.com.tw 無法取得，嘗試 mbasic Facebook...
+[00:03:40]   ✗ PIPE FB 被重定向至登入頁，跳過
+[00:03:40] ── [NUZONE] 開始掃描...
+[00:03:41]   → 找到 1 個活動
+[00:03:41] ── [Zepp New Taipei] 開始掃描...
+[00:03:45]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/schedule/ — HTTP Error 404: Not Found
+[00:03:50]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/ — HTTP Error 404: Not Found
+[00:03:50]   ✗ Zepp New Taipei 無法取得
+[00:03:50] ── [河岸留言 Riverside] 開始掃描...
+[00:03:54]   → 找到 1 個活動
+[00:03:54] 
+共收集 142 筆原始資料（含重複）
+[00:03:54] 去重後剩 141 筆
+[00:03:54] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260420.json
+[00:03:54] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260420.sql
+[00:03:54] 
+自動寫入 Supabase (141 筆)...
+[00:03:55]   ✓ Supabase upsert OK (201) — 141 筆
+[00:03:55] 
+清理超過 7 天的過期演唱會...
+[00:03:55]   ✓ 清理過期演唱會完成 (HTTP 204)，截止日: 2026/04/13
+[00:03:55] 
+📊 今日統計: 141 筆 | 🔥 搶票提醒 2 筆 | 🎫 有開賣時間 2 筆 | 🖼️ 有圖片 56 筆
+[00:03:55] ============================================================
+[00:03:55] 完成！
+[00:00:03] ============================================================
+[00:00:03] Taiwan Concert Daily Scraper — 2026-04-21
+[00:00:03] ============================================================
+[00:00:03] ── [Tixcraft 拓元] 開始掃描...
+[00:00:04]   → 找到 40 個活動
+[00:00:04] ── [UDN 售票網] 開始掃描...
+[00:00:04]   UDN product links found: 0
+[00:00:04]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[00:00:04] ── [年代售票 ERAticket] 開始掃描...
+[00:00:05]   找到 22 個 Product ID
+[00:00:32]   → 找到 15 個活動
+[00:00:32] ── [kpopn.com] 開始掃描...
+[00:00:42]   → 找到 0 篇台灣演唱會文章
+[00:00:42] ── [livenation.com.tw] 開始掃描...
+[00:00:49]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[00:00:49]   ✗ livenation 無法取得，嘗試備用網址...
+[00:00:54]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[00:00:54] ── [DuckDuckGo] 開始搜尋...
+[00:01:14]   → 收集到 2 個候選連結
+[00:01:24]   ✗ fetch failed: https://tixcraft.com/ — HTTP Error 401: Unauthorized
+[00:01:24]   → 解析出 1 個活動
+[00:01:24] ── [可樂旅遊 Colatour] 開始掃描...
+[00:01:25]   → 找到 43 個活動
+[00:01:25] ── [Bandsintown] 開始掃描台北場次...
+[00:01:30]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[00:01:30]   ✗ Bandsintown 無法取得
+[00:01:30] ── [LIVE王 FB] 開始掃描...
+[00:01:33]   ✗ LIVE王 FB 被重定向至登入頁，跳過
+[00:01:33] ── [寬宏售票 Kham] 開始掃描...
+[00:01:33]   找到 40 個 Product ID
+[00:02:02]   → 找到 0 個活動
+[00:02:02] ── [iNDIEVOX] 開始掃描...
+[00:02:03]   找到 17 個活動連結
+[00:02:35]   → 找到 12 個活動
+[00:02:35] ── [北流 tmc.taipei] 開始掃描...
+[00:02:38]   找到 12 個活動連結
+[00:02:53]   → 找到 3 個活動
+[00:02:53] ── [高流 kpmc.com.tw] 開始掃描...
+[00:02:55]   找到 1 個活動連結
+[00:02:57]   → 找到 0 個活動
+[00:02:57] ── [Legacy] 開始掃描...
+[00:03:04]   → 找到 26 個活動
+[00:03:04] ── [The Wall] 開始掃描...
+[00:03:09]   ✗ fetch failed: https://www.thewall.tw/shows/ — HTTP Error 526: <none>
+[00:03:14]   ✗ fetch failed: https://thewall.tw/ — HTTP Error 526: <none>
+[00:03:14]   → thewall.tw 無法取得，嘗試 KKTIX 場館頁...
+[00:03:17]   ✗ fetch failed: https://kktix.com/venues/thewall — HTTP Error 403: Forbidden
+[00:03:17]   ✗ The Wall 所有來源皆無法取得，暫時跳過
+[00:03:17] ── [PIPE Live Music] 開始掃描...
+[00:03:20]   ✗ fetch failed: https://www.pipemusic.com.tw/event — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[00:03:23]   ✗ fetch failed: https://pipemusic.com.tw/ — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[00:03:23]   → pipemusic.com.tw 無法取得，嘗試 mbasic Facebook...
+[00:03:28]   ✗ PIPE FB 被重定向至登入頁，跳過
+[00:03:28] ── [NUZONE] 開始掃描...
+[00:03:31]   → 找到 1 個活動
+[00:03:31] ── [Zepp New Taipei] 開始掃描...
+[00:03:35]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/schedule/ — HTTP Error 404: Not Found
+[00:03:39]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/ — HTTP Error 404: Not Found
+[00:03:39]   ✗ Zepp New Taipei 無法取得
+[00:03:39] ── [河岸留言 Riverside] 開始掃描...
+[00:03:44]   → 找到 1 個活動
+[00:03:44] 
+共收集 142 筆原始資料（含重複）
+[00:03:44]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[00:03:44]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[00:03:44]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[00:03:44] 去重後剩 138 筆
+[00:03:44] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260421.json
+[00:03:44] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260421.sql
+[00:03:44] 
+自動寫入 Supabase (138 筆)...
+[00:03:45]   ✓ Supabase upsert OK (201) — 138 筆
+[00:03:45] 
+清理超過 7 天的過期演唱會...
+[00:03:45]   ✓ 清理過期演唱會完成 (HTTP 204)，截止日: 2026/04/14
+[00:03:45] 
+📊 今日統計: 138 筆 | 🔥 搶票提醒 2 筆 | 🎫 有開賣時間 2 筆 | 🖼️ 有圖片 57 筆
+[00:03:45] ============================================================
+[00:03:45] 完成！
+[00:02:51] ============================================================
+[00:02:51] Taiwan Concert Daily Scraper — 2026-04-22
+[00:02:51] ============================================================
+[00:02:51] ── [Tixcraft 拓元] 開始掃描...
+[00:02:52]   → 找到 40 個活動
+[00:02:52] ── [UDN 售票網] 開始掃描...
+[00:02:52]   UDN product links found: 0
+[00:02:52]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[00:02:52] ── [年代售票 ERAticket] 開始掃描...
+[00:02:53]   找到 22 個 Product ID
+[00:37:21]   → 找到 14 個活動
+[00:37:21] ── [kpopn.com] 開始掃描...
+[00:50:10]   → 找到 0 篇台灣演唱會文章
+[00:50:10] ── [livenation.com.tw] 開始掃描...
+[01:06:57]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[01:06:57]   ✗ livenation 無法取得，嘗試備用網址...
+[01:42:04]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[01:42:04] ── [DuckDuckGo] 開始搜尋...
+[05:53:47]   → 收集到 3 個候選連結
+[06:09:37]   ✗ fetch failed: https://tixcraft.com/ — HTTP Error 401: Unauthorized
+[06:27:25]   → 解析出 2 個活動
+[06:27:25] ── [可樂旅遊 Colatour] 開始掃描...
+[06:27:25]   → 找到 44 個活動
+[06:27:25] ── [Bandsintown] 開始掃描台北場次...
+[06:43:23]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[06:43:23]   ✗ Bandsintown 無法取得
+[06:43:23] ── [LIVE王 FB] 開始掃描...
+[07:04:56]   ✗ fetch failed: https://mbasic.facebook.com/LIVEKINGisLife/posts/pfbid0rqzJZwF1N5QHbw2SoKbPGn8cs — HTTP Error 400: Bad Request
+[07:04:57]   ✗ LIVE王 FB 被重定向至登入頁，跳過
+[07:04:57] ── [寬宏售票 Kham] 開始掃描...
+[07:04:57]   找到 41 個 Product ID
+[09:04:50]   → 找到 0 個活動
+[09:04:50] ── [iNDIEVOX] 開始掃描...
+[09:04:50]   找到 18 個活動連結
+[10:16:49]   → 找到 12 個活動
+[10:16:49] ── [北流 tmc.taipei] 開始掃描...
+[10:16:49]   找到 12 個活動連結
+[10:17:26]   → 找到 3 個活動
+[10:17:26] ── [高流 kpmc.com.tw] 開始掃描...
+[10:17:27]   找到 1 個活動連結
+[10:17:38]   → 找到 0 個活動
+[10:17:38] ── [Legacy] 開始掃描...
+[10:17:42]   → 找到 27 個活動
+[10:17:42] ── [The Wall] 開始掃描...
+[10:17:47]   ✗ fetch failed: https://www.thewall.tw/shows/ — HTTP Error 526: <none>
+[10:17:52]   ✗ fetch failed: https://thewall.tw/ — HTTP Error 526: <none>
+[10:17:52]   → thewall.tw 無法取得，嘗試 KKTIX 場館頁...
+[10:17:55]   ✗ fetch failed: https://kktix.com/venues/thewall — HTTP Error 403: Forbidden
+[10:17:55]   ✗ The Wall 所有來源皆無法取得，暫時跳過
+[10:17:55] ── [PIPE Live Music] 開始掃描...
+[10:17:58]   ✗ fetch failed: https://www.pipemusic.com.tw/event — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[10:18:01]   ✗ fetch failed: https://pipemusic.com.tw/ — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[10:18:01]   → pipemusic.com.tw 無法取得，嘗試 mbasic Facebook...
+[10:18:02]   ✗ PIPE FB 被重定向至登入頁，跳過
+[10:18:02] ── [NUZONE] 開始掃描...
+[10:18:04]   → 找到 1 個活動
+[10:18:04] ── [Zepp New Taipei] 開始掃描...
+[10:18:08]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/schedule/ — HTTP Error 404: Not Found
+[10:18:13]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/ — HTTP Error 404: Not Found
+[10:18:13]   ✗ Zepp New Taipei 無法取得
+[10:18:13] ── [河岸留言 Riverside] 開始掃描...
+[10:18:16]   → 找到 1 個活動
+[10:18:16] 
+共收集 144 筆原始資料（含重複）
+[10:18:16]   ⚠ 丟棄髒資料: artist='節目資訊' tour='節目資訊 | 2026-27 節目清單與時間'
+[10:18:16]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[10:18:16]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[10:18:16]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[10:18:16] 去重後剩 139 筆
+[10:18:16] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260422.json
+[10:18:16] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260422.sql
+[10:18:16] 
+自動寫入 Supabase (139 筆)...
+[10:18:17]   ✓ Supabase upsert OK (201) — 139 筆
+[10:18:17] 
+清理超過 7 天的過期演唱會...
+[10:18:17]   ✓ 清理過期演唱會完成 (HTTP 204)，截止日: 2026/04/15
+[10:18:17] 
+📊 今日統計: 139 筆 | 🔥 搶票提醒 2 筆 | 🎫 有開賣時間 2 筆 | 🖼️ 有圖片 56 筆
+[10:18:17] ============================================================
+[10:18:17] 完成！
+[00:10:37] ============================================================
+[00:10:37] Taiwan Concert Daily Scraper — 2026-04-23
+[00:10:37] ============================================================
+[00:10:37] ── [Tixcraft 拓元] 開始掃描...
+[00:10:38]   → 找到 43 個活動
+[00:10:38] ── [UDN 售票網] 開始掃描...
+[00:10:38]   UDN product links found: 0
+[00:10:38]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[00:10:38] ── [年代售票 ERAticket] 開始掃描...
+[00:10:38]   找到 20 個 Product ID
+[00:30:59]   → 找到 15 個活動
+[00:30:59] ── [kpopn.com] 開始掃描...
+[00:31:13]   → 找到 0 篇台灣演唱會文章
+[00:31:13] ── [livenation.com.tw] 開始掃描...
+[00:31:18]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[00:31:18]   ✗ livenation 無法取得，嘗試備用網址...
+[00:40:10]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[00:40:10] ── [DuckDuckGo] 開始搜尋...
+[00:40:47]   → 收集到 3 個候選連結
+[02:19:55]   ✗ fetch failed: https://tixcraft.com/ — The read operation timed out
+[02:19:55]   → 解析出 2 個活動
+[02:19:55] ── [可樂旅遊 Colatour] 開始掃描...
+[02:19:56]   → 找到 44 個活動
+[02:19:56] ── [Bandsintown] 開始掃描台北場次...
+[02:35:19]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[02:35:19]   ✗ Bandsintown 無法取得
+[02:35:19] ── [LIVE王 FB] 開始掃描...
+[03:47:04]   ✗ fetch failed: https://mbasic.facebook.com/LIVEKINGisLife/posts/pfbid0rqzJZwF1N5QHbw2SoKbPGn8cs — HTTP Error 400: Bad Request
+[04:02:30]   ✗ LIVE王 FB 被重定向至登入頁，跳過
+[04:02:30] ── [寬宏售票 Kham] 開始掃描...
+[04:02:30]   找到 42 個 Product ID
+[05:39:29]   → 找到 0 個活動
+[05:39:29] ── [iNDIEVOX] 開始掃描...
+[05:39:30]   找到 18 個活動連結
+[09:48:50]   → 找到 11 個活動
+[09:48:50] ── [北流 tmc.taipei] 開始掃描...
+[09:48:51]   找到 12 個活動連結
+[09:51:18]   → 找到 3 個活動
+[09:51:19] ── [高流 kpmc.com.tw] 開始掃描...
+[09:51:20]   找到 1 個活動連結
+[09:51:22]   → 找到 0 個活動
+[09:51:22] ── [Legacy] 開始掃描...
+[09:51:26]   → 找到 26 個活動
+[09:51:26] ── [The Wall] 開始掃描...
+[09:51:31]   ✗ fetch failed: https://www.thewall.tw/shows/ — HTTP Error 526: <none>
+[09:51:36]   ✗ fetch failed: https://thewall.tw/ — HTTP Error 526: <none>
+[09:51:36]   → thewall.tw 無法取得，嘗試 KKTIX 場館頁...
+[09:51:39]   ✗ fetch failed: https://kktix.com/venues/thewall — HTTP Error 403: Forbidden
+[09:51:39]   ✗ The Wall 所有來源皆無法取得，暫時跳過
+[09:51:39] ── [PIPE Live Music] 開始掃描...
+[09:51:42]   ✗ fetch failed: https://www.pipemusic.com.tw/event — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[09:51:45]   ✗ fetch failed: https://pipemusic.com.tw/ — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[09:51:45]   → pipemusic.com.tw 無法取得，嘗試 mbasic Facebook...
+[09:51:48]   ✗ PIPE FB 被重定向至登入頁，跳過
+[09:51:48] ── [NUZONE] 開始掃描...
+[09:51:50]   → 找到 1 個活動
+[09:51:50] ── [Zepp New Taipei] 開始掃描...
+[09:51:55]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/schedule/ — HTTP Error 404: Not Found
+[09:52:00]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/ — HTTP Error 404: Not Found
+[09:52:00]   ✗ Zepp New Taipei 無法取得
+[09:52:00] ── [河岸留言 Riverside] 開始掃描...
+[09:52:06]   → 找到 1 個活動
+[09:52:06] 
+共收集 146 筆原始資料（含重複）
+[09:52:06]   ⚠ 丟棄髒資料: artist='節目資訊' tour='節目資訊 | 2026-27 節目清單與時間'
+[09:52:06]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[09:52:06]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[09:52:06]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[09:52:06] 去重後剩 141 筆
+[09:52:06] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260423.json
+[09:52:06] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260423.sql
+[09:52:06] 
+自動寫入 Supabase (141 筆)...
+[09:52:07]   ✓ Supabase upsert OK (201) — 141 筆
+[09:52:07] 
+清理超過 7 天的過期演唱會...
+[09:52:07]   ✓ 清理過期演唱會完成 (HTTP 204)，截止日: 2026/04/16
+[09:52:07] 
+📊 今日統計: 141 筆 | 🔥 搶票提醒 1 筆 | 🎫 有開賣時間 1 筆 | 🖼️ 有圖片 60 筆
+[09:52:07] ============================================================
+[09:52:07] 完成！
+[00:05:42] ============================================================
+[00:05:42] Taiwan Concert Daily Scraper — 2026-04-24
+[00:05:42] ============================================================
+[00:05:42] ── [Tixcraft 拓元] 開始掃描...
+[00:05:43]   → 找到 44 個活動
+[00:05:43] ── [UDN 售票網] 開始掃描...
+[00:05:44]   UDN product links found: 0
+[00:05:44]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[00:05:44] ── [年代售票 ERAticket] 開始掃描...
+[00:05:44]   找到 21 個 Product ID
+[00:48:57]   → 找到 15 個活動
+[00:48:57] ── [kpopn.com] 開始掃描...
+[02:57:42]   → 找到 0 篇台灣演唱會文章
+[02:57:42] ── [livenation.com.tw] 開始掃描...
+[03:14:34]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[03:14:34]   ✗ livenation 無法取得，嘗試備用網址...
+[03:29:48]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[03:29:48] ── [DuckDuckGo] 開始搜尋...
+[05:21:53]   → 收集到 2 個候選連結
+[06:46:44]   → 解析出 2 個活動
+[06:46:44] ── [可樂旅遊 Colatour] 開始掃描...
+[06:46:45]   → 找到 44 個活動
+[06:46:45] ── [Bandsintown] 開始掃描台北場次...
+[06:48:33]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[06:48:33]   ✗ Bandsintown 無法取得
+[06:48:33] ── [LIVE王 FB] 開始掃描...
+[06:48:37]   ✗ fetch failed: https://mbasic.facebook.com/LIVEKINGisLife/posts/pfbid0rqzJZwF1N5QHbw2SoKbPGn8cs — HTTP Error 400: Bad Request
+[06:48:40]   ✗ LIVE王 FB 被重定向至登入頁，跳過
+[06:48:40] ── [寬宏售票 Kham] 開始掃描...
+[06:48:40]   找到 44 個 Product ID
+[08:05:00]   → 找到 0 個活動
+[08:05:00] ── [遠大售票 Ticket Plus] 開始掃描...
+[08:05:00]   ⚠️  eventlist 頁面可能需要完整 JS 渲染，未找到 activity ID
+[08:05:00] ── [iNDIEVOX] 開始掃描...
+[08:05:01]   找到 18 個活動連結
+[09:50:03]   → 找到 11 個活動
+[09:50:03] ── [Accupass] 開始掃描免費音樂活動...
+[09:50:06]   找到 0 個活動連結（來源: q=%E9%9F%B3%E6%A8%82）
+[09:50:09]   找到 0 個活動連結（來源: q=%E6%BC%94%E5%94%B1）
+[09:50:11]   找到 0 個活動連結（來源: q=%E7%8D%A8%E7%AB%8B）
+[09:50:11]   → 找到 0 個免費活動
+[09:50:11] ── [北流 tmc.taipei] 開始掃描...
+[09:50:12]   找到 12 個活動連結
+[09:50:27]   → 找到 3 個活動
+[09:50:27] ── [高流 kpmc.com.tw] 開始掃描...
+[09:50:28]   找到 1 個活動連結
+[09:50:30]   → 找到 0 個活動
+[09:50:30] ── [Legacy] 開始掃描...
+[09:50:34]   → 找到 28 個活動
+[09:50:34] ── [The Wall] 開始掃描...
+[09:50:39]   ✗ fetch failed: https://www.thewall.tw/shows/ — HTTP Error 526: <none>
+[09:50:44]   ✗ fetch failed: https://thewall.tw/ — HTTP Error 526: <none>
+[09:50:44]   → thewall.tw 無法取得，嘗試 KKTIX 場館頁...
+[09:50:47]   ✗ fetch failed: https://kktix.com/venues/thewall — HTTP Error 403: Forbidden
+[09:50:47]   ✗ The Wall 所有來源皆無法取得，暫時跳過
+[09:50:47] ── [PIPE Live Music] 開始掃描...
+[09:50:50]   ✗ fetch failed: https://www.pipemusic.com.tw/event — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[09:50:53]   ✗ fetch failed: https://pipemusic.com.tw/ — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[09:50:53]   → pipemusic.com.tw 無法取得，嘗試 mbasic Facebook...
+[09:50:58]   ✗ PIPE FB 被重定向至登入頁，跳過
+[09:50:58] ── [NUZONE] 開始掃描...
+[09:50:59]   → 找到 1 個活動
+[09:50:59] ── [Zepp New Taipei] 開始掃描...
+[09:51:03]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/schedule/ — HTTP Error 404: Not Found
+[09:51:08]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/ — HTTP Error 404: Not Found
+[09:51:08]   ✗ Zepp New Taipei 無法取得
+[09:51:08] ── [河岸留言 Riverside] 開始掃描...
+[09:51:08]   → 找到 1 個活動
+[09:51:08] 
+共收集 149 筆原始資料（含重複）
+[09:51:08]   ⚠ 丟棄髒資料: artist='節目資訊' tour='節目資訊 | 2026-27 節目清單與時間'
+[09:51:08]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[09:51:08]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[09:51:08]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[09:51:08] 去重後剩 144 筆
+[09:51:08] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260424.json
+[09:51:08] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260424.sql
+[09:51:08] 
+自動寫入 Supabase (144 筆)...
+[09:51:10]   ✓ Supabase upsert OK (201) — 144 筆
+[09:51:10] 
+清理超過 7 天的過期演唱會...
+[09:51:10]   ✓ 清理過期演唱會完成 (HTTP 204)，截止日: 2026/04/17
+[09:51:10] 
+📊 今日統計: 144 筆 | 🔥 搶票提醒 1 筆 | 🎫 有開賣時間 1 筆 | 🖼️ 有圖片 61 筆
+[09:51:10] ============================================================
+[09:51:10] 完成！
+[00:00:00] ============================================================
+[00:00:00] Taiwan Concert Daily Scraper — 2026-04-25
+[00:00:00] ============================================================
+[00:00:00] ── [Tixcraft 拓元] 開始掃描...
+[00:00:03]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_joji — HTTP Error 401: Unauthorized
+[00:00:06]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_joji_c — HTTP Error 401: Unauthorized
+[00:00:08]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_lany_c — HTTP Error 401: Unauthorized
+[00:00:10]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_lany — HTTP Error 401: Unauthorized
+[00:00:13]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_malone — HTTP Error 401: Unauthorized
+[00:00:15]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_malone_c — HTTP Error 401: Unauthorized
+[00:00:17]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_ive — HTTP Error 401: Unauthorized
+[00:00:19]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kodaline_c — HTTP Error 401: Unauthorized
+[00:00:22]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kodaline — HTTP Error 401: Unauthorized
+[00:00:24]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_aroot — HTTP Error 401: Unauthorized
+[00:00:26]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_ggteens — HTTP Error 401: Unauthorized
+[00:00:28]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_exokh — HTTP Error 401: Unauthorized
+[00:00:31]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_diivtp — HTTP Error 401: Unauthorized
+[00:00:33]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_mltr — HTTP Error 401: Unauthorized
+[00:00:35]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_tkl — HTTP Error 401: Unauthorized
+[00:00:37]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kyuhyun — HTTP Error 401: Unauthorized
+[00:00:40]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_itzy — HTTP Error 401: Unauthorized
+[00:00:42]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kamenashi — HTTP Error 401: Unauthorized
+[00:00:44]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_itzy_c — HTTP Error 401: Unauthorized
+[00:00:46]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_withu — HTTP Error 401: Unauthorized
+[00:00:49]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_seonho — HTTP Error 401: Unauthorized
+[00:00:51]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_mj116kh — HTTP Error 401: Unauthorized
+[00:00:53]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_mj116kh_r — HTTP Error 401: Unauthorized
+[00:00:55]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_mfm — HTTP Error 401: Unauthorized
+[00:00:57]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_bus — HTTP Error 401: Unauthorized
+[00:00:57]   → 找到 44 個活動
+[00:00:57] ── [UDN 售票網] 開始掃描...
+[00:00:58]   UDN product links found: 0
+[00:00:58]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[00:00:58] ── [年代售票 ERAticket] 開始掃描...
+[00:00:58]   找到 21 個 Product ID
+[00:01:25]   → 找到 15 個活動
+[00:01:25] ── [kpopn.com] 開始掃描...
+[00:01:39]   → 找到 0 篇台灣演唱會文章
+[00:01:39] ── [livenation.com.tw] 開始掃描...
+[00:01:45]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[00:01:45]   ✗ livenation 無法取得，嘗試備用網址...
+[00:01:51]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[00:01:51] ── [DuckDuckGo] 開始搜尋...
+[00:02:11]   → 收集到 2 個候選連結
+[00:02:18]   → 解析出 2 個活動
+[00:02:18] ── [可樂旅遊 Colatour] 開始掃描...
+[00:02:18]   → 找到 44 個活動
+[00:02:18] ── [Bandsintown] 開始掃描台北場次...
+[00:02:22]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[00:02:22]   ✗ Bandsintown 無法取得
+[00:02:22] ── [LIVE王 FB] 開始掃描...
+[00:02:23]   ✗ LIVE王 FB 被重定向至登入頁，跳過
+[00:02:23] ── [寬宏售票 Kham] 開始掃描...
+[00:02:23]   找到 44 個 Product ID
+[00:02:52]   → 找到 0 個活動
+[00:02:52] ── [遠大售票 Ticket Plus] 開始掃描...
+[00:02:52]   ⚠️  eventlist 頁面可能需要完整 JS 渲染，未找到 activity ID
+[00:02:52] ── [iNDIEVOX] 開始掃描...
+[00:02:53]   找到 18 個活動連結
+[00:03:27]   → 找到 11 個活動
+[00:03:27] ── [Accupass] 開始掃描免費音樂活動...
+[00:03:30]   找到 0 個活動連結（來源: q=%E9%9F%B3%E6%A8%82）
+[00:03:32]   找到 0 個活動連結（來源: q=%E6%BC%94%E5%94%B1）
+[00:03:34]   找到 0 個活動連結（來源: q=%E7%8D%A8%E7%AB%8B）
+[00:03:34]   → 找到 0 個免費活動
+[00:03:34] ── [北流 tmc.taipei] 開始掃描...
+[00:03:37]   找到 12 個活動連結
+[00:03:52]   → 找到 3 個活動
+[00:03:52] ── [高流 kpmc.com.tw] 開始掃描...
+[00:03:56]   找到 1 個活動連結
+[00:03:58]   → 找到 0 個活動
+[00:03:58] ── [Legacy] 開始掃描...
+[00:04:02]   → 找到 28 個活動
+[00:04:02] ── [The Wall] 開始掃描...
+[00:04:07]   ✗ fetch failed: https://www.thewall.tw/shows/ — HTTP Error 526: <none>
+[00:04:12]   ✗ fetch failed: https://thewall.tw/ — HTTP Error 526: <none>
+[00:04:12]   → thewall.tw 無法取得，嘗試 KKTIX 場館頁...
+[00:04:16]   ✗ fetch failed: https://kktix.com/venues/thewall — HTTP Error 403: Forbidden
+[00:04:16]   ✗ The Wall 所有來源皆無法取得，暫時跳過
+[00:04:16] ── [PIPE Live Music] 開始掃描...
+[00:04:19]   ✗ fetch failed: https://www.pipemusic.com.tw/event — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[00:04:22]   ✗ fetch failed: https://pipemusic.com.tw/ — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[00:04:22]   → pipemusic.com.tw 無法取得，嘗試 mbasic Facebook...
+[00:04:23]   ✗ PIPE FB 被重定向至登入頁，跳過
+[00:04:23] ── [NUZONE] 開始掃描...
+[00:04:24]   → 找到 1 個活動
+[00:04:24] ── [Zepp New Taipei] 開始掃描...
+[00:04:28]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/schedule/ — HTTP Error 404: Not Found
+[00:04:33]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/ — HTTP Error 404: Not Found
+[00:04:33]   ✗ Zepp New Taipei 無法取得
+[00:04:33] ── [河岸留言 Riverside] 開始掃描...
+[00:04:36]   → 找到 1 個活動
+[00:04:36] ── [搖滾台灣 rockintaiwan.com] 開始搜尋...
+[00:04:42]   → 找到 0 個候選連結
+[00:04:42]   → 解析出 0 個活動
+[00:04:42] 
+共收集 149 筆原始資料（含重複）
+[00:04:42]   ⚠ 開賣日 2027-03-27 > 演唱會日 2026-07-25，捨棄（year 推算錯誤）
+[00:04:42]   ⚠ 丟棄髒資料: artist='節目資訊' tour='節目資訊 | 2026-27 節目清單與時間'
+[00:04:42]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[00:04:42]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[00:04:42]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[00:04:42] 去重後剩 144 筆
+[00:04:42] 
+── [開賣時間補強] 共 143 個活動缺開賣時間，透過 DuckDuckGo 補強...
+[00:05:38]   → 補強成功 0 / 20 筆
+[00:05:38] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260425.json
+[00:05:38] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260425.sql
+[00:05:38] 
+自動寫入 Supabase (144 筆)...
+[00:05:38]   ✗ Supabase upsert 失敗 (400): {"code":"PGRST102","details":null,"hint":null,"message":"All object keys must match"}
+[00:05:38] 
+清理超過 7 天的過期演唱會...
+[00:05:39]   ✓ 清理過期演唱會完成 (HTTP 204)，截止日: 2026/04/18
+[00:05:39] 
+📊 今日統計: 144 筆 | 🔥 搶票提醒 1 筆 | 🎫 有開賣時間 1 筆 | 🖼️ 有圖片 61 筆
+[00:05:39] ============================================================
+[00:05:39] 完成！
+[00:00:04] ============================================================
+[00:00:04] Taiwan Concert Daily Scraper — 2026-04-26
+[00:00:04] ============================================================
+[00:00:04] ── [Tixcraft 拓元] 開始掃描...
+[00:00:07]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_joji — HTTP Error 401: Unauthorized
+[00:00:10]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_joji_c — HTTP Error 401: Unauthorized
+[00:00:12]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_lany_c — HTTP Error 401: Unauthorized
+[00:00:14]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_lany — HTTP Error 401: Unauthorized
+[00:00:17]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_malone — HTTP Error 401: Unauthorized
+[00:00:19]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_malone_c — HTTP Error 401: Unauthorized
+[00:00:21]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_ive — HTTP Error 401: Unauthorized
+[00:00:24]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kodaline_c — HTTP Error 401: Unauthorized
+[00:00:26]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kodaline — HTTP Error 401: Unauthorized
+[00:00:28]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_aroot — HTTP Error 401: Unauthorized
+[00:00:31]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_ggteens — HTTP Error 401: Unauthorized
+[00:00:33]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_exokh — HTTP Error 401: Unauthorized
+[00:00:35]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_diivtp — HTTP Error 401: Unauthorized
+[00:00:38]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_mltr — HTTP Error 401: Unauthorized
+[00:00:40]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_tkl — HTTP Error 401: Unauthorized
+[00:00:43]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kyuhyun — HTTP Error 401: Unauthorized
+[00:00:45]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_itzy — HTTP Error 401: Unauthorized
+[00:00:47]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kamenashi — HTTP Error 401: Unauthorized
+[00:00:50]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_itzy_c — HTTP Error 401: Unauthorized
+[00:00:52]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_withu — HTTP Error 401: Unauthorized
+[00:00:54]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_seonho — HTTP Error 401: Unauthorized
+[00:00:57]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_mj116kh — HTTP Error 401: Unauthorized
+[00:00:59]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_mj116kh_r — HTTP Error 401: Unauthorized
+[00:01:01]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_mfm — HTTP Error 401: Unauthorized
+[00:01:03]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_bus — HTTP Error 401: Unauthorized
+[00:01:03]   → 找到 43 個活動
+[00:01:03] ── [UDN 售票網] 開始掃描...
+[00:01:07]   UDN product links found: 0
+[00:01:07]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[00:01:07] ── [年代售票 ERAticket] 開始掃描...
+[00:01:07]   找到 21 個 Product ID
+[00:01:34]   → 找到 15 個活動
+[00:01:34] ── [kpopn.com] 開始掃描...
+[00:01:45]   → 找到 0 篇台灣演唱會文章
+[00:01:45] ── [livenation.com.tw] 開始掃描...
+[00:01:51]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[00:01:51]   ✗ livenation 無法取得，嘗試備用網址...
+[00:01:57]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[00:01:57] ── [DuckDuckGo] 開始搜尋...
+[00:02:17]   → 收集到 2 個候選連結
+[00:02:23]   ✗ fetch failed: https://tixcraft.com/ — HTTP Error 401: Unauthorized
+[00:02:25]   → 解析出 1 個活動
+[00:02:25] ── [可樂旅遊 Colatour] 開始掃描...
+[00:02:26]   → 找到 44 個活動
+[00:02:26] ── [Bandsintown] 開始掃描台北場次...
+[00:02:30]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[00:02:30]   ✗ Bandsintown 無法取得
+[00:02:30] ── [LIVE王 FB] 開始掃描...
+[00:02:31]   ✗ LIVE王 FB 被重定向至登入頁，跳過
+[00:02:31] ── [寬宏售票 Kham] 開始掃描...
+[00:02:31]   找到 43 個 Product ID
+[00:02:59]   → 找到 0 個活動
+[00:02:59] ── [遠大售票 Ticket Plus] 開始掃描...
+[00:03:01]   ⚠️  eventlist 頁面可能需要完整 JS 渲染，未找到 activity ID
+[00:03:02] ── [iNDIEVOX] 開始掃描...
+[00:03:03]   找到 19 個活動連結
+[00:03:40]   → 找到 10 個活動
+[00:03:40] ── [Accupass] 開始掃描免費音樂活動...
+[00:03:42]   找到 0 個活動連結（來源: q=%E9%9F%B3%E6%A8%82）
+[00:03:45]   找到 0 個活動連結（來源: q=%E6%BC%94%E5%94%B1）
+[00:03:47]   找到 0 個活動連結（來源: q=%E7%8D%A8%E7%AB%8B）
+[00:03:47]   → 找到 0 個免費活動
+[00:03:47] ── [北流 tmc.taipei] 開始掃描...
+[00:03:47]   找到 12 個活動連結
+[00:04:02]   → 找到 3 個活動
+[00:04:02] ── [高流 kpmc.com.tw] 開始掃描...
+[00:04:04]   找到 1 個活動連結
+[00:04:06]   → 找到 0 個活動
+[00:04:06] ── [Legacy] 開始掃描...
+[00:04:11]   → 找到 26 個活動
+[00:04:11] ── [The Wall] 開始掃描...
+[00:04:16]   ✗ fetch failed: https://www.thewall.tw/shows/ — HTTP Error 526: <none>
+[00:04:20]   ✗ fetch failed: https://thewall.tw/ — HTTP Error 526: <none>
+[00:04:20]   → thewall.tw 無法取得，嘗試 KKTIX 場館頁...
+[00:04:23]   ✗ fetch failed: https://kktix.com/venues/thewall — HTTP Error 403: Forbidden
+[00:04:23]   ✗ The Wall 所有來源皆無法取得，暫時跳過
+[00:04:23] ── [PIPE Live Music] 開始掃描...
+[00:04:26]   ✗ fetch failed: https://www.pipemusic.com.tw/event — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[00:04:30]   ✗ fetch failed: https://pipemusic.com.tw/ — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[00:04:30]   → pipemusic.com.tw 無法取得，嘗試 mbasic Facebook...
+[00:04:34]   ✗ fetch failed: https://mbasic.facebook.com/PIPELiveMusic/ — HTTP Error 400: Bad Request
+[00:04:34]   ✗ PIPE Live Music 所有來源皆無法取得，暫時跳過
+[00:04:34] ── [NUZONE] 開始掃描...
+[00:04:34]   → 找到 1 個活動
+[00:04:34] ── [Zepp New Taipei] 開始掃描...
+[00:04:39]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/schedule/ — HTTP Error 404: Not Found
+[00:04:43]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/ — HTTP Error 404: Not Found
+[00:04:43]   ✗ Zepp New Taipei 無法取得
+[00:04:43] ── [河岸留言 Riverside] 開始掃描...
+[00:04:45]   → 找到 1 個活動
+[00:04:45] ── [搖滾台灣 rockintaiwan.com] 開始搜尋...
+[00:04:51]   → 找到 0 個候選連結
+[00:04:51]   → 解析出 0 個活動
+[00:04:51] 
+共收集 144 筆原始資料（含重複）
+[00:04:51]   ⚠ 開賣日 2027-03-27 > 演唱會日 2026-07-25，捨棄（year 推算錯誤）
+[00:04:51]   ⚠ 丟棄髒資料: artist='節目資訊' tour='節目資訊 | 2026-27 節目清單與時間'
+[00:04:51]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[00:04:51]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[00:04:51] 去重後剩 139 筆
+[00:04:51] 
+── [開賣時間補強] 共 139 個活動缺開賣時間，透過 DuckDuckGo 補強...
+[00:05:47]   → 補強成功 0 / 20 筆
+[00:05:47] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260426.json
+[00:05:47] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260426.sql
+[00:05:47] 
+自動寫入 Supabase (139 筆)...
+[00:05:49]   ✓ Supabase upsert OK (201) — 139 筆
+[00:05:49] 
+清理超過 7 天的過期演唱會...
+[00:05:49]   ✓ 清理過期演唱會完成 (HTTP 204)，截止日: 2026/04/19
+[00:05:49] 
+📊 今日統計: 139 筆 | 🔥 搶票提醒 0 筆 | 🎫 有開賣時間 0 筆 | 🖼️ 有圖片 60 筆
+[00:05:49] ============================================================
+[00:05:49] 完成！
+[00:03:14] ============================================================
+[00:03:14] Taiwan Concert Daily Scraper — 2026-04-27
+[00:03:14] ============================================================
+[00:03:14] ── [Tixcraft 拓元] 開始掃描...
+[00:03:21]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_joji — HTTP Error 401: Unauthorized
+[00:03:24]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_joji_c — HTTP Error 401: Unauthorized
+[00:04:58]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_lany_c — HTTP Error 401: Unauthorized
+[00:05:01]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_lany — HTTP Error 401: Unauthorized
+[00:05:03]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_malone — HTTP Error 401: Unauthorized
+[00:05:06]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_malone_c — HTTP Error 401: Unauthorized
+[00:05:08]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_ive — HTTP Error 401: Unauthorized
+[00:05:10]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kodaline_c — HTTP Error 401: Unauthorized
+[00:05:12]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kodaline — HTTP Error 401: Unauthorized
+[00:05:15]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_aroot — HTTP Error 401: Unauthorized
+[00:05:17]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_ggteens — HTTP Error 401: Unauthorized
+[00:05:19]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_exokh — HTTP Error 401: Unauthorized
+[00:05:22]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_diivtp — HTTP Error 401: Unauthorized
+[00:05:25]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_mltr — HTTP Error 401: Unauthorized
+[00:05:27]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_tkl — HTTP Error 401: Unauthorized
+[00:05:30]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kyuhyun — HTTP Error 401: Unauthorized
+[00:05:32]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_itzy — HTTP Error 401: Unauthorized
+[00:05:34]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kamenashi — HTTP Error 401: Unauthorized
+[00:05:36]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_itzy_c — HTTP Error 401: Unauthorized
+[00:05:38]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_withu — HTTP Error 401: Unauthorized
+[00:05:41]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_seonho — HTTP Error 401: Unauthorized
+[00:05:43]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_mj116kh — HTTP Error 401: Unauthorized
+[00:05:45]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_mj116kh_r — HTTP Error 401: Unauthorized
+[00:05:47]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_mfm — HTTP Error 401: Unauthorized
+[00:05:50]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_bus — HTTP Error 401: Unauthorized
+[00:05:50]   → 找到 41 個活動
+[00:05:50] ── [UDN 售票網] 開始掃描...
+[00:05:50]   UDN product links found: 0
+[00:05:50]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[00:05:50] ── [年代售票 ERAticket] 開始掃描...
+[00:05:51]   找到 21 個 Product ID
+[00:06:20]   → 找到 15 個活動
+[00:06:20] ── [kpopn.com] 開始掃描...
+[00:06:29]   → 找到 0 篇台灣演唱會文章
+[00:06:29] ── [livenation.com.tw] 開始掃描...
+[00:06:35]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[00:06:35]   ✗ livenation 無法取得，嘗試備用網址...
+[00:06:40]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[00:06:40] ── [DuckDuckGo] 開始搜尋...
+[00:07:00]   → 收集到 1 個候選連結
+[00:07:03]   → 解析出 1 個活動
+[00:07:03] ── [可樂旅遊 Colatour] 開始掃描...
+[00:07:03]   → 找到 44 個活動
+[00:07:03] ── [Bandsintown] 開始掃描台北場次...
+[00:07:10]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[00:07:10]   ✗ Bandsintown 無法取得
+[00:07:10] ── [LIVE王 FB] 開始掃描...
+[00:07:15]   ✗ LIVE王 FB 被重定向至登入頁，跳過
+[00:07:15] ── [寬宏售票 Kham] 開始掃描...
+[00:07:15]   找到 43 個 Product ID
+[00:07:45]   → 找到 0 個活動
+[00:07:45] ── [遠大售票 Ticket Plus] 開始掃描...
+[00:07:46]   ⚠️  eventlist 頁面可能需要完整 JS 渲染，未找到 activity ID
+[00:07:46] ── [iNDIEVOX] 開始掃描...
+[00:07:47]   找到 18 個活動連結
+[00:08:21]   → 找到 11 個活動
+[00:08:21] ── [Accupass] 開始掃描免費音樂活動...
+[00:08:24]   找到 0 個活動連結（來源: q=%E9%9F%B3%E6%A8%82）
+[00:08:26]   找到 0 個活動連結（來源: q=%E6%BC%94%E5%94%B1）
+[00:08:28]   找到 0 個活動連結（來源: q=%E7%8D%A8%E7%AB%8B）
+[00:08:28]   → 找到 0 個免費活動
+[00:08:28] ── [北流 tmc.taipei] 開始掃描...
+[00:08:29]   找到 12 個活動連結
+[00:08:44]   → 找到 3 個活動
+[00:08:44] ── [高流 kpmc.com.tw] 開始掃描...
+[00:08:45]   找到 1 個活動連結
+[00:08:47]   → 找到 0 個活動
+[00:08:47] ── [Legacy] 開始掃描...
+[00:08:53]   → 找到 26 個活動
+[00:08:53] ── [The Wall] 開始掃描...
+[00:09:00]   ✗ fetch failed: https://www.thewall.tw/shows/ — HTTP Error 526: <none>
+[00:09:05]   ✗ fetch failed: https://thewall.tw/ — HTTP Error 526: <none>
+[00:09:05]   → thewall.tw 無法取得，嘗試 KKTIX 場館頁...
+[00:09:09]   ✗ fetch failed: https://kktix.com/venues/thewall — HTTP Error 403: Forbidden
+[00:09:09]   ✗ The Wall 所有來源皆無法取得，暫時跳過
+[00:09:09] ── [PIPE Live Music] 開始掃描...
+[00:09:12]   ✗ fetch failed: https://www.pipemusic.com.tw/event — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[00:09:15]   ✗ fetch failed: https://pipemusic.com.tw/ — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[00:09:15]   → pipemusic.com.tw 無法取得，嘗試 mbasic Facebook...
+[00:09:16]   ✗ PIPE FB 被重定向至登入頁，跳過
+[00:09:16] ── [NUZONE] 開始掃描...
+[00:09:17]   → 找到 1 個活動
+[00:09:17] ── [Zepp New Taipei] 開始掃描...
+[00:09:24]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/schedule/ — HTTP Error 404: Not Found
+[00:09:29]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/ — HTTP Error 404: Not Found
+[00:09:29]   ✗ Zepp New Taipei 無法取得
+[00:09:29] ── [河岸留言 Riverside] 開始掃描...
+[00:09:41]   → 找到 1 個活動
+[00:09:41] ── [搖滾台灣 rockintaiwan.com] 開始搜尋...
+[00:09:48]   → 找到 0 個候選連結
+[00:09:48]   → 解析出 0 個活動
+[00:09:48] 
+共收集 143 筆原始資料（含重複）
+[00:09:48]   ⚠ 開賣日 2027-03-27 > 演唱會日 2026-07-25，捨棄（year 推算錯誤）
+[00:09:48]   ⚠ 丟棄髒資料: artist='節目資訊' tour='節目資訊 | 2026-27 節目清單與時間'
+[00:09:48]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[00:09:48]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[00:09:48] 去重後剩 138 筆
+[00:09:48] 
+── [開賣時間補強] 共 138 個活動缺開賣時間，透過 DuckDuckGo 補強...
+[00:10:44]   → 補強成功 0 / 20 筆
+[00:10:44] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260427.json
+[00:10:44] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260427.sql
+[00:10:44] 
+自動寫入 Supabase (138 筆)...
+[00:10:45]   ✓ Supabase upsert OK (201) — 138 筆
+[00:10:45] 
+清理超過 7 天的過期演唱會...
+[00:10:46]   ✓ 清理過期演唱會完成 (HTTP 204)，截止日: 2026/04/20
+[00:10:46] 
+📊 今日統計: 138 筆 | 🔥 搶票提醒 0 筆 | 🎫 有開賣時間 0 筆 | 🖼️ 有圖片 58 筆
+[00:10:46] ============================================================
+[00:10:46] 完成！
+[00:00:00] ============================================================
+[00:00:00] Taiwan Concert Daily Scraper — 2026-04-28
+[00:00:00] ============================================================
+[00:00:00] ── [Tixcraft 拓元] 開始掃描...
+[00:00:03]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_joji — HTTP Error 401: Unauthorized
+[00:00:05]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_joji_c — HTTP Error 401: Unauthorized
+[00:00:07]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_lany_c — HTTP Error 401: Unauthorized
+[00:00:10]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_lany — HTTP Error 401: Unauthorized
+[00:00:12]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_malone — HTTP Error 401: Unauthorized
+[00:00:14]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_malone_c — HTTP Error 401: Unauthorized
+[00:00:17]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_ive — HTTP Error 401: Unauthorized
+[00:00:19]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kodaline_c — HTTP Error 401: Unauthorized
+[00:00:21]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kodaline — HTTP Error 401: Unauthorized
+[00:00:24]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_aroot — HTTP Error 401: Unauthorized
+[00:00:26]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_ggteens — HTTP Error 401: Unauthorized
+[00:00:28]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_exokh — HTTP Error 401: Unauthorized
+[00:00:30]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_diivtp — HTTP Error 401: Unauthorized
+[00:00:32]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_mltr — HTTP Error 401: Unauthorized
+[00:00:35]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_tkl — HTTP Error 401: Unauthorized
+[00:00:37]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kyuhyun — HTTP Error 401: Unauthorized
+[00:00:39]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_itzy — HTTP Error 401: Unauthorized
+[00:00:41]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kamenashi — HTTP Error 401: Unauthorized
+[00:00:44]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_itzy_c — HTTP Error 401: Unauthorized
+[00:00:46]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_withu — HTTP Error 401: Unauthorized
+[00:00:48]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_seonho — HTTP Error 401: Unauthorized
+[00:00:50]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_mj116kh — HTTP Error 401: Unauthorized
+[00:00:53]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_mj116kh_r — HTTP Error 401: Unauthorized
+[00:00:55]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_mfm — HTTP Error 401: Unauthorized
+[00:00:57]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_bus — HTTP Error 401: Unauthorized
+[00:00:57]   → 找到 41 個活動
+[00:00:57] ── [UDN 售票網] 開始掃描...
+[00:00:58]   UDN product links found: 0
+[00:00:58]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[00:00:58] ── [年代售票 ERAticket] 開始掃描...
+[00:00:58]   找到 22 個 Product ID
+[00:01:25]   → 找到 15 個活動
+[00:01:25] ── [kpopn.com] 開始掃描...
+[00:01:38]   → 找到 0 篇台灣演唱會文章
+[00:01:38] ── [livenation.com.tw] 開始掃描...
+[00:01:46]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[00:01:46]   ✗ livenation 無法取得，嘗試備用網址...
+[00:01:52]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[00:01:52] ── [DuckDuckGo] 開始搜尋...
+[00:02:15]   → 收集到 2 個候選連結
+[00:02:21]   → 解析出 2 個活動
+[00:02:21] ── [可樂旅遊 Colatour] 開始掃描...
+[00:02:22]   → 找到 44 個活動
+[00:02:22] ── [Bandsintown] 開始掃描台北場次...
+[00:02:27]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[00:02:27]   ✗ Bandsintown 無法取得
+[00:02:27] ── [LIVE王 FB] 開始掃描...
+[00:02:28]   ✗ LIVE王 FB 被重定向至登入頁，跳過
+[00:02:28] ── [寬宏售票 Kham] 開始掃描...
+[00:02:28]   找到 44 個 Product ID
+[00:02:56]   → 找到 0 個活動
+[00:02:56] ── [遠大售票 Ticket Plus] 開始掃描...
+[00:02:57]   ⚠️  eventlist 頁面可能需要完整 JS 渲染，未找到 activity ID
+[00:02:57] ── [iNDIEVOX] 開始掃描...
+[00:02:58]   找到 18 個活動連結
+[00:03:33]   → 找到 11 個活動
+[00:03:33] ── [Accupass] 開始掃描免費音樂活動...
+[00:03:35]   找到 0 個活動連結（來源: q=%E9%9F%B3%E6%A8%82）
+[00:03:37]   找到 0 個活動連結（來源: q=%E6%BC%94%E5%94%B1）
+[00:03:39]   找到 0 個活動連結（來源: q=%E7%8D%A8%E7%AB%8B）
+[00:03:39]   → 找到 0 個免費活動
+[00:03:39] ── [北流 tmc.taipei] 開始掃描...
+[00:03:41]   找到 12 個活動連結
+[00:03:56]   → 找到 2 個活動
+[00:03:56] ── [高流 kpmc.com.tw] 開始掃描...
+[00:03:59]   找到 1 個活動連結
+[00:04:01]   → 找到 0 個活動
+[00:04:01] ── [Legacy] 開始掃描...
+[00:04:07]   → 找到 26 個活動
+[00:04:07] ── [The Wall] 開始掃描...
+[00:04:13]   ✗ fetch failed: https://www.thewall.tw/shows/ — HTTP Error 526: <none>
+[00:04:18]   ✗ fetch failed: https://thewall.tw/ — HTTP Error 526: <none>
+[00:04:18]   → thewall.tw 無法取得，嘗試 KKTIX 場館頁...
+[00:04:22]   ✗ fetch failed: https://kktix.com/venues/thewall — HTTP Error 403: Forbidden
+[00:04:22]   ✗ The Wall 所有來源皆無法取得，暫時跳過
+[00:04:22] ── [PIPE Live Music] 開始掃描...
+[00:04:25]   ✗ fetch failed: https://www.pipemusic.com.tw/event — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[00:04:28]   ✗ fetch failed: https://pipemusic.com.tw/ — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[00:04:28]   → pipemusic.com.tw 無法取得，嘗試 mbasic Facebook...
+[00:04:29]   ✗ PIPE FB 被重定向至登入頁，跳過
+[00:04:29] ── [NUZONE] 開始掃描...
+[00:04:29]   → 找到 1 個活動
+[00:04:29] ── [Zepp New Taipei] 開始掃描...
+[00:04:34]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/schedule/ — HTTP Error 404: Not Found
+[00:04:38]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/ — HTTP Error 404: Not Found
+[00:04:38]   ✗ Zepp New Taipei 無法取得
+[00:04:38] ── [河岸留言 Riverside] 開始掃描...
+[00:04:40]   → 找到 1 個活動
+[00:04:40] ── [搖滾台灣 rockintaiwan.com] 開始搜尋...
+[00:04:45]   → 找到 0 個候選連結
+[00:04:45]   → 解析出 0 個活動
+[00:04:45] 
+共收集 143 筆原始資料（含重複）
+[00:04:45]   ⚠ 開賣日 2027-03-27 > 演唱會日 2026-07-25，捨棄（year 推算錯誤）
+[00:04:45]   ⚠ 丟棄髒資料: artist='節目資訊' tour='節目資訊 | 2026-27 節目清單與時間'
+[00:04:45]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[00:04:45]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[00:04:45] 去重後剩 138 筆
+[00:04:45] 
+── [開賣時間補強] 共 138 個活動缺開賣時間，透過 DuckDuckGo 補強...
+[00:05:57]   → 補強成功 0 / 20 筆
+[00:05:57] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260428.json
+[00:05:57] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260428.sql
+[00:05:57] 
+自動寫入 Supabase (138 筆)...
+[00:05:58]   ✓ Supabase upsert OK (200) — 138 筆
+[00:05:58] 
+清理超過 7 天的過期演唱會...
+[00:05:58]   ✓ 清理過期演唱會完成 (HTTP 204)，截止日: 2026/04/21
+[00:05:58] 
+📊 今日統計: 138 筆 | 🔥 搶票提醒 0 筆 | 🎫 有開賣時間 0 筆 | 🖼️ 有圖片 57 筆
+[00:05:58] ============================================================
+[00:05:58] 完成！
+[00:01:27] ============================================================
+[00:01:27] Taiwan Concert Daily Scraper — 2026-04-29
+[00:01:27] ============================================================
+[00:01:27] ── [Tixcraft 拓元] 開始掃描...
+[00:01:30]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_joji_c — HTTP Error 401: Unauthorized
+[00:01:33]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_joji — HTTP Error 401: Unauthorized
+[00:01:35]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_lany — HTTP Error 401: Unauthorized
+[00:01:37]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_lany_c — HTTP Error 401: Unauthorized
+[00:01:40]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_youngji — HTTP Error 401: Unauthorized
+[00:01:42]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_malone — HTTP Error 401: Unauthorized
+[00:01:44]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_youngji_c — HTTP Error 401: Unauthorized
+[00:01:46]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_malone_c — HTTP Error 401: Unauthorized
+[00:17:33]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_ive — HTTP Error 401: Unauthorized
+[00:17:36]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kodaline — HTTP Error 401: Unauthorized
+[00:51:01]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kodaline_c — The read operation timed out
+[00:51:03]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_aroot — HTTP Error 401: Unauthorized
+[01:02:29]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_ggteens — HTTP Error 401: Unauthorized
+[01:02:31]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_nctjnjm — HTTP Error 401: Unauthorized
+[01:02:33]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_exokh — HTTP Error 401: Unauthorized
+[01:02:35]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_diivtp — HTTP Error 401: Unauthorized
+[01:02:37]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_mltr — HTTP Error 401: Unauthorized
+[01:02:39]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_tkl — HTTP Error 401: Unauthorized
+[01:38:19]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kyuhyun_d — The read operation timed out
+[01:38:21]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_itzy — HTTP Error 401: Unauthorized
+[01:53:24]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kyuhyun — HTTP Error 401: Unauthorized
+[01:53:27]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_itzy_c — HTTP Error 401: Unauthorized
+[02:09:56]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kamenashi — HTTP Error 401: Unauthorized
+[02:09:58]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_withu — HTTP Error 401: Unauthorized
+[02:17:32]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_seonho — HTTP Error 401: Unauthorized
+[02:17:32]   → 找到 46 個活動
+[02:17:32] ── [UDN 售票網] 開始掃描...
+[02:17:33]   UDN product links found: 0
+[02:17:33]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[02:17:33] ── [年代售票 ERAticket] 開始掃描...
+[02:17:33]   找到 23 個 Product ID
+[03:54:16]   → 找到 15 個活動
+[03:54:16] ── [kpopn.com] 開始掃描...
+[06:20:52]   → 找到 0 篇台灣演唱會文章
+[06:20:52] ── [livenation.com.tw] 開始掃描...
+[06:37:07]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[06:37:07]   ✗ livenation 無法取得，嘗試備用網址...
+[06:52:46]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[06:52:46] ── [DuckDuckGo] 開始搜尋...
+[08:17:15]   → 收集到 2 個候選連結
+[09:18:17]   → 解析出 2 個活動
+[09:18:17] ── [可樂旅遊 Colatour] 開始掃描...
+[09:18:18]   → 找到 44 個活動
+[09:18:18] ── [Bandsintown] 開始掃描台北場次...
+[09:34:26]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[09:34:26]   ✗ Bandsintown 無法取得
+[09:34:26] ── [LIVE王 FB] 開始掃描...
+[09:34:28]   ✗ LIVE王 FB 被重定向至登入頁，跳過
+[09:34:28] ── [寬宏售票 Kham] 開始掃描...
+[09:34:28]   找到 44 個 Product ID
+[09:51:10]   → 找到 0 個活動
+[09:51:10] ── [遠大售票 Ticket Plus] 開始掃描...
+[09:51:10]   ⚠️  eventlist 頁面可能需要完整 JS 渲染，未找到 activity ID
+[09:51:10] ── [iNDIEVOX] 開始掃描...
+[09:51:12]   找到 18 個活動連結
+[09:51:50]   → 找到 11 個活動
+[09:51:50] ── [Accupass] 開始掃描免費音樂活動...
+[09:51:52]   找到 0 個活動連結（來源: q=%E9%9F%B3%E6%A8%82）
+[09:51:54]   找到 0 個活動連結（來源: q=%E6%BC%94%E5%94%B1）
+[09:51:56]   找到 0 個活動連結（來源: q=%E7%8D%A8%E7%AB%8B）
+[09:51:56]   → 找到 0 個免費活動
+[09:51:56] ── [北流 tmc.taipei] 開始掃描...
+[09:51:56]   找到 12 個活動連結
+[09:52:11]   → 找到 2 個活動
+[09:52:11] ── [高流 kpmc.com.tw] 開始掃描...
+[09:52:12]   找到 1 個活動連結
+[09:52:13]   → 找到 0 個活動
+[09:52:13] ── [Legacy] 開始掃描...
+[09:52:17]   → 找到 26 個活動
+[09:52:17] ── [The Wall] 開始掃描...
+[09:52:22]   ✗ fetch failed: https://www.thewall.tw/shows/ — HTTP Error 526: <none>
+[09:52:27]   ✗ fetch failed: https://thewall.tw/ — HTTP Error 526: <none>
+[09:52:27]   → thewall.tw 無法取得，嘗試 KKTIX 場館頁...
+[09:52:30]   ✗ fetch failed: https://kktix.com/venues/thewall — HTTP Error 403: Forbidden
+[09:52:30]   ✗ The Wall 所有來源皆無法取得，暫時跳過
+[09:52:30] ── [PIPE Live Music] 開始掃描...
+[09:52:34]   ✗ fetch failed: https://www.pipemusic.com.tw/event — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[09:52:37]   ✗ fetch failed: https://pipemusic.com.tw/ — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[09:52:37]   → pipemusic.com.tw 無法取得，嘗試 mbasic Facebook...
+[09:52:38]   ✗ PIPE FB 被重定向至登入頁，跳過
+[09:52:38] ── [NUZONE] 開始掃描...
+[09:52:39]   → 找到 1 個活動
+[09:52:39] ── [Zepp New Taipei] 開始掃描...
+[09:52:43]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/schedule/ — HTTP Error 404: Not Found
+[09:52:47]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/ — HTTP Error 404: Not Found
+[09:52:47]   ✗ Zepp New Taipei 無法取得
+[09:52:47] ── [河岸留言 Riverside] 開始掃描...
+[09:52:47]   → 找到 1 個活動
+[09:52:47] ── [搖滾台灣 rockintaiwan.com] 開始搜尋...
+[09:52:54]   → 找到 0 個候選連結
+[09:52:54]   → 解析出 0 個活動
+[09:52:54] 
+共收集 148 筆原始資料（含重複）
+[09:52:54]   ⚠ 開賣日 2027-03-27 > 演唱會日 2026-07-25，捨棄（year 推算錯誤）
+[09:52:54]   ⚠ 丟棄髒資料: artist='節目資訊' tour='節目資訊 | 2026-27 節目清單與時間'
+[09:52:54]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[09:52:54]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[09:52:54]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[09:52:54] 去重後剩 142 筆
+[09:52:54] 
+── [開賣時間補強] 共 142 個活動缺開賣時間，透過 DuckDuckGo 補強...
+[09:53:49]   → 補強成功 0 / 20 筆
+[09:53:49] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260429.json
+[09:53:49] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260429.sql
+[09:53:49] 
+自動寫入 Supabase (142 筆)...
+[09:53:50]   ✓ Supabase upsert OK (201) — 142 筆
+[09:53:50] 
+清理超過 7 天的過期演唱會...
+[09:53:50]   ✓ 清理過期演唱會完成 (HTTP 204)，截止日: 2026/04/22
+[09:53:50] 
+📊 今日統計: 142 筆 | 🔥 搶票提醒 0 筆 | 🎫 有開賣時間 0 筆 | 🖼️ 有圖片 62 筆
+[09:53:50] ============================================================
+[09:53:50] 完成！
+[00:08:12] ============================================================
+[00:08:12] Taiwan Concert Daily Scraper — 2026-04-30
+[00:08:12] ============================================================
+[00:08:12] ── [Tixcraft 拓元] 開始掃描...
+[00:08:15]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_joji — HTTP Error 401: Unauthorized
+[00:08:17]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_joji_c — HTTP Error 401: Unauthorized
+[00:08:19]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_lany — HTTP Error 401: Unauthorized
+[00:08:21]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_lany_c — HTTP Error 401: Unauthorized
+[00:08:24]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_lany_v — HTTP Error 401: Unauthorized
+[00:08:26]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_youngji — HTTP Error 401: Unauthorized
+[00:08:28]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_youngji_c — HTTP Error 401: Unauthorized
+[00:18:19]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_malone — <urlopen error _ssl.c:1059: The handshake operation timed out>
+[00:28:14]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_malone_c — HTTP Error 401: Unauthorized
+[00:28:16]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_ive — HTTP Error 401: Unauthorized
+[00:28:18]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kodaline — HTTP Error 401: Unauthorized
+[00:36:26]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kodaline_c — The read operation timed out
+[00:36:28]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_aroot — HTTP Error 401: Unauthorized
+[00:37:48]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_ggteens — HTTP Error 401: Unauthorized
+[00:37:50]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_nctjnjm — HTTP Error 401: Unauthorized
+[00:37:52]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_exokh — HTTP Error 401: Unauthorized
+[00:37:54]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_diivtp — HTTP Error 401: Unauthorized
+[00:37:57]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_mltr — HTTP Error 401: Unauthorized
+[00:37:59]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_tkl — HTTP Error 401: Unauthorized
+[00:38:01]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kyuhyun_d — HTTP Error 401: Unauthorized
+[00:38:03]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_itzy — HTTP Error 401: Unauthorized
+[00:38:06]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kyuhyun — HTTP Error 401: Unauthorized
+[00:38:08]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_itzy_c — HTTP Error 401: Unauthorized
+[00:38:11]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kamenashi — HTTP Error 401: Unauthorized
+[00:38:14]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_withu — HTTP Error 401: Unauthorized
+[00:38:14]   → 找到 47 個活動
+[00:38:14] ── [UDN 售票網] 開始掃描...
+[00:38:14]   UDN product links found: 0
+[00:38:14]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[00:38:14] ── [年代售票 ERAticket] 開始掃描...
+[00:38:15]   找到 23 個 Product ID
+[01:27:21]   → 找到 15 個活動
+[01:27:21] ── [kpopn.com] 開始掃描...
+[01:42:31]   → 找到 0 篇台灣演唱會文章
+[01:42:31] ── [livenation.com.tw] 開始掃描...
+[01:55:25]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[01:55:25]   ✗ livenation 無法取得，嘗試備用網址...
+[02:10:37]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[02:10:37] ── [DuckDuckGo] 開始搜尋...
+[07:47:07]   ✗ fetch failed: https://html.duckduckgo.com/html/?q=%E5%8F%B0%E7%81%A3%20%E6%BC%94%E5%94%B1%E6%9 — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[07:47:10]   → 收集到 4 個候選連結
+[08:20:11]   ✗ fetch failed: https://tixcraft.com/ — HTTP Error 401: Unauthorized
+[09:43:10]   → 解析出 3 個活動
+[09:43:10] ── [可樂旅遊 Colatour] 開始掃描...
+[09:43:11]   → 找到 44 個活動
+[09:43:11] ── [Bandsintown] 開始掃描台北場次...
+[09:43:14]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[09:43:14]   ✗ Bandsintown 無法取得
+[09:43:14] ── [LIVE王 FB] 開始掃描...
+[10:00:57]   ✗ LIVE王 FB 被重定向至登入頁，跳過
+[10:00:57] ── [寬宏售票 Kham] 開始掃描...
+[10:00:57]   找到 44 個 Product ID
+[10:01:28]   → 找到 0 個活動
+[10:01:28] ── [遠大售票 Ticket Plus] 開始掃描...
+[10:01:29]   ⚠️  eventlist 頁面可能需要完整 JS 渲染，未找到 activity ID
+[10:01:29] ── [iNDIEVOX] 開始掃描...
+[10:01:30]   找到 18 個活動連結
+[10:02:06]   → 找到 10 個活動
+[10:02:06] ── [Accupass] 開始掃描免費音樂活動...
+[10:02:09]   找到 0 個活動連結（來源: q=%E9%9F%B3%E6%A8%82）
+[10:02:10]   找到 0 個活動連結（來源: q=%E6%BC%94%E5%94%B1）
+[10:02:12]   找到 0 個活動連結（來源: q=%E7%8D%A8%E7%AB%8B）
+[10:02:12]   → 找到 0 個免費活動
+[10:02:12] ── [北流 tmc.taipei] 開始掃描...
+[10:02:12]   找到 12 個活動連結
+[10:02:28]   → 找到 2 個活動
+[10:02:28] ── [高流 kpmc.com.tw] 開始掃描...
+[10:02:29]   找到 1 個活動連結
+[10:02:31]   → 找到 0 個活動
+[10:02:31] ── [Legacy] 開始掃描...
+[10:02:38]   → 找到 26 個活動
+[10:02:38] ── [The Wall] 開始掃描...
+[10:02:44]   ✗ fetch failed: https://www.thewall.tw/shows/ — HTTP Error 526: <none>
+[10:02:49]   ✗ fetch failed: https://thewall.tw/ — HTTP Error 526: <none>
+[10:02:49]   → thewall.tw 無法取得，嘗試 KKTIX 場館頁...
+[10:02:52]   ✗ fetch failed: https://kktix.com/venues/thewall — HTTP Error 403: Forbidden
+[10:02:52]   ✗ The Wall 所有來源皆無法取得，暫時跳過
+[10:02:52] ── [PIPE Live Music] 開始掃描...
+[10:02:55]   ✗ fetch failed: https://www.pipemusic.com.tw/event — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[10:02:58]   ✗ fetch failed: https://pipemusic.com.tw/ — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[10:02:58]   → pipemusic.com.tw 無法取得，嘗試 mbasic Facebook...
+[10:03:00]   ✗ PIPE FB 被重定向至登入頁，跳過
+[10:03:00] ── [NUZONE] 開始掃描...
+[10:03:01]   → 找到 1 個活動
+[10:03:01] ── [Zepp New Taipei] 開始掃描...
+[10:03:06]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/schedule/ — HTTP Error 404: Not Found
+[10:03:10]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/ — HTTP Error 404: Not Found
+[10:03:10]   ✗ Zepp New Taipei 無法取得
+[10:03:10] ── [河岸留言 Riverside] 開始掃描...
+[10:03:10]   → 找到 1 個活動
+[10:03:10] ── [搖滾台灣 rockintaiwan.com] 開始搜尋...
+[10:03:17]   → 找到 0 個候選連結
+[10:03:17]   → 解析出 0 個活動
+[10:03:17] 
+共收集 149 筆原始資料（含重複）
+[10:03:17]   ⚠ 開賣日 2027-03-27 > 演唱會日 2026-07-25，捨棄（year 推算錯誤）
+[10:03:17]   ⚠ 丟棄髒資料: artist='節目資訊' tour='節目資訊 | 2026-27 節目清單與時間'
+[10:03:17]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[10:03:17]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[10:03:17]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[10:03:17] 去重後剩 143 筆
+[10:03:17] 
+── [開賣時間補強] 共 143 個活動缺開賣時間，透過 DuckDuckGo 補強...
+[10:04:14]   → 補強成功 0 / 20 筆
+[10:04:14] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260430.json
+[10:04:14] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260430.sql
+[10:04:14] 
+自動寫入 Supabase (143 筆)...
+[10:04:15]   ✓ Supabase upsert OK (201) — 143 筆
+[10:04:15] 
+清理超過 7 天的過期演唱會...
+[10:04:15]   ✓ 清理過期演唱會完成 (HTTP 204)，截止日: 2026/04/23
+[10:04:15] 
+📊 今日統計: 143 筆 | 🔥 搶票提醒 0 筆 | 🎫 有開賣時間 0 筆 | 🖼️ 有圖片 63 筆
+[10:04:15] ============================================================
+[10:04:15] 完成！
+[00:00:01] ============================================================
+[00:00:01] Taiwan Concert Daily Scraper — 2026-05-01
+[00:00:01] ============================================================
+[00:00:01] ── [Tixcraft 拓元] 開始掃描...
+[00:00:04]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_joji_c — HTTP Error 401: Unauthorized
+[00:00:07]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_joji — HTTP Error 401: Unauthorized
+[00:00:10]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_lany_c — HTTP Error 401: Unauthorized
+[00:00:12]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_lany_v — HTTP Error 401: Unauthorized
+[00:00:15]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_lany — HTTP Error 401: Unauthorized
+[00:00:17]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_youngji — HTTP Error 401: Unauthorized
+[00:00:19]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_malone — HTTP Error 401: Unauthorized
+[00:00:22]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_youngji_c — HTTP Error 401: Unauthorized
+[00:00:24]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_malone_c — HTTP Error 401: Unauthorized
+[00:00:26]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_ive — HTTP Error 401: Unauthorized
+[00:00:28]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kodaline — HTTP Error 401: Unauthorized
+[00:00:31]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kodaline_c — HTTP Error 401: Unauthorized
+[00:00:33]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_ashisland — HTTP Error 401: Unauthorized
+[00:00:35]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_aroot — HTTP Error 401: Unauthorized
+[00:00:37]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_dxs_d — HTTP Error 401: Unauthorized
+[00:00:39]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_dxs — HTTP Error 401: Unauthorized
+[00:00:42]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_ggteens — HTTP Error 401: Unauthorized
+[00:00:44]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_nctjnjm — HTTP Error 401: Unauthorized
+[00:00:46]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_exokh — HTTP Error 401: Unauthorized
+[00:00:48]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_diivtp — HTTP Error 401: Unauthorized
+[00:00:51]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_mltr — HTTP Error 401: Unauthorized
+[00:00:53]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_tkl — HTTP Error 401: Unauthorized
+[00:00:55]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kyuhyun_d — HTTP Error 401: Unauthorized
+[00:00:57]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kyuhyun — HTTP Error 401: Unauthorized
+[00:01:00]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_itzy — HTTP Error 401: Unauthorized
+[00:01:00]   → 找到 50 個活動
+[00:01:00] ── [UDN 售票網] 開始掃描...
+[00:01:00]   UDN product links found: 0
+[00:01:00]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[00:01:00] ── [年代售票 ERAticket] 開始掃描...
+[00:01:00]   找到 23 個 Product ID
+[00:01:27]   → 找到 15 個活動
+[00:01:27] ── [kpopn.com] 開始掃描...
+[00:01:40]   → 找到 0 篇台灣演唱會文章
+[00:01:40] ── [livenation.com.tw] 開始掃描...
+[00:01:46]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[00:01:46]   ✗ livenation 無法取得，嘗試備用網址...
+[00:01:52]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[00:01:52] ── [DuckDuckGo] 開始搜尋...
+[00:02:12]   → 收集到 3 個候選連結
+[00:02:18]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_exotp — HTTP Error 401: Unauthorized
+[00:02:28]   ✗ fetch failed: https://tixcraft.com/ — HTTP Error 401: Unauthorized
+[00:02:28]   → 解析出 1 個活動
+[00:02:28] ── [可樂旅遊 Colatour] 開始掃描...
+[00:02:28]   → 找到 44 個活動
+[00:02:28] ── [Bandsintown] 開始掃描台北場次...
+[00:02:34]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[00:02:34]   ✗ Bandsintown 無法取得
+[00:02:34] ── [LIVE王 FB] 開始掃描...
+[00:02:37]   ✗ LIVE王 FB 被重定向至登入頁，跳過
+[00:02:37] ── [寬宏售票 Kham] 開始掃描...
+[00:02:37]   找到 44 個 Product ID
+[00:03:05]   → 找到 0 個活動
+[00:03:05] ── [遠大售票 Ticket Plus] 開始掃描...
+[00:03:06]   ⚠️  eventlist 頁面可能需要完整 JS 渲染，未找到 activity ID
+[00:03:06] ── [iNDIEVOX] 開始掃描...
+[00:03:07]   找到 18 個活動連結
+[00:03:43]   → 找到 10 個活動
+[00:03:43] ── [Accupass] 開始掃描免費音樂活動...
+[00:03:47]   找到 0 個活動連結（來源: q=%E9%9F%B3%E6%A8%82）
+[00:03:49]   找到 0 個活動連結（來源: q=%E6%BC%94%E5%94%B1）
+[00:03:52]   找到 0 個活動連結（來源: q=%E7%8D%A8%E7%AB%8B）
+[00:03:52]   → 找到 0 個免費活動
+[00:03:52] ── [北流 tmc.taipei] 開始掃描...
+[00:03:53]   找到 12 個活動連結
+[00:04:08]   → 找到 3 個活動
+[00:04:08] ── [高流 kpmc.com.tw] 開始掃描...
+[00:04:10]   找到 1 個活動連結
+[00:04:12]   → 找到 0 個活動
+[00:04:12] ── [Legacy] 開始掃描...
+[00:04:23]   → 找到 26 個活動
+[00:04:23] ── [The Wall] 開始掃描...
+[00:04:29]   ✗ fetch failed: https://www.thewall.tw/shows/ — HTTP Error 526: <none>
+[00:04:34]   ✗ fetch failed: https://thewall.tw/ — HTTP Error 526: <none>
+[00:04:34]   → thewall.tw 無法取得，嘗試 KKTIX 場館頁...
+[00:04:37]   ✗ fetch failed: https://kktix.com/venues/thewall — HTTP Error 403: Forbidden
+[00:04:37]   ✗ The Wall 所有來源皆無法取得，暫時跳過
+[00:04:37] ── [PIPE Live Music] 開始掃描...
+[00:04:41]   ✗ fetch failed: https://www.pipemusic.com.tw/event — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[00:04:44]   ✗ fetch failed: https://pipemusic.com.tw/ — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[00:04:44]   → pipemusic.com.tw 無法取得，嘗試 mbasic Facebook...
+[00:04:49]   ✗ PIPE FB 被重定向至登入頁，跳過
+[00:04:49] ── [NUZONE] 開始掃描...
+[00:04:50]   → 找到 1 個活動
+[00:04:50] ── [Zepp New Taipei] 開始掃描...
+[00:04:55]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/schedule/ — HTTP Error 404: Not Found
+[00:04:59]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/ — HTTP Error 404: Not Found
+[00:04:59]   ✗ Zepp New Taipei 無法取得
+[00:04:59] ── [河岸留言 Riverside] 開始掃描...
+[00:05:01]   → 找到 1 個活動
+[00:05:01] ── [搖滾台灣 rockintaiwan.com] 開始搜尋...
+[00:05:07]   → 找到 0 個候選連結
+[00:05:07]   → 解析出 0 個活動
+[00:05:07] 
+共收集 151 筆原始資料（含重複）
+[00:05:07]   ⚠ 開賣日 2027-03-27 > 演唱會日 2026-07-25，捨棄（year 推算錯誤）
+[00:05:07]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[00:05:07]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[00:05:07]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[00:05:07] 去重後剩 145 筆
+[00:05:07] 
+── [開賣時間補強] 共 145 個活動缺開賣時間，透過 DuckDuckGo 補強...
+[00:06:03]   → 補強成功 0 / 20 筆
+[00:06:03] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260501.json
+[00:06:03] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260501.sql
+[00:06:03] 
+自動寫入 Supabase (145 筆)...
+[00:06:05]   ✓ Supabase upsert OK (201) — 145 筆
+[00:06:05] 
+清理超過 7 天的過期演唱會...
+[00:06:05]   ✓ 清理過期演唱會完成 (HTTP 204)，截止日: 2026/04/24
+[00:06:05] 
+📊 今日統計: 145 筆 | 🔥 搶票提醒 0 筆 | 🎫 有開賣時間 0 筆 | 🖼️ 有圖片 67 筆
+[00:06:05] ============================================================
+[00:06:05] 完成！
+[00:00:01] ============================================================
+[00:00:01] Taiwan Concert Daily Scraper — 2026-05-02
+[00:00:01] ============================================================
+[00:00:01] ── [Tixcraft 拓元] 開始掃描...
+[00:00:04]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_joji — HTTP Error 401: Unauthorized
+[00:00:07]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_joji_c — HTTP Error 401: Unauthorized
+[00:00:09]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_lany — HTTP Error 401: Unauthorized
+[00:00:12]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_lany_c — HTTP Error 401: Unauthorized
+[00:00:14]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_lany_v — HTTP Error 401: Unauthorized
+[00:00:16]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_youngji — HTTP Error 401: Unauthorized
+[00:00:19]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_malone — HTTP Error 401: Unauthorized
+[00:00:21]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_youngji_c — HTTP Error 401: Unauthorized
+[00:00:24]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_malone_c — HTTP Error 401: Unauthorized
+[00:00:26]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_ive — HTTP Error 401: Unauthorized
+[00:00:28]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kodaline_c — HTTP Error 401: Unauthorized
+[00:00:31]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kodaline — HTTP Error 401: Unauthorized
+[00:00:33]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_ashisland — HTTP Error 401: Unauthorized
+[00:00:36]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_aroot — HTTP Error 401: Unauthorized
+[00:00:38]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_dxs_d — HTTP Error 401: Unauthorized
+[00:00:40]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_dxs — HTTP Error 401: Unauthorized
+[00:00:42]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_ggteens — HTTP Error 401: Unauthorized
+[00:00:45]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_nctjnjm — HTTP Error 401: Unauthorized
+[00:00:47]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_exokh — HTTP Error 401: Unauthorized
+[00:00:49]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_diivtp — HTTP Error 401: Unauthorized
+[00:00:52]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_mltr — HTTP Error 401: Unauthorized
+[00:00:54]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_tkl — HTTP Error 401: Unauthorized
+[00:00:57]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_latency — HTTP Error 401: Unauthorized
+[00:00:59]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kyuhyun_d — HTTP Error 401: Unauthorized
+[00:01:01]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_itzy — HTTP Error 401: Unauthorized
+[00:01:01]   → 找到 49 個活動
+[00:01:01] ── [UDN 售票網] 開始掃描...
+[00:01:02]   UDN product links found: 0
+[00:01:02]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[00:01:02] ── [年代售票 ERAticket] 開始掃描...
+[00:01:03]   找到 25 個 Product ID
+[00:01:30]   → 找到 15 個活動
+[00:01:30] ── [kpopn.com] 開始掃描...
+[00:01:41]   → 找到 0 篇台灣演唱會文章
+[00:01:41] ── [livenation.com.tw] 開始掃描...
+[00:01:48]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[00:01:48]   ✗ livenation 無法取得，嘗試備用網址...
+[00:01:54]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[00:01:54] ── [DuckDuckGo] 開始搜尋...
+[00:02:17]   → 收集到 3 個候選連結
+[00:02:25]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_exotp — HTTP Error 401: Unauthorized
+[00:02:31]   → 解析出 1 個活動
+[00:02:31] ── [可樂旅遊 Colatour] 開始掃描...
+[00:02:32]   → 找到 44 個活動
+[00:02:32] ── [Bandsintown] 開始掃描台北場次...
+[00:02:37]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[00:02:37]   ✗ Bandsintown 無法取得
+[00:02:37] ── [LIVE王 FB] 開始掃描...
+[00:02:41]   ✗ fetch failed: https://mbasic.facebook.com/LIVEKINGisLife/posts/pfbid0rqzJZwF1N5QHbw2SoKbPGn8cs — HTTP Error 400: Bad Request
+[00:02:42]   ✗ LIVE王 FB 被重定向至登入頁，跳過
+[00:02:42] ── [寬宏售票 Kham] 開始掃描...
+[00:02:42]   找到 43 個 Product ID
+[00:03:11]   → 找到 0 個活動
+[00:03:11] ── [遠大售票 Ticket Plus] 開始掃描...
+[00:03:12]   ⚠️  eventlist 頁面可能需要完整 JS 渲染，未找到 activity ID
+[00:03:12] ── [iNDIEVOX] 開始掃描...
+[00:03:14]   找到 18 個活動連結
+[00:03:50]   → 找到 9 個活動
+[00:03:50] ── [Accupass] 開始掃描免費音樂活動...
+[00:03:52]   找到 0 個活動連結（來源: q=%E9%9F%B3%E6%A8%82）
+[00:03:54]   找到 0 個活動連結（來源: q=%E6%BC%94%E5%94%B1）
+[00:03:56]   找到 0 個活動連結（來源: q=%E7%8D%A8%E7%AB%8B）
+[00:03:56]   → 找到 0 個免費活動
+[00:03:56] ── [北流 tmc.taipei] 開始掃描...
+[00:03:57]   找到 12 個活動連結
+[00:04:13]   → 找到 3 個活動
+[00:04:13] ── [高流 kpmc.com.tw] 開始掃描...
+[00:04:16]   找到 1 個活動連結
+[00:04:18]   → 找到 0 個活動
+[00:04:18] ── [Legacy] 開始掃描...
+[00:04:23]   → 找到 25 個活動
+[00:04:23] ── [The Wall] 開始掃描...
+[00:04:30]   ✗ fetch failed: https://www.thewall.tw/shows/ — HTTP Error 526: <none>
+[00:04:36]   ✗ fetch failed: https://thewall.tw/ — HTTP Error 526: <none>
+[00:04:36]   → thewall.tw 無法取得，嘗試 KKTIX 場館頁...
+[00:04:40]   ✗ fetch failed: https://kktix.com/venues/thewall — HTTP Error 403: Forbidden
+[00:04:40]   ✗ The Wall 所有來源皆無法取得，暫時跳過
+[00:04:40] ── [PIPE Live Music] 開始掃描...
+[00:04:43]   ✗ fetch failed: https://www.pipemusic.com.tw/event — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[00:04:46]   ✗ fetch failed: https://pipemusic.com.tw/ — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[00:04:46]   → pipemusic.com.tw 無法取得，嘗試 mbasic Facebook...
+[00:04:47]   ✗ PIPE FB 被重定向至登入頁，跳過
+[00:04:47] ── [NUZONE] 開始掃描...
+[00:04:47]   → 找到 1 個活動
+[00:04:47] ── [Zepp New Taipei] 開始掃描...
+[00:04:52]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/schedule/ — HTTP Error 404: Not Found
+[00:04:57]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/ — HTTP Error 404: Not Found
+[00:04:57]   ✗ Zepp New Taipei 無法取得
+[00:04:57] ── [河岸留言 Riverside] 開始掃描...
+[00:04:57]   → 找到 1 個活動
+[00:04:57] ── [搖滾台灣 rockintaiwan.com] 開始搜尋...
+[00:05:04]   → 找到 0 個候選連結
+[00:05:04]   → 解析出 0 個活動
+[00:05:04] 
+共收集 148 筆原始資料（含重複）
+[00:05:04]   ⚠ 開賣日 2027-03-27 > 演唱會日 2026-07-25，捨棄（year 推算錯誤）
+[00:05:04]   ⚠ 丟棄髒資料: artist='節目資訊' tour='節目資訊 | 2026-27 節目清單與時間'
+[00:05:04]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[00:05:04]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[00:05:04]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[00:05:04] 去重後剩 142 筆
+[00:05:04] 
+── [開賣時間補強] 共 142 個活動缺開賣時間，透過 DuckDuckGo 補強...
+[00:06:00]   → 補強成功 0 / 20 筆
+[00:06:00] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260502.json
+[00:06:00] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260502.sql
+[00:06:00] 
+自動寫入 Supabase (142 筆)...
+[00:06:03]   ✓ Supabase upsert OK (201) — 142 筆
+[00:06:03] 
+清理超過 7 天的過期演唱會...
+[00:06:03]   ✓ 清理過期演唱會完成 (HTTP 204)，截止日: 2026/04/25
+[00:06:03] 
+📊 今日統計: 142 筆 | 🔥 搶票提醒 0 筆 | 🎫 有開賣時間 0 筆 | 🖼️ 有圖片 67 筆
+[00:06:03] ============================================================
+[00:06:03] 完成！
+[00:00:05] ============================================================
+[00:00:05] Taiwan Concert Daily Scraper — 2026-05-03
+[00:00:05] ============================================================
+[00:00:05] ── [Tixcraft 拓元] 開始掃描...
+[00:00:08]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_joji — HTTP Error 401: Unauthorized
+[00:00:10]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_joji_c — HTTP Error 401: Unauthorized
+[00:00:13]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_lany — HTTP Error 401: Unauthorized
+[00:00:15]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_lany_c — HTTP Error 401: Unauthorized
+[00:00:17]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_lany_v — HTTP Error 401: Unauthorized
+[00:00:19]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_youngji — HTTP Error 401: Unauthorized
+[00:00:22]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_malone — HTTP Error 401: Unauthorized
+[00:00:24]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_youngji_c — HTTP Error 401: Unauthorized
+[00:00:26]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_malone_c — HTTP Error 401: Unauthorized
+[00:00:28]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_ive — HTTP Error 401: Unauthorized
+[00:00:31]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kodaline_c — HTTP Error 401: Unauthorized
+[00:00:33]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kodaline — HTTP Error 401: Unauthorized
+[00:00:35]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_ashisland — HTTP Error 401: Unauthorized
+[00:00:37]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_aroot — HTTP Error 401: Unauthorized
+[00:00:40]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_dxs_d — HTTP Error 401: Unauthorized
+[00:00:42]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_dxs — HTTP Error 401: Unauthorized
+[00:00:44]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_ggteens — HTTP Error 401: Unauthorized
+[00:00:46]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_nctjnjm — HTTP Error 401: Unauthorized
+[00:00:49]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_exokh — HTTP Error 401: Unauthorized
+[00:00:51]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_diivtp — HTTP Error 401: Unauthorized
+[00:00:53]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_mltr — HTTP Error 401: Unauthorized
+[00:00:55]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_tkl — HTTP Error 401: Unauthorized
+[00:00:58]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_latency — HTTP Error 401: Unauthorized
+[00:01:00]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kyuhyun_d — HTTP Error 401: Unauthorized
+[00:01:02]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_itzy — HTTP Error 401: Unauthorized
+[00:01:02]   → 找到 49 個活動
+[00:01:02] ── [UDN 售票網] 開始掃描...
+[00:01:05]   UDN product links found: 0
+[00:01:05]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[00:01:05] ── [年代售票 ERAticket] 開始掃描...
+[00:01:06]   找到 25 個 Product ID
+[00:01:34]   → 找到 15 個活動
+[00:01:34] ── [kpopn.com] 開始掃描...
+[00:01:46]   → 找到 0 篇台灣演唱會文章
+[00:01:46] ── [livenation.com.tw] 開始掃描...
+[00:01:52]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[00:01:52]   ✗ livenation 無法取得，嘗試備用網址...
+[00:01:57]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[00:01:57] ── [DuckDuckGo] 開始搜尋...
+[00:02:19]   → 收集到 3 個候選連結
+[00:02:29]   → 解析出 2 個活動
+[00:02:29] ── [可樂旅遊 Colatour] 開始掃描...
+[00:02:30]   → 找到 44 個活動
+[00:02:30] ── [Bandsintown] 開始掃描台北場次...
+[00:02:33]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[00:02:33]   ✗ Bandsintown 無法取得
+[00:02:33] ── [LIVE王 FB] 開始掃描...
+[00:02:36]   ✗ LIVE王 FB 被重定向至登入頁，跳過
+[00:02:36] ── [寬宏售票 Kham] 開始掃描...
+[00:02:36]   找到 42 個 Product ID
+[00:03:04]   → 找到 0 個活動
+[00:03:04] ── [遠大售票 Ticket Plus] 開始掃描...
+[00:03:05]   ⚠️  eventlist 頁面可能需要完整 JS 渲染，未找到 activity ID
+[00:03:05] ── [iNDIEVOX] 開始掃描...
+[00:03:06]   找到 16 個活動連結
+[00:03:38]   → 找到 8 個活動
+[00:03:38] ── [Accupass] 開始掃描免費音樂活動...
+[00:03:39]   找到 0 個活動連結（來源: q=%E9%9F%B3%E6%A8%82）
+[00:03:41]   找到 0 個活動連結（來源: q=%E6%BC%94%E5%94%B1）
+[00:03:43]   找到 0 個活動連結（來源: q=%E7%8D%A8%E7%AB%8B）
+[00:03:43]   → 找到 0 個免費活動
+[00:03:43] ── [北流 tmc.taipei] 開始掃描...
+[00:03:44]   找到 12 個活動連結
+[00:03:59]   → 找到 2 個活動
+[00:03:59] ── [高流 kpmc.com.tw] 開始掃描...
+[00:04:00]   找到 1 個活動連結
+[00:04:02]   → 找到 0 個活動
+[00:04:02] ── [Legacy] 開始掃描...
+[00:04:07]   → 找到 24 個活動
+[00:04:07] ── [The Wall] 開始掃描...
+[00:04:14]   ✗ fetch failed: https://www.thewall.tw/shows/ — HTTP Error 526: <none>
+[00:04:21]   ✗ fetch failed: https://thewall.tw/ — HTTP Error 526: <none>
+[00:04:21]   → thewall.tw 無法取得，嘗試 KKTIX 場館頁...
+[00:04:24]   ✗ fetch failed: https://kktix.com/venues/thewall — HTTP Error 403: Forbidden
+[00:04:24]   ✗ The Wall 所有來源皆無法取得，暫時跳過
+[00:04:24] ── [PIPE Live Music] 開始掃描...
+[00:04:27]   ✗ fetch failed: https://www.pipemusic.com.tw/event — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[00:04:30]   ✗ fetch failed: https://pipemusic.com.tw/ — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[00:04:30]   → pipemusic.com.tw 無法取得，嘗試 mbasic Facebook...
+[00:04:34]   ✗ fetch failed: https://mbasic.facebook.com/PIPELiveMusic/ — HTTP Error 400: Bad Request
+[00:04:34]   ✗ PIPE Live Music 所有來源皆無法取得，暫時跳過
+[00:04:34] ── [NUZONE] 開始掃描...
+[00:04:35]   → 找到 1 個活動
+[00:04:35] ── [Zepp New Taipei] 開始掃描...
+[00:04:41]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/schedule/ — HTTP Error 404: Not Found
+[00:04:45]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/ — HTTP Error 404: Not Found
+[00:04:45]   ✗ Zepp New Taipei 無法取得
+[00:04:45] ── [河岸留言 Riverside] 開始掃描...
+[00:04:46]   → 找到 1 個活動
+[00:04:46] ── [搖滾台灣 rockintaiwan.com] 開始搜尋...
+[00:04:51]   → 找到 0 個候選連結
+[00:04:51]   → 解析出 0 個活動
+[00:04:51] 
+共收集 146 筆原始資料（含重複）
+[00:04:51]   ⚠ 開賣日 2027-03-27 > 演唱會日 2026-07-25，捨棄（year 推算錯誤）
+[00:04:51]   ⚠ 丟棄髒資料: artist='節目資訊' tour='節目資訊 | 2026-27 節目清單與時間'
+[00:04:51]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[00:04:51]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[00:04:51]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[00:04:51] 去重後剩 140 筆
+[00:04:51] 
+── [開賣時間補強] 共 140 個活動缺開賣時間，透過 DuckDuckGo 補強...
+[00:05:47]   → 補強成功 0 / 20 筆
+[00:05:47] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260503.json
+[00:05:47] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260503.sql
+[00:05:47] 
+自動寫入 Supabase (140 筆)...
+[00:05:49]   ✓ Supabase upsert OK (201) — 140 筆
+[00:05:49] 
+清理超過 7 天的過期演唱會...
+[00:05:49]   ✓ 清理過期演唱會完成 (HTTP 204)，截止日: 2026/04/26
+[00:05:49] 
+📊 今日統計: 140 筆 | 🔥 搶票提醒 0 筆 | 🎫 有開賣時間 0 筆 | 🖼️ 有圖片 66 筆
+[00:05:49] ============================================================
+[00:05:49] 完成！
+[00:00:00] ============================================================
+[00:00:00] Taiwan Concert Daily Scraper — 2026-05-04
+[00:00:00] ============================================================
+[00:00:00] ── [Tixcraft 拓元] 開始掃描...
+[00:00:03]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_joji — HTTP Error 401: Unauthorized
+[00:00:06]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_joji_c — HTTP Error 401: Unauthorized
+[00:00:08]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_lany_v — HTTP Error 401: Unauthorized
+[00:00:10]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_lany — HTTP Error 401: Unauthorized
+[00:00:13]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_lany_c — HTTP Error 401: Unauthorized
+[00:00:15]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_youngji — HTTP Error 401: Unauthorized
+[00:00:17]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_youngji_c — HTTP Error 401: Unauthorized
+[00:00:19]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_malone — HTTP Error 401: Unauthorized
+[00:00:22]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_malone_c — HTTP Error 401: Unauthorized
+[00:00:24]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_ive — HTTP Error 401: Unauthorized
+[00:00:27]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kodaline — HTTP Error 401: Unauthorized
+[00:00:29]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kodaline_c — HTTP Error 401: Unauthorized
+[00:00:31]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_ashisland — HTTP Error 401: Unauthorized
+[00:00:34]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_aroot — HTTP Error 401: Unauthorized
+[00:00:36]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_dxs_d — HTTP Error 401: Unauthorized
+[00:00:38]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_dxs — HTTP Error 401: Unauthorized
+[00:00:40]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_ggteens — HTTP Error 401: Unauthorized
+[00:00:43]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_nctjnjm — HTTP Error 401: Unauthorized
+[00:00:45]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_exokh — HTTP Error 401: Unauthorized
+[00:00:47]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_diivtp — HTTP Error 401: Unauthorized
+[00:00:50]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_mltr — HTTP Error 401: Unauthorized
+[00:00:52]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_tkl — HTTP Error 401: Unauthorized
+[00:00:54]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_latency — HTTP Error 401: Unauthorized
+[00:00:56]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_kyuhyun_d — HTTP Error 401: Unauthorized
+[00:00:58]   ✗ fetch failed: https://tixcraft.com/activity/detail/26_itzy — HTTP Error 401: Unauthorized
+[00:00:59]   → 找到 50 個活動
+[00:00:59] ── [UDN 售票網] 開始掃描...
+[00:00:59]   UDN product links found: 0
+[00:00:59]   ℹ UDN 頁面為 JS 渲染，無法靜態解析（已跳過）
+[00:00:59] ── [年代售票 ERAticket] 開始掃描...
+[00:00:59]   找到 25 個 Product ID
+[00:01:27]   → 找到 15 個活動
+[00:01:27] ── [kpopn.com] 開始掃描...
+[00:01:39]   → 找到 0 篇台灣演唱會文章
+[00:01:39] ── [livenation.com.tw] 開始掃描...
+[00:01:45]   ✗ fetch failed: https://www.livenation.com.tw/en/events-in-taiwan — HTTP Error 404: Not Found
+[00:01:45]   ✗ livenation 無法取得，嘗試備用網址...
+[00:01:50]   ✗ fetch failed: https://www.livenation.com.tw/zh/events — HTTP Error 404: Not Found
+[00:01:50] ── [DuckDuckGo] 開始搜尋...
+[00:02:08]   → 收集到 2 個候選連結
+[00:02:15]   → 解析出 2 個活動
+[00:02:15] ── [可樂旅遊 Colatour] 開始掃描...
+[00:02:15]   → 找到 44 個活動
+[00:02:15] ── [Bandsintown] 開始掃描台北場次...
+[00:02:19]   ✗ fetch failed: https://www.bandsintown.com/c/taipei-taiwan?came_from=webapp&sort=eventdate — HTTP Error 403: Forbidden
+[00:02:19]   ✗ Bandsintown 無法取得
+[00:02:19] ── [LIVE王 FB] 開始掃描...
+[00:02:23]   ✗ fetch failed: https://mbasic.facebook.com/LIVEKINGisLife/posts/pfbid0rqzJZwF1N5QHbw2SoKbPGn8cs — HTTP Error 400: Bad Request
+[00:02:27]   ✗ fetch failed: https://mbasic.facebook.com/LIVEKINGisLife/ — HTTP Error 400: Bad Request
+[00:02:27]   ✗ LIVE王 FB 無法取得（可能需要登入）
+[00:02:27] ── [寬宏售票 Kham] 開始掃描...
+[00:02:28]   找到 41 個 Product ID
+[00:02:56]   → 找到 0 個活動
+[00:02:56] ── [遠大售票 Ticket Plus] 開始掃描...
+[00:02:57]   ⚠️  eventlist 頁面可能需要完整 JS 渲染，未找到 activity ID
+[00:02:57] ── [iNDIEVOX] 開始掃描...
+[00:02:58]   找到 16 個活動連結
+[00:03:29]   → 找到 8 個活動
+[00:03:29] ── [Accupass] 開始掃描免費音樂活動...
+[00:03:31]   找到 0 個活動連結（來源: q=%E9%9F%B3%E6%A8%82）
+[00:03:33]   找到 0 個活動連結（來源: q=%E6%BC%94%E5%94%B1）
+[00:03:35]   找到 0 個活動連結（來源: q=%E7%8D%A8%E7%AB%8B）
+[00:03:35]   → 找到 0 個免費活動
+[00:03:35] ── [北流 tmc.taipei] 開始掃描...
+[00:03:36]   找到 12 個活動連結
+[00:03:51]   → 找到 2 個活動
+[00:03:51] ── [高流 kpmc.com.tw] 開始掃描...
+[00:03:54]   找到 1 個活動連結
+[00:03:56]   → 找到 0 個活動
+[00:03:56] ── [Legacy] 開始掃描...
+[00:04:02]   → 找到 23 個活動
+[00:04:02] ── [The Wall] 開始掃描...
+[00:04:08]   ✗ fetch failed: https://www.thewall.tw/shows/ — HTTP Error 526: <none>
+[00:04:14]   ✗ fetch failed: https://thewall.tw/ — HTTP Error 526: <none>
+[00:04:14]   → thewall.tw 無法取得，嘗試 KKTIX 場館頁...
+[00:04:17]   ✗ fetch failed: https://kktix.com/venues/thewall — HTTP Error 403: Forbidden
+[00:04:17]   ✗ The Wall 所有來源皆無法取得，暫時跳過
+[00:04:17] ── [PIPE Live Music] 開始掃描...
+[00:04:20]   ✗ fetch failed: https://www.pipemusic.com.tw/event — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[00:04:24]   ✗ fetch failed: https://pipemusic.com.tw/ — <urlopen error [Errno 8] nodename nor servname provided, or not known>
+[00:04:24]   → pipemusic.com.tw 無法取得，嘗試 mbasic Facebook...
+[00:04:25]   ✗ PIPE FB 被重定向至登入頁，跳過
+[00:04:25] ── [NUZONE] 開始掃描...
+[00:04:25]   → 找到 1 個活動
+[00:04:25] ── [Zepp New Taipei] 開始掃描...
+[00:04:30]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/schedule/ — HTTP Error 404: Not Found
+[00:04:34]   ✗ fetch failed: https://www.zepp.com/en-us/hall/zepp-new-taipei/ — HTTP Error 404: Not Found
+[00:04:34]   ✗ Zepp New Taipei 無法取得
+[00:04:34] ── [河岸留言 Riverside] 開始掃描...
+[00:04:37]   → 找到 1 個活動
+[00:04:37] ── [搖滾台灣 rockintaiwan.com] 開始搜尋...
+[00:04:43]   → 找到 0 個候選連結
+[00:04:43]   → 解析出 0 個活動
+[00:04:43] 
+共收集 146 筆原始資料（含重複）
+[00:04:43]   ⚠ 開賣日 2027-03-27 > 演唱會日 2026-07-25，捨棄（year 推算錯誤）
+[00:04:43]   ⚠ 丟棄髒資料: artist='節目資訊' tour='節目資訊 | 2026-27 節目清單與時間'
+[00:04:43]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[00:04:43]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[00:04:43]   ⚠ 丟棄髒資料: artist='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width: 100%"> --> 選擇年份 20' tour='Legacy --> 關於LEGACY 關於場地 演出節目 購票辦法 媒體報導 特別企劃 a" style="width'
+[00:04:43] 去重後剩 140 筆
+[00:04:43] 
+── [開賣時間補強] 共 140 個活動缺開賣時間，透過 DuckDuckGo 補強...
+[00:05:39]   → 補強成功 0 / 20 筆
+[00:05:39] ✓ JSON 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260504.json
+[00:05:39] ✓ SQL 已寫入: /Users/minxuantsai/Desktop/taiwan-concerts/data/daily_20260504.sql
+[00:05:39] 
+自動寫入 Supabase (140 筆)...
+[00:05:41]   ✓ Supabase upsert OK (201) — 140 筆
+[00:05:41] 
+清理超過 7 天的過期演唱會...
+[00:05:41]   ✓ 清理過期演唱會完成 (HTTP 204)，截止日: 2026/04/27
+[00:05:41] 
+📊 今日統計: 140 筆 | 🔥 搶票提醒 0 筆 | 🎫 有開賣時間 0 筆 | 🖼️ 有圖片 67 筆
+[00:05:41] ============================================================
+[00:05:41] 完成！

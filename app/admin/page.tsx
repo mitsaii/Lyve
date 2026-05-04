@@ -223,7 +223,7 @@ export default function AdminPage() {
               <h2 className="text-sm font-bold" style={{ color: 'var(--text)' }}>AI 自動追星發文</h2>
             </div>
             <p className="text-xs" style={{ color: 'var(--muted)' }}>
-              Claude 會自動從資料庫選一場近期演唱會，生成追星文章後發佈到動態。
+              AI 會自動從資料庫選一場近期演唱會，生成追星文章後發佈到動態。
             </p>
             <button
               onClick={handleAiPost}

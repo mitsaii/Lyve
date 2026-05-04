@@ -41,10 +41,33 @@ WHERE artist IN ('節目資訊', '節目清單', '節目列表', '活動資訊',
    OR tour_zh IN ('節目資訊', '節目清單', '節目列表', '活動資訊', '活動列表', '演出資訊', '演出列表')
    OR artist LIKE '節目資訊%'
    OR tour_zh LIKE '節目資訊%'
-   OR artist LIKE '%節目清單與時間%'
-   OR tour_zh LIKE '%節目清單與時間%'
+   OR artist LIKE '%節目清單%'
+   OR tour_zh LIKE '%節目清單%'
    OR artist LIKE '20__-__ 節目%'    -- 2026-27 節目...、2025-26 節目...
    OR tour_zh LIKE '20__-__ 節目%';
+
+-- ⑦ 刪除 platform_url 為列表頁/首頁（非單一活動詳情頁）的記錄
+-- 真實活動的 URL 應該包含 /detail/ /event/ /activity/xxxxx 等具體 path
+DELETE FROM concerts
+WHERE platform_url IN (
+  'https://tixcraft.com/activity',
+  'https://tixcraft.com/activity/',
+  'https://tixcraft.com/activity/list',
+  'https://www.indievox.com/activity',
+  'https://www.indievox.com',
+  'https://kham.com.tw',
+  'https://www.kktix.com',
+  'https://kktix.com',
+  'https://tickets.udnfunlife.com'
+);
+
+-- ⑧ 刪除標題只是售票平台名稱、站內 UI 文字的雜訊
+DELETE FROM concerts
+WHERE artist IN ('Tixcraft', 'tixcraft', '拓元售票', '拓元', 'KKTIX', 'kktix',
+                 'ERAticket', '年代售票', 'ibon售票', 'KKday', 'Klook客路',
+                 '首頁', '搜尋結果', '更多活動', '更多資訊', '查看更多')
+   OR tour_zh IN ('Tixcraft', 'tixcraft', '拓元售票', '拓元', 'KKTIX',
+                  'ERAticket', '年代售票', '首頁', '搜尋結果');
 
 -- 確認清理結果
 SELECT COUNT(*) AS remaining_fake FROM concerts

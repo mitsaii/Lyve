@@ -115,13 +115,49 @@ BAD_TITLE_SUBSTRINGS = [
     "活動資訊", "活動列表", "演出資訊", "演出列表", "演出節目",
     "節目與票券", "節目總表", "節目表", "最新節目",
     "關於LEGACY", "寬宏售票系統", "Ticket Plus遠大售票系統", "遠大售票系統",
+    # 售票平台/網站名被當成活動名稱
+    "拓元售票", "Tixcraft", "tixcraft", "拓元", "ERAticket", "年代售票",
+    "ibon售票", "ibon票券", "KKTIX", "kktix", "Klook客路", "KKday",
+    # 站內導覽/UI 文字
+    "首頁", "登入", "註冊", "會員中心", "客服中心", "常見問題",
+    "購票須知", "退換票", "使用條款", "隱私權", "Cookie政策",
+    "搜尋結果", "搜尋", "更多活動", "更多資訊", "查看更多",
+    # 活動分類（作為完整標題時）
+    "演唱會 / 音樂會",
 ]
-# 季度型標題(如 "2026-27 節目清單與時間"、"2025/26 Season")通常是場館年度頁
+# 季度型 / 列表頁 / JS 片段標題
 _BAD_TITLE_REGEXES = [
     re.compile(r"^\s*20\d{2}[-/]\d{2}\s*(?:season|節目)", re.IGNORECASE),
     re.compile(r"function\s*\(\s*w\s*,\s*d\s*,\s*s\s*,\s*l\s*,\s*i\s*\)"),  # GTM JS
     re.compile(r"w\s*\[\s*l\s*\]\s*=\s*w\s*\[\s*l\s*\]"),                  # GTM JS
+    re.compile(r"\bdataLayer\b", re.IGNORECASE),                            # GTM JS
+    re.compile(r"\bgtag\s*\(", re.IGNORECASE),                              # GA tag
+    re.compile(r"<\s*script", re.IGNORECASE),                               # raw <script
+    # "節目清單與時間"、"節目時刻表" 等 listing-page 副標題（不限位置）
+    re.compile(r"節目清單(?:與時間)?"),
+    re.compile(r"節目時刻表"),
+    # 純由「2026-27 / 2025-26」這類年度範圍開頭
+    re.compile(r"^\s*20\d{2}\s*[-/]\s*\d{2}\s*$"),
 ]
+
+# ── 壞 platform_url 黑名單 ─────────────────────────────────────────────────────
+# listing / 首頁 URL，不應該成為單一活動的 platform_url
+BAD_PLATFORM_URLS = {
+    "https://tixcraft.com",
+    "https://tixcraft.com/",
+    "https://tixcraft.com/activity",
+    "https://tixcraft.com/activity/",
+    "https://tixcraft.com/activity/list",
+    "https://www.kktix.com",
+    "https://kktix.com",
+    "https://kham.com.tw",
+    "https://www.ibon.com.tw",
+    "https://ibon.com.tw",
+    "https://ticketmaster.com.tw",
+    "https://tickets.udnfunlife.com",
+    "https://www.indievox.com/activity",
+    "https://www.indievox.com",
+}
 
 
 def is_bad_title(title: str) -> bool:
@@ -129,6 +165,9 @@ def is_bad_title(title: str) -> bool:
     if not title:
         return True
     t = title.strip()
+    # 過短的標題基本不可能是真的演唱會名
+    if len(t) < 2:
+        return True
     for s in BAD_TITLE_SUBSTRINGS:
         if s in t:
             return True
@@ -136,6 +175,14 @@ def is_bad_title(title: str) -> bool:
         if rx.search(t):
             return True
     return False
+
+
+def is_bad_platform_url(url: str) -> bool:
+    """判斷 platform_url 是否為列表頁/首頁等非單一活動 URL。"""
+    if not url:
+        return False
+    u = url.strip().rstrip("/")
+    return u in {b.rstrip("/") for b in BAD_PLATFORM_URLS}
 
 # ── Genre detection ───────────────────────────────────────────────────────────
 _KPOP = {
@@ -3531,6 +3578,10 @@ def normalize_concerts(raw: list[dict]) -> list[dict]:
         # Safety net: reject listing-page / JS-snippet titles from any scraper source
         if is_bad_title(c.get("artist", "")) or is_bad_title(c.get("tour_zh", "")):
             log(f"  ⚠ 丟棄髒資料: artist={c.get('artist')!r} tour={c.get('tour_zh')!r}")
+            continue
+        # Safety net: reject listing-page / homepage URLs（非單一活動詳情頁）
+        if is_bad_platform_url(c.get("platform_url", "")):
+            log(f"  ⚠ 丟棄列表頁假資料: url={c.get('platform_url')!r} artist={c.get('artist')!r}")
             continue
         key = _dedup_key(c)
         if key in seen:
