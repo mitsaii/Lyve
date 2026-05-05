@@ -253,6 +253,68 @@ _BANDS = {
     "röyksopp", "beach boys",
 }
 _FESTIVAL_KW = {"音樂節", "音樂祭", "festival", "fest "}
+# 「個人演唱會 / fan meeting / solo」等關鍵字 — 即使內文出現「festival」也不應被歸類為音樂祭
+_NOT_FESTIVAL_KW = {
+    "個人演唱會", "個人巡演", "個人巡迴", "個人演唱",
+    "solo concert", "solo tour", "first solo", "asia tour", "world tour",
+    "fan meeting", "fanmeeting", "fan meet", "fanmeet",
+    "粉絲見面會", "見面會", "握手會", "簽售會",
+    "concert in taipei", "concert in kaohsiung", "concert in taichung",
+    "concert〈", "concert 〈", "concert <", "concert in ",
+    "live in taipei", "live in kaohsiung", "live in taichung",
+    "encore concert", "encore tour", "comeback concert",
+}
+# 補充 K-POP 歌手清單（個人/團體）— 不在 _KPOP 主清單但仍屬韓系
+_KPOP_SOLO = {
+    "hyolyn", "효린", "iu", "아이유", "taeyeon", "태연", "sunmi", "선미",
+    "chungha", "청하", "jihyo", "지효", "rosé", "rose", "lisa", "jennie", "jisoo",
+    "wendy", "joy", "seulgi", "irene", "yeri", "kang daniel", "강다니엘",
+    "zico", "지코", "psy", "싸이", "ailee", "에일리", "heize", "헤이즈",
+    "dean", "딘", "crush", "크러쉬", "jay park", "박재범", "loco", "로꼬",
+    "agust d", "j-hope", "jin", "jimin", "jungkook", "rm", "suga", "v",
+    "baekhyun", "백현", "kai", "카이", "chen", "첸", "lay", "xiumin", "suho",
+    "key", "키", "minho", "민호", "onew", "온유", "jonghyun", "종현",
+    "siwon", "donghae", "leeteuk", "yesung", "eunhyuk", "ryeowook",
+    "ten", "태용", "taeyong", "mark", "haechan", "jaehyun", "doyoung",
+    "jaejoong", "재중", "yunho", "유노윤호", "changmin", "최강창민",
+    "tvxq", "동방신기",
+    "(g)i-dle", "여자아이들", "gidle", "soyeon", "minnie", "miyeon", "yuqi", "shuhua",
+    "purple kiss", "everglow", "stayc", "fromis_9", "weeekly", "viviz",
+    "loona", "이달의 소녀", "dreamcatcher", "드림캐쳐", "mamamoo", "마마무",
+    "solar", "moonbyul", "wheein", "hwasa",
+    "winter", "karina", "ningning", "giselle",
+    "yves", "chuu", "kim lip", "haseul",
+    "weki meki", "elris", "april",
+    "p1harmony", "the boyz", "더보이즈", "wayv", "kingdom", "킹덤",
+    "cravity", "&team", "ampers&one", "n.flying", "엔플라잉",
+    "oneus", "원어스", "verivery", "pentagon", "펜타곤",
+    "gfriend", "여자친구", "oh my girl", "오마이걸", "wjsn", "우주소녀",
+    "bvndit", "lovelyz", "rocket punch",
+    "iz*one", "izone", "iz one",
+    "babymonster", "베이비몬스터", "illit", "아이엘", "riize", "라이즈",
+    "zerobaseone", "zb1", "제로베이스원",
+    "tempest", "tnx", "fantasy boys",
+    "billlie", "lapillus", "kep1er", "케플러",
+    "xikers", "엑스이커스", "i-dle", "atbo", "young posse",
+    "n/s/d", "trendz", "boys planet",
+    "sandara park", "산다라박", "park bom", "박봄", "cl", "씨엘",
+    "bomi", "정은지", "eunji", "naeun", "손나은", "hayoung", "남주", "namjoo",
+    "soyou", "효린", "bora", "효닉", "dasom",
+    "jessica", "제시카", "tiffany", "티파니", "sooyoung", "수영", "yoona", "윤아",
+    "yuri", "유리", "hyoyeon", "효연", "seohyun", "서현", "sunny", "써니",
+    "jihyo", "nayeon", "jeongyeon", "momo", "sana", "mina", "dahyun", "chaeyoung", "tzuyu",
+    "junho", "jun.k", "준케이", "wooyoung", "우영", "taecyeon", "택연", "nichkhun",
+    "siwon", "kyuhyun", "규현", "sungmin", "성민",
+    "youngjae", "영재", "yugyeom", "유겸", "bambam", "뱀뱀",
+    "kim jongkook", "김종국", "lee seung gi", "이승기",
+    "park jihoon", "박지훈", "lee daehwi", "이대휘",
+    "kim jaehwan", "김재환", "ha sungwoon", "하성운",
+    "ong seongwu", "옹성우", "minhyun", "민현", "kang daniel",
+    "wonho", "원호", "shownu", "셔누", "kihyun", "기현", "i.m", "jooheon", "주헌",
+    "rocky", "라키", "cha eunwoo", "차은우", "jinjin", "moonbin", "mj", "yoon san-ha",
+    "leo", "ravi", "라비", "n", "에", "ken", "hyuk",
+}
+
 
 # ── Known venue → (city_zh, city_en, venue_zh, venue_en) ──────────────────────
 _VENUE_MAP: list[tuple[str, tuple[str, str, str, str]]] = [
@@ -405,19 +467,97 @@ def read_env() -> dict[str, str]:
 # ─────────────────────────────────────────────────────────────────────────────
 
 def classify_genre(artist: str, text: str = "") -> str:
+    """
+    依 artist 與內文（通常是 tour 名 / 文章前段）判斷分類。
+
+    規則重要性順序：
+      1. **artist 名稱直接命中 whitelist** → 直接套用該分類
+         （避免內文裡偶爾出現的其他歌手 / 樂團名干擾）
+      2. 個人演唱會 / fan meeting / solo / world tour 等個人活動訊號
+         → 即使文中提到「festival / 音樂祭」也不會歸為 festival
+      3. festival 關鍵字 → festival
+      4. 內文 substring 命中：樂團 > jpop > kpop > cpop
+      5. 後備：含韓文 Hangul → kpop；2~5 個漢字 → cpop；其餘 → western
+    """
+    artist_l = artist.lower().strip()
     combined = (artist + " " + text).lower()
-    if any(k in combined for k in _FESTIVAL_KW):
-        return "festival"
-    # 判斷順序：樂團 > jpop > kpop，避免台灣樂團被誤判為 kpop
-    if any(k in combined for k in _BANDS) or "樂團" in artist:
+
+    # ── 1. artist whitelist 嚴格比對 ─────────────────────────────────────
+    # Latin 詞用 token 比對（避免 "iu" 比中 "boygenius"、"v" 比中 "festival"）
+    # CJK 詞用 substring（中文沒有詞界，"五月天" 仍要能比中 "五月天樂團"）
+    artist_tokens = set(re.findall(r"[a-z0-9]+", artist_l))
+
+    def _artist_hits(words: set[str]) -> bool:
+        if not artist_l:
+            return False
+        for w in words:
+            wl = w.lower().strip()
+            if not wl:
+                continue
+            is_cjk = bool(re.search(r"[\u4e00-\u9fff\uac00-\ud7af]", wl))
+            if is_cjk:
+                if wl in artist_l:
+                    return True
+            else:
+                # Latin keyword：token 必須完整相等才算命中
+                if wl in artist_tokens:
+                    return True
+                # 多字片語（含空格）或含 - / ( / ) 等特殊字元 → substring
+                if (" " in wl or re.search(r"[^a-z0-9]", wl)) and wl in artist_l:
+                    return True
+        return False
+
+    if _artist_hits(_BANDS) or "樂團" in artist:
         return "bands"
-    if any(k in combined for k in _JPOP):
+    if _artist_hits(_JPOP):
         return "jpop"
-    if any(k in combined for k in _KPOP) or any(k in combined for k in _KPOP_EXTRA):
+    if _artist_hits(_KPOP) or _artist_hits(_KPOP_EXTRA) or _artist_hits(_KPOP_SOLO):
         return "kpop"
-    if any(k in combined for k in _CPOP):
+    if _artist_hits(_CPOP):
         return "cpop"
-    # Heuristics: all-Chinese artist name → cpop; ends in common JP patterns → jpop
+
+    # ── 2. 反向（anti-）festival：個人演唱會 / 巡演 / 見面會 ─────────────
+    is_solo_event = any(k in combined for k in _NOT_FESTIVAL_KW)
+
+    # ── 3. festival 偵測 ────────────────────────────────────────────────
+    has_festival_kw = any(k in combined for k in _FESTIVAL_KW)
+    if has_festival_kw and not is_solo_event:
+        return "festival"
+
+    # ── 4. 內文 substring 命中（artist 沒命中時的後備）─────────────────
+    # 同樣需要 token / CJK-substring 的混合策略，不能讓 'n' / 'v' 等單字母誤命中
+    combined_tokens = set(re.findall(r"[a-z0-9]+", combined))
+
+    def _text_hits(words: set[str]) -> bool:
+        for w in words:
+            wl = w.lower().strip()
+            if not wl:
+                continue
+            is_cjk = bool(re.search(r"[\u4e00-\u9fff\uac00-\ud7af]", wl))
+            if is_cjk:
+                if wl in combined:
+                    return True
+            else:
+                if wl in combined_tokens:
+                    return True
+                if (" " in wl or re.search(r"[^a-z0-9]", wl)) and wl in combined:
+                    return True
+        return False
+
+    if _text_hits(_BANDS):
+        return "bands"
+    if _text_hits(_JPOP):
+        return "jpop"
+    if _text_hits(_KPOP) or _text_hits(_KPOP_EXTRA) or _text_hits(_KPOP_SOLO):
+        return "kpop"
+    if _text_hits(_CPOP):
+        return "cpop"
+
+    # ── 5. 後備啟發式 ───────────────────────────────────────────────────
+    # 含韓文 Hangul → kpop（補強 whitelist 之外的韓系藝人）
+    if re.search(r"[\uac00-\ud7af]", artist + " " + text[:200]):
+        return "kpop"
+    # 全中文藝人名 → cpop
     if re.search(r"^[\u4e00-\u9fff]{2,5}$", artist):
         return "cpop"
     return "western"
@@ -704,7 +844,12 @@ def _parse_kpopn_article(url: str, title: str) -> dict | None:
     )
 
     city_zh, city_en, venue_zh, venue_en = resolve_venue(raw_venue, text)
-    genre = classify_genre(artist, text[:500])
+    # 用 tour 名 + artist 作為主要分類訊號，避免文章內文中提到的不相關 festival 字眼
+    genre = classify_genre(artist, tour_zh)
+    # kpopn 是 K-POP 專屬新聞站；若分類為 western 表示沒命中名單，
+    # 而非真的西洋藝人 — 落到 kpop 比較合理。
+    if genre == "western":
+        genre = "kpop"
 
     return {
         "artist":       artist,
@@ -2725,6 +2870,9 @@ def scrape_legacy() -> list[dict]:
         # 每個活動以「演出日期」為分隔點，回頭找上面的標題、場地資訊
         # 格式: {標題} {主辦單位:...} 演出場地：{venue} 演出地址：{addr} 演出日期：YYYY-MM-DD(day)
         blocks = re.split(r'演出日期：', text)
+        # 同步切割原始 HTML，讓每個活動只在自己的 HTML 片段裡找售票連結
+        # 避免 iNDIEVOX 下架已結束活動後，連結 index 跑掉導致對應錯誤
+        html_blocks = re.split(r'演出日期：', html)
         for i in range(1, len(blocks)):
             # 日期在 blocks[i] 的開頭
             date_m = re.match(r'(20\d{2}-\d{2}-\d{2})', blocks[i].strip())
@@ -2795,11 +2943,14 @@ def scrape_legacy() -> list[dict]:
                       if k in venue_zh), "Legacy Taipei"), venue_zh)
 
             # 找票券連結（iNDIEVOX）
+            # 從這個活動自己的 HTML 片段裡找連結，避免跨活動 index 錯位
             ticket_url = _LEGACY_LIST
-            # 從原始 HTML 找對應的 iNDIEVOX 連結
-            iv_links = re.findall(r'https://www\.indievox\.com/activity/detail/[^\s"\'<>]+', html)
-            if iv_links:
-                ticket_url = iv_links[min(i - 1, len(iv_links) - 1)]
+            if i < len(html_blocks):
+                # 往前一個片段（包含標題/場地）和當前片段（包含日期後的資訊）都找
+                search_html = html_blocks[i - 1] + html_blocks[i]
+                iv_m = re.search(r'https://www\.indievox\.com/activity/detail/[^\s"\'<>]+', search_html)
+                if iv_m:
+                    ticket_url = iv_m.group(0)
 
             artist = _extract_artist_from_title(title) or title[:40]
             genre = classify_genre(artist, title + " " + raw_venue)

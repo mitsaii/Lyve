@@ -231,7 +231,7 @@ export default function ConcertDetailClient({ concert }: Props) {
 
       {/* 動作按鈕 */}
       <div className="flex gap-3 mb-3">
-        {isTicketingPlatform(concert.platform) && (
+        {isTicketingPlatform(concert.platform) && concert.status !== 'ended' && (
           <button
             onClick={() => window.open(concert.platform_url, '_blank', 'noopener,noreferrer')}
             className="flex-1 py-4 rounded-xl font-bold text-white transition-transform hover:scale-[1.02]"

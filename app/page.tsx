@@ -80,6 +80,11 @@ export default function HomePage() {
       : visibleConcerts.filter((c) => c.genre === selectedGenre)
 
     return [...base].sort((a, b) => {
+      // 已結束的活動永遠排最後
+      const aEnded = a.status === 'ended' ? 1 : 0
+      const bEnded = b.status === 'ended' ? 1 : 0
+      if (aEnded !== bEnded) return aEnded - bEnded
+
       const aMs = a.sale_start_at ? new Date(a.sale_start_at).getTime() : Infinity
       const bMs = b.sale_start_at ? new Date(b.sale_start_at).getTime() : Infinity
       const aFuture = aMs > nowMs ? aMs : Infinity

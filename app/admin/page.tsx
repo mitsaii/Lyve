@@ -29,6 +29,8 @@ export default function AdminPage() {
   const [editing, setEditing] = useState<Partial<Concert> | null>(null)
   const [isNew, setIsNew] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [scraping, setScraping] = useState(false)
+  const [scrapeMsg, setScrapeMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null)
   const [filter, setFilter] = useState('')
 
   // feed tab
@@ -62,18 +64,22 @@ export default function AdminPage() {
     if (!postForm.title.trim() || !postForm.content.trim()) return
     setPostSaving(true)
     setFeedMsg(null)
-    const { error } = await supabase.from('posts').insert({
-      title: postForm.title.trim(),
-      content: postForm.content.trim(),
-      image_url: postForm.image_url.trim() || null,
-      is_ai_generated: false,
-    })
-    if (error) {
-      setFeedMsg({ type: 'err', text: '發文失敗：' + error.message })
-    } else {
-      setFeedMsg({ type: 'ok', text: '✓ 發文成功！' })
-      setPostForm(EMPTY_POST)
-      fetchPosts()
+    try {
+      const res = await fetch('/api/admin/posts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(postForm),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        setFeedMsg({ type: 'ok', text: '✓ 發文成功！' })
+        setPostForm(EMPTY_POST)
+        fetchPosts()
+      } else {
+        setFeedMsg({ type: 'err', text: '發文失敗：' + (data.error || '未知錯誤') })
+      }
+    } catch {
+      setFeedMsg({ type: 'err', text: '網路錯誤，請稍後再試' })
     }
     setPostSaving(false)
     setTimeout(() => setFeedMsg(null), 4000)
@@ -100,7 +106,11 @@ export default function AdminPage() {
 
   async function handleDeletePost(id: string) {
     if (!confirm('確定刪除這篇貼文？')) return
-    await supabase.from('posts').delete().eq('id', id)
+    await fetch('/api/admin/posts', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    })
     fetchPosts()
   }
 
@@ -130,6 +140,31 @@ export default function AdminPage() {
     } finally {
       setSaving(false)
     }
+  }
+
+  async function handleScrapeTime() {
+    if (!editing?.platform_url) return
+    setScraping(true)
+    setScrapeMsg(null)
+    try {
+      const res = await fetch(`/api/scrape-sale-time?url=${encodeURIComponent(editing.platform_url)}`)
+      const data = await res.json()
+      if (data.sale_start_at) {
+        // 轉成台灣時間顯示格式 (ISO with +08:00)
+        const d = new Date(data.sale_start_at)
+        const tzOffset = 8 * 60
+        const local = new Date(d.getTime() + tzOffset * 60000)
+        const iso = local.toISOString().replace('Z', '+08:00').slice(0, 19) + '+08:00'
+        setEditing(prev => ({ ...prev, sale_start_at: iso }))
+        setScrapeMsg({ type: 'ok', text: `✓ 找到：${iso}（來源：${data.source}）` })
+      } else {
+        setScrapeMsg({ type: 'err', text: `找不到開賣時間（${data.source}）` })
+      }
+    } catch {
+      setScrapeMsg({ type: 'err', text: '抓取失敗，請手動填入' })
+    }
+    setScraping(false)
+    setTimeout(() => setScrapeMsg(null), 6000)
   }
 
   async function handleDelete(id: string) {
@@ -412,7 +447,6 @@ export default function AdminPage() {
                   { key: 'platform_url', label: '購票連結', type: 'url' },
                   { key: 'image_url', label: '圖片 URL', type: 'url' },
                   { key: 'grad_css', label: '漸層 CSS（選填）', type: 'text' },
-                  { key: 'sale_start_at', label: '開賣時間（ISO）', type: 'text', placeholder: '2026-04-01T10:00:00+08:00' },
                 ].map(({ key, label, type, placeholder }) => (
                   <div key={key}>
                     <label className="block text-xs mb-1" style={{ color: 'var(--muted)' }}>{label}</label>
@@ -426,6 +460,46 @@ export default function AdminPage() {
                     />
                   </div>
                 ))}
+
+                {/* 開賣時間欄位（附自動抓取按鈕） */}
+                <div>
+                  <label className="block text-xs mb-1" style={{ color: 'var(--muted)' }}>開賣時間（ISO）</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      className="flex-1 px-3 py-2 rounded-lg text-sm outline-none"
+                      style={{ background: 'var(--faint)', color: 'var(--text)', border: '1px solid transparent' }}
+                      placeholder="2026-04-01T10:00:00+08:00"
+                      value={editing.sale_start_at ?? ''}
+                      onChange={e => setEditing(prev => ({ ...prev, sale_start_at: e.target.value || null }))}
+                    />
+                    <button
+                      type="button"
+                      onClick={handleScrapeTime}
+                      disabled={scraping || !editing.platform_url}
+                      title={editing.platform_url ? '從購票連結自動抓取開賣時間' : '請先填入購票連結'}
+                      className="px-3 py-2 rounded-lg text-xs font-semibold flex-shrink-0 transition-all disabled:opacity-40"
+                      style={{
+                        background: scraping ? 'var(--faint)' : 'var(--accent)',
+                        color: scraping ? 'var(--muted)' : '#fff',
+                        minWidth: '72px',
+                      }}
+                    >
+                      {scraping ? '抓取中...' : '🔍 自動抓'}
+                    </button>
+                  </div>
+                  {scrapeMsg && (
+                    <p
+                      className="mt-1 text-xs px-2 py-1 rounded"
+                      style={{
+                        color: scrapeMsg.type === 'ok' ? 'var(--accent)' : '#ff4d4d',
+                        background: scrapeMsg.type === 'ok' ? 'var(--accent)11' : '#ff4d4d11',
+                      }}
+                    >
+                      {scrapeMsg.text}
+                    </p>
+                  )}
+                </div>
 
                 {/* Status */}
                 <div>

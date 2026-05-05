@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { parseLastDate } from '@/lib/utils'
+import { scrapeTicketSaleTime } from '@/lib/scrapeTicketTime'
 
 /**
  * 自動更新演唱會狀態
@@ -80,6 +81,44 @@ export async function GET(req: NextRequest) {
     } else {
       results.push('expired→ended: 0 updated')
     }
+  }
+
+  // 3. 自動抓取：pending 且 sale_start_at 為空、有 platform_url 的演唱會
+  //    每次最多抓 8 場，避免 Vercel Function timeout
+  const { data: toScrape, error: e4 } = await supabase
+    .from('concerts')
+    .select('id, artist, platform_url')
+    .eq('status', 'pending')
+    .is('sale_start_at', null)
+    .not('platform_url', 'is', null)
+    .not('platform_url', 'eq', '')
+    .limit(8)
+
+  if (e4) {
+    results.push(`scrape-fetch error: ${e4.message}`)
+  } else if (toScrape && toScrape.length > 0) {
+    let scraped = 0
+    for (const concert of toScrape) {
+      try {
+        const { sale_start_at, source } = await scrapeTicketSaleTime(concert.platform_url as string)
+        if (sale_start_at) {
+          const { error: updateErr } = await supabase
+            .from('concerts')
+            .update({ sale_start_at })
+            .eq('id', concert.id)
+          if (!updateErr) {
+            scraped++
+            results.push(`scraped "${concert.artist}": ${sale_start_at} (${source})`)
+          }
+        }
+      } catch {
+        // 單場失敗不影響其他場
+      }
+    }
+    if (scraped === 0) results.push(`auto-scrape: 0/${toScrape.length} 成功`)
+    else results.push(`auto-scrape: ${scraped}/${toScrape.length} 成功`)
+  } else {
+    results.push('auto-scrape: 無待補場次')
   }
 
   return NextResponse.json({ ok: true, results, ts: now.toISOString() })

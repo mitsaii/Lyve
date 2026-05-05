@@ -61,7 +61,14 @@ export default function SavedPage() {
         console.error('[SavedPage] fetch failed:', error.message)
         setSavedConcerts([])
       } else if (data) {
-        setSavedConcerts(data as Concert[])
+        // 已結束的活動排最後，其餘依日期排序
+        const sorted = (data as Concert[]).sort((a, b) => {
+          const aEnded = a.status === 'ended' ? 1 : 0
+          const bEnded = b.status === 'ended' ? 1 : 0
+          if (aEnded !== bEnded) return aEnded - bEnded
+          return a.date_str.localeCompare(b.date_str)
+        })
+        setSavedConcerts(sorted)
       }
       setLoading(false)
     }
