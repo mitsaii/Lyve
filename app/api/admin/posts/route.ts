@@ -4,10 +4,12 @@ import { createServerClient } from '@/lib/supabase/server'
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? 'mitsai0701@gmail.com'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+}
 
 async function verifyAdmin(): Promise<boolean> {
   try {
@@ -32,7 +34,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: '標題與內文不能為空' }, { status: 400 })
   }
 
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from('posts')
     .insert({
       title: title.trim(),
@@ -61,7 +63,7 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: '缺少貼文 id' }, { status: 400 })
   }
 
-  const { error } = await supabase.from('posts').delete().eq('id', id)
+  const { error } = await getSupabase().from('posts').delete().eq('id', id)
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
