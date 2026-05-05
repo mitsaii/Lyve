@@ -3942,7 +3942,8 @@ def supabase_upsert(concerts: list[dict], supabase_url: str, api_key: str) -> bo
             "platform":     c["platform"],
             "platform_url": c["platform_url"],
             "genre":         c["genre"],
-            "status":        "pending",
+            # status 不帶入 upsert，避免 merge-duplicates 把 DB 已有的 selling/ended 蓋回 pending
+            # 新增的 row 會使用 DB column default（'pending'）
             "is_hot":        c.get("is_hot", False),
             "grad_css":      c["grad_css"],
             "image_url":     c.get("image_url"),
