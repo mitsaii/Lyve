@@ -4,10 +4,12 @@ import { createServerClient } from '@/lib/supabase/server'
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? ''
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+}
 
 async function verifyAdmin(): Promise<boolean> {
   try {
@@ -20,7 +22,7 @@ async function verifyAdmin(): Promise<boolean> {
 }
 
 async function getRecentConcerts() {
-  const { data } = await supabase
+  const { data } = await getSupabase()
     .from('concerts')
     .select('artist, tour_zh, tour_en, date_str, city_zh, is_hot')
     .order('created_at', { ascending: false })
@@ -87,7 +89,7 @@ async function generateAndPost() {
       .join('\n')
       .trim()
 
-    const { data: post, error } = await supabase
+    const { data: post, error } = await getSupabase()
       .from('posts')
       .insert({ title, content, is_ai_generated: true })
       .select()
