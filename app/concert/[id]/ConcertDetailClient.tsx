@@ -45,19 +45,31 @@ export default function ConcertDetailClient({ concert }: Props) {
   }
 
   const ticketSaleTime = (() => {
-    if (concert.status === 'selling') return t('🟢 已開賣', '🟢 On Sale Now')
     if (concert.status === 'free') return t('🟡 免費入場', '🟡 Free Admission')
-    // ended 狀態不在此攔截，繼續走下方邏輯顯示搶票時間
-    // pending / ended
+    // 優先顯示具體搶票時間（含時分），不論 status
     if (concert.sale_start_at) {
       const d = new Date(concert.sale_start_at)
       if (isNaN(d.getTime())) return t('⏳ 待公布', '⏳ TBA')
-      return d.toLocaleString('zh-TW', {
+      const dateStr = d.toLocaleDateString('zh-TW', {
         timeZone: 'Asia/Taipei',
         year: 'numeric', month: '2-digit', day: '2-digit',
-        hour: '2-digit', minute: '2-digit',
       })
+      const timeStr = d.toLocaleTimeString('zh-TW', {
+        timeZone: 'Asia/Taipei',
+        hour: '2-digit', minute: '2-digit',
+        hour12: false,
+      })
+      const now = new Date()
+      const suffix = d.getTime() <= now.getTime()
+        ? concert.status === 'sold_out'
+          ? t('　🔴 已售完', '　🔴 Sold Out')
+          : t('　🟢 已開賣', '　🟢 On Sale')
+        : ''
+      return `${dateStr} ${timeStr}${suffix}`
     }
+    // 無 sale_start_at 才 fallback
+    if (concert.status === 'selling') return t('🟢 已開賣', '🟢 On Sale Now')
+    if (concert.status === 'sold_out') return t('🔴 已售完', '🔴 Sold Out')
     return t('⏳ 待公布', '⏳ TBA')
   })()
 
